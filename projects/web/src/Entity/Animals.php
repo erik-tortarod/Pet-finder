@@ -46,6 +46,9 @@ class Animals
     #[ORM\Column(type: 'size_enum')]
     private ?string $size = null;
 
+    #[ORM\OneToOne(mappedBy: 'animalId', cascade: ['persist', 'remove'])]
+    private ?LostPets $lostPets = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -155,6 +158,28 @@ class Animals
     public function setSize(string $size): static
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    public function getLostPets(): ?LostPets
+    {
+        return $this->lostPets;
+    }
+
+    public function setLostPets(?LostPets $lostPets): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($lostPets === null && $this->lostPets !== null) {
+            $this->lostPets->setAnimalId(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($lostPets !== null && $lostPets->getAnimalId() !== $this) {
+            $lostPets->setAnimalId($this);
+        }
+
+        $this->lostPets = $lostPets;
 
         return $this;
     }

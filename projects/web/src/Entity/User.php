@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -86,6 +88,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $shelterVerificationDate = null;
+
+    /**
+     * @var Collection<int, LostPets>
+     */
+    #[ORM\OneToMany(targetEntity: LostPets::class, mappedBy: 'userId')]
+    private Collection $lostPets;
+
+    public function __construct()
+    {
+        $this->lostPets = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -368,6 +381,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setShelterVerificationDate(\DateTime $shelterVerificationDate): static
     {
         $this->shelterVerificationDate = $shelterVerificationDate;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, LostPets>
+     */
+    public function getLostPets(): Collection
+    {
+        return $this->lostPets;
+    }
+
+    public function addLostPet(LostPets $lostPet): static
+    {
+        if (!$this->lostPets->contains($lostPet)) {
+            $this->lostPets->add($lostPet);
+            $lostPet->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeLostPet(LostPets $lostPet): static
+    {
+        if ($this->lostPets->removeElement($lostPet)) {
+            // set the owning side to null (unless already changed)
+            if ($lostPet->getUserId() === $this) {
+                $lostPet->setUserId(null);
+            }
+        }
 
         return $this;
     }
