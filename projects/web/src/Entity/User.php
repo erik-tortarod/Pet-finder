@@ -95,9 +95,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: LostPets::class, mappedBy: 'userId')]
     private Collection $lostPets;
 
+    /**
+     * @var Collection<int, FoundAnimals>
+     */
+    #[ORM\OneToMany(targetEntity: FoundAnimals::class, mappedBy: 'userId')]
+    private Collection $foundAnimals;
+
     public function __construct()
     {
         $this->lostPets = new ArrayCollection();
+        $this->foundAnimals = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -409,6 +416,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             // set the owning side to null (unless already changed)
             if ($lostPet->getUserId() === $this) {
                 $lostPet->setUserId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, FoundAnimals>
+     */
+    public function getFoundAnimals(): Collection
+    {
+        return $this->foundAnimals;
+    }
+
+    public function addFoundAnimal(FoundAnimals $foundAnimal): static
+    {
+        if (!$this->foundAnimals->contains($foundAnimal)) {
+            $this->foundAnimals->add($foundAnimal);
+            $foundAnimal->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFoundAnimal(FoundAnimals $foundAnimal): static
+    {
+        if ($this->foundAnimals->removeElement($foundAnimal)) {
+            // set the owning side to null (unless already changed)
+            if ($foundAnimal->getUserId() === $this) {
+                $foundAnimal->setUserId(null);
             }
         }
 

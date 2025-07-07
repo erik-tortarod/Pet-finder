@@ -49,6 +49,9 @@ class Animals
     #[ORM\OneToOne(mappedBy: 'animalId', cascade: ['persist', 'remove'])]
     private ?LostPets $lostPets = null;
 
+    #[ORM\OneToOne(mappedBy: 'animalId', cascade: ['persist', 'remove'])]
+    private ?FoundAnimals $foundAnimals = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -180,6 +183,28 @@ class Animals
         }
 
         $this->lostPets = $lostPets;
+
+        return $this;
+    }
+
+    public function getFoundAnimals(): ?FoundAnimals
+    {
+        return $this->foundAnimals;
+    }
+
+    public function setFoundAnimals(?FoundAnimals $foundAnimals): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($foundAnimals === null && $this->foundAnimals !== null) {
+            $this->foundAnimals->setAnimalId(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($foundAnimals !== null && $foundAnimals->getAnimalId() !== $this) {
+            $foundAnimals->setAnimalId($this);
+        }
+
+        $this->foundAnimals = $foundAnimals;
 
         return $this;
     }
