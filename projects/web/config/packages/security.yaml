@@ -9,25 +9,43 @@ security:
             entity:
                 class: App\Entity\User
                 property: email
+        hwi_provider:
+            id: hwi_oauth.user.provider
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             lazy: true
-            provider: app_user_provider
 
-            # activate different ways to authenticate
-            # https://symfony.com/doc/current/security.html#the-firewall
+            # Define the path handling the logout and where to redirect
+            logout:
+                path: /logout
+                target: /
 
-            # https://symfony.com/doc/current/security/impersonating_user.html
-            # switch_user: true
+            oauth:
+                # Again, define the same path as in the Google Cloud Console
+                resource_owners:
+                    google: "/login/with-google"
+                # This is the route that will trigger the OAuth login process
+                login_path: /connect/google
+                use_forward: false
+                failure_path: /login
+                default_target_path: /profile
+
+                # Service defined in HWI OAuth bundle to handle OAuth
+                oauth_user_provider:
+                    service: hwi_oauth.user.provider
+
+            # Key of the provider defined earlier
+            provider: hwi_provider
 
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/admin, roles: ROLE_USER }
+        - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/(.+), roles: PUBLIC_ACCESS }
 
 when@test:
     security:

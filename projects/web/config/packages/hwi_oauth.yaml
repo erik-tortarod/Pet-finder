@@ -1,8 +1,8 @@
 hwi_oauth:
     # https://github.com/hwi/HWIOAuthBundle/blob/master/docs/2-configuring_resource_owners.md
     resource_owners:
-        facebook:
-            type:                facebook
-            client_id:           '%env(FB_ID)%'
-            client_secret:       '%env(FB_SECRET)%'
-            scope:               "email public_profile"
+        google:
+            type:                google
+            client_id:           '%env(GOOGLE_CLIENT_ID)%'
+            client_secret:       '%env(GOOGLE_CLIENT_SECRET)%'
+            scope:               "email profile"
