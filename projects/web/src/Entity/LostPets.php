@@ -7,6 +7,12 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LostPetsRepository::class)]
+#[ORM\Index(name: 'idx_animal_id', fields: ['animalId'])]
+#[ORM\Index(name: 'idx_user_id', fields: ['userId'])]
+#[ORM\Index(name: 'idx_status', fields: ['status'])]
+#[ORM\Index(name: 'idx_lost_zone', fields: ['lostZone'])]
+#[ORM\Index(name: 'idx_lost_date', fields: ['lostDate'])]
+#[ORM\Index(name: 'idx_created_at', fields: ['createdAt'])]
 class LostPets
 {
     #[ORM\Id]

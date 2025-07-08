@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\AnimalsRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: AnimalsRepository::class)]
@@ -51,6 +53,24 @@ class Animals
 
     #[ORM\OneToOne(mappedBy: 'animalId', cascade: ['persist', 'remove'])]
     private ?FoundAnimals $foundAnimals = null;
+
+    /**
+     * @var Collection<int, AnimalTags>
+     */
+    #[ORM\OneToMany(targetEntity: AnimalTags::class, mappedBy: 'animalId')]
+    private Collection $animalTags;
+
+    /**
+     * @var Collection<int, AnimalPhotos>
+     */
+    #[ORM\OneToMany(targetEntity: AnimalPhotos::class, mappedBy: 'animalId')]
+    private Collection $animalPhotos;
+
+    public function __construct()
+    {
+        $this->animalTags = new ArrayCollection();
+        $this->animalPhotos = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -205,6 +225,66 @@ class Animals
         }
 
         $this->foundAnimals = $foundAnimals;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnimalTags>
+     */
+    public function getAnimalTags(): Collection
+    {
+        return $this->animalTags;
+    }
+
+    public function addAnimalTag(AnimalTags $animalTag): static
+    {
+        if (!$this->animalTags->contains($animalTag)) {
+            $this->animalTags->add($animalTag);
+            $animalTag->setAnimalId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnimalTag(AnimalTags $animalTag): static
+    {
+        if ($this->animalTags->removeElement($animalTag)) {
+            // set the owning side to null (unless already changed)
+            if ($animalTag->getAnimalId() === $this) {
+                $animalTag->setAnimalId(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AnimalPhotos>
+     */
+    public function getAnimalPhotos(): Collection
+    {
+        return $this->animalPhotos;
+    }
+
+    public function addAnimalPhoto(AnimalPhotos $animalPhoto): static
+    {
+        if (!$this->animalPhotos->contains($animalPhoto)) {
+            $this->animalPhotos->add($animalPhoto);
+            $animalPhoto->setAnimalId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAnimalPhoto(AnimalPhotos $animalPhoto): static
+    {
+        if ($this->animalPhotos->removeElement($animalPhoto)) {
+            // set the owning side to null (unless already changed)
+            if ($animalPhoto->getAnimalId() === $this) {
+                $animalPhoto->setAnimalId(null);
+            }
+        }
 
         return $this;
     }
