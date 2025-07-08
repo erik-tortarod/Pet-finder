@@ -8,10 +8,15 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 final class AuthController extends AbstractController
 {
-    #[Route('/auth', name: 'app_auth')]
+    public function __construct(
+        private UserPasswordHasherInterface $passwordHasher
+    ) {}
+
+    #[Route('/auth/register', name: 'app_auth_register')]
     public function index(Request $request, UserRepository $userRepository): Response
     {
         if ($request->isMethod('POST')) {
@@ -34,7 +39,11 @@ final class AuthController extends AbstractController
             $user->setLastName($lastName);
             $user->setPhone($phone);
             $user->setEmail($email);
-            $user->setPassword($password);
+
+            // Hash the password before setting it
+            $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
+            $user->setPassword($hashedPassword);
+
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setUpdatedAt(new \DateTimeImmutable());
             $user->setRoles(['ROLE_USER']);
@@ -45,10 +54,44 @@ final class AuthController extends AbstractController
 
             $userRepository->add($user, true);
 
-            return $this->redirectToRoute('app_auth');
+            return $this->redirectToRoute('app_auth_register');
         }
 
-        return $this->render('auth/index.html.twig', [
+        return $this->render('auth/register.html.twig', [
+            'controller_name' => 'AuthController',
+        ]);
+    }
+
+    #[Route('/auth/login', name: 'app_auth_login')]
+    public function login(Request $request, UserRepository $userRepository): Response
+    {
+        if ($request->isMethod('POST')) {
+            $email = $request->request->get('email');
+            $password = $request->request->get('password');
+
+            $user = $userRepository->findOneBy(['email' => $email]);
+
+            if (!$user) {
+                $this->addFlash('error', 'Usuario no encontrado');
+                return $this->redirectToRoute('app_auth_login');
+            }
+
+            // Verify the password
+            if (!$this->passwordHasher->isPasswordValid($user, $password)) {
+                $this->addFlash('error', 'Contraseña incorrecta');
+                return $this->redirectToRoute('app_auth_login');
+            }
+
+            // Update last login
+            $user->setLastLogin(new \DateTime());
+            $userRepository->add($user, true);
+
+            // TODO: Create session and redirect to dashboard
+            $this->addFlash('success', 'Inicio de sesión exitoso');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        return $this->render('auth/login.html.twig', [
             'controller_name' => 'AuthController',
         ]);
     }

@@ -1,0 +1,40 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello AuthController!
+{% endblock %}
+
+{% block body %}
+	<div>
+		{% for owner in hwi_oauth_resource_owners() %}
+			<a href="{{ hwi_oauth_login_url(owner) }}">
+				Continuar con
+				{{ owner | trans({}, 'HWIOAuthBundle') }}
+			</a>
+		{% endfor %}
+
+		<section>
+			<h1>Login de Usuario</h1>
+
+			{# Flash Messages #}
+			{% for message in app.flashes('success') %}
+				<div class="alert alert-success">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			{% for message in app.flashes('error') %}
+				<div class="alert alert-danger">
+					{{ message }}
+				</div>
+			{% endfor %}
+
+			<form action="{{ path('app_auth_login') }}" method="post">
+				<input type="text" name="email" id="email" placeholder="Email">
+				<input type="password" name="password" id="password" placeholder="Contraseña">
+
+				<button type="submit" class="btn btn-primary">Submit</button>
+
+			</form>
+		</section>
+	</div>
+{% endblock %}
