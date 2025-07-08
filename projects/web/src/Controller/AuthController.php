@@ -28,10 +28,22 @@ final class AuthController extends AbstractController
             $confirmPassword = $request->request->get('confirm_password');
             $emailNotifications = $request->request->get('emailNotifications');
 
-            //TODO: Display flash messages
+            // Validaciones básicas
+            if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
+                $this->addFlash('error', 'Todos los campos obligatorios deben estar completos');
+                return $this->redirectToRoute('app_auth_register');
+            }
+
             if ($password !== $confirmPassword) {
                 $this->addFlash('error', 'Las contraseñas no coinciden');
-                return $this->redirectToRoute('app_auth');
+                return $this->redirectToRoute('app_auth_register');
+            }
+
+            // Verificar si el usuario ya existe
+            $existingUser = $userRepository->findOneBy(['email' => $email]);
+            if ($existingUser) {
+                $this->addFlash('error', 'Ya existe un usuario con este email');
+                return $this->redirectToRoute('app_auth_register');
             }
 
             $user = new User();
@@ -54,7 +66,8 @@ final class AuthController extends AbstractController
 
             $userRepository->add($user, true);
 
-            return $this->redirectToRoute('app_auth_register');
+            $this->addFlash('success', 'Usuario registrado exitosamente');
+            return $this->redirectToRoute('app_user');
         }
 
         return $this->render('auth/register.html.twig', [
@@ -68,6 +81,12 @@ final class AuthController extends AbstractController
         if ($request->isMethod('POST')) {
             $email = $request->request->get('email');
             $password = $request->request->get('password');
+
+            // Validaciones básicas
+            if (empty($email) || empty($password)) {
+                $this->addFlash('error', 'Email y contraseña son requeridos');
+                return $this->redirectToRoute('app_auth_login');
+            }
 
             $user = $userRepository->findOneBy(['email' => $email]);
 
@@ -86,13 +105,53 @@ final class AuthController extends AbstractController
             $user->setLastLogin(new \DateTime());
             $userRepository->add($user, true);
 
-            // TODO: Create session and redirect to dashboard
+            // Crear sesión manualmente
+            $request->getSession()->set('user_id', $user->getId());
+            $request->getSession()->set('user_email', $user->getEmail());
+            $request->getSession()->set('user_first_name', $user->getFirstName());
+            $request->getSession()->set('user_last_name', $user->getLastName());
+
             $this->addFlash('success', 'Inicio de sesión exitoso');
-            return $this->redirectToRoute('app_auth_login');
+            return $this->redirectToRoute('app_user');
         }
 
         return $this->render('auth/login.html.twig', [
             'controller_name' => 'AuthController',
         ]);
+    }
+
+    #[Route('/auth/logout', name: 'app_auth_logout')]
+    public function logout(Request $request): Response
+    {
+        // Limpiar la sesión completamente
+        $session = $request->getSession();
+
+        // Limpiar todos los datos de la sesión
+        $session->clear();
+
+        // Invalidar la sesión
+        $session->invalidate();
+
+        // Regenerar el ID de la sesión para mayor seguridad
+        $session->migrate();
+
+        $this->addFlash('success', 'Sesión cerrada exitosamente');
+        return $this->redirectToRoute('app_auth_login');
+    }
+
+    #[Route('/auth/debug-session', name: 'app_auth_debug_session')]
+    public function debugSession(Request $request): Response
+    {
+        $session = $request->getSession();
+        $userId = $session->get('user_id');
+        $userEmail = $session->get('user_email');
+
+        return new Response(
+            "Session Debug:<br>" .
+                "User ID: " . ($userId ?: 'null') . "<br>" .
+                "User Email: " . ($userEmail ?: 'null') . "<br>" .
+                "Session ID: " . $session->getId() . "<br>" .
+                "Session Started: " . ($session->isStarted() ? 'Yes' : 'No')
+        );
     }
 }
