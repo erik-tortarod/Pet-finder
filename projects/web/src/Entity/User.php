@@ -89,6 +89,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $shelterVerificationDate = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $resetToken = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    private ?\DateTime $resetTokenExpiresAt = null;
+
+    #[ORM\Column]
+    private ?bool $resetTokenUsed = false;
+
     /**
      * @var Collection<int, LostPets>
      */
@@ -388,6 +397,42 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setShelterVerificationDate(\DateTime $shelterVerificationDate): static
     {
         $this->shelterVerificationDate = $shelterVerificationDate;
+
+        return $this;
+    }
+
+    public function getResetToken(): ?string
+    {
+        return $this->resetToken;
+    }
+
+    public function setResetToken(?string $resetToken): static
+    {
+        $this->resetToken = $resetToken;
+
+        return $this;
+    }
+
+    public function getResetTokenExpiresAt(): ?\DateTime
+    {
+        return $this->resetTokenExpiresAt;
+    }
+
+    public function setResetTokenExpiresAt(?\DateTime $resetTokenExpiresAt): static
+    {
+        $this->resetTokenExpiresAt = $resetTokenExpiresAt;
+
+        return $this;
+    }
+
+    public function isResetTokenUsed(): ?bool
+    {
+        return $this->resetTokenUsed;
+    }
+
+    public function setResetTokenUsed(bool $resetTokenUsed): static
+    {
+        $this->resetTokenUsed = $resetTokenUsed;
 
         return $this;
     }
