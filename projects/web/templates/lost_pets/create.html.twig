@@ -1,0 +1,123 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registrar Animal Perdido
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>Registrar Animal Perdido</h1>
+
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">{{ message }}</div>
+		{% endfor %}
+
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger">{{ message }}</div>
+		{% endfor %}
+
+		{{ form_start(form) }}
+		<div class="row">
+			<div class="col-md-6">
+				<h3>Información del Animal</h3>
+				<div class="mb-3">
+					{{ form_label(form.animalName) }}
+					{{ form_widget(form.animalName, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalName) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalType) }}
+					{{ form_widget(form.animalType, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalType) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalGender) }}
+					{{ form_widget(form.animalGender, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalGender) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalSize) }}
+					{{ form_widget(form.animalSize, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalSize) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalColor) }}
+					{{ form_widget(form.animalColor, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalColor) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalAge) }}
+					{{ form_widget(form.animalAge, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalAge) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalDescription) }}
+					{{ form_widget(form.animalDescription, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+					{{ form_errors(form.animalDescription) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalTags) }}
+					{{ form_widget(form.animalTags, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalTags) }}
+					<small class="form-text text-muted">Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)</small>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<h3>Información de la Pérdida</h3>
+				<div class="mb-3">
+					{{ form_label(form.lostDate) }}
+					{{ form_widget(form.lostDate, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.lostDate) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.lostTime) }}
+					{{ form_widget(form.lostTime, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.lostTime) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.lostZone) }}
+					{{ form_widget(form.lostZone, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.lostZone) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.lostAddress) }}
+					{{ form_widget(form.lostAddress, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.lostAddress) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.lostCircumstances) }}
+					{{ form_widget(form.lostCircumstances, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+					{{ form_errors(form.lostCircumstances) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.rewardAmount) }}
+					{{ form_widget(form.rewardAmount, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.rewardAmount) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.rewardDescription) }}
+					{{ form_widget(form.rewardDescription, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+					{{ form_errors(form.rewardDescription) }}
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center">
+			<button type="submit" class="btn btn-primary">Registrar Animal Perdido</button>
+		</div>
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

@@ -16,6 +16,37 @@ class TagsRepository extends ServiceEntityRepository
         parent::__construct($registry, Tags::class);
     }
 
+    /**
+     * Find a tag by name (case insensitive)
+     */
+    public function findByName(string $name): ?Tags
+    {
+        return $this->createQueryBuilder('t')
+            ->andWhere('LOWER(t.name) = LOWER(:name)')
+            ->andWhere('t.isActive = :isActive')
+            ->setParameter('name', $name)
+            ->setParameter('isActive', true)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+    /**
+     * Find or create a tag by name
+     */
+    public function findOrCreateByName(string $name): Tags
+    {
+        $tag = $this->findByName($name);
+
+        if (!$tag) {
+            $tag = new Tags();
+            $tag->setName(trim($name));
+            $tag->setIsActive(true);
+            $tag->setCreatedAt(new \DateTimeImmutable());
+        }
+
+        return $tag;
+    }
+
     //    /**
     //     * @return Tags[] Returns an array of Tags objects
     //     */

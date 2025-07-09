@@ -11,11 +11,14 @@
 		{{ encore_entry_link_tags('app') }}
 
 		{% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
+			{% block importmap %}
+				{{ importmap('app') }}
+			{% endblock %}
 			{{ encore_entry_script_tags('app') }}
 		{% endblock %}
 	</head>
 	<body>
+		{% include 'components/NavBar.html.twig' %}
 		{% block body %}{% endblock %}
 	</body>
 </html>
