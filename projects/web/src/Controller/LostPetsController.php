@@ -6,25 +6,38 @@ use App\Entity\Animals;
 use App\Entity\LostPets;
 use App\Entity\Tags;
 use App\Entity\AnimalTags;
+use App\Entity\AnimalPhotos;
 use App\Form\LostPetType;
+use App\Service\FileUploadService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class LostPetsController extends AbstractController
 {
     #[Route('/lost/pets', name: 'app_lost_pets')]
-    public function index(): Response
+    public function index(EntityManagerInterface $entityManager): Response
     {
+        $lostPetsRepository = $entityManager->getRepository(LostPets::class);
+        $lostPets = $lostPetsRepository->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('lp.userId', 'u')
+            ->addSelect('a', 'ap', 'u')
+            ->orderBy('lp.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+
         return $this->render('lost_pets/index.html.twig', [
-            'controller_name' => 'LostPetsController',
+            'lostPets' => $lostPets,
         ]);
     }
 
     #[Route('/lost/pets/create', name: 'app_lost_pets_create')]
-    public function create(Request $request, EntityManagerInterface $entityManager): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService): Response
     {
         $form = $this->createForm(LostPetType::class);
         $form->handleRequest($request);
@@ -63,6 +76,19 @@ final class LostPetsController extends AbstractController
 
                             $entityManager->persist($animalTag);
                         }
+                    }
+                }
+
+                // Procesar imagen del animal
+                $photoFile = $form->get('animalPhoto')->getData();
+                if ($photoFile) {
+                    try {
+                        $user = $this->getUser();
+                        $animalPhoto = $fileUploadService->uploadAnimalPhoto($photoFile, $animal, $user->getEmail());
+                        $entityManager->persist($animalPhoto);
+                    } catch (\Exception $e) {
+                        $this->addFlash('error', 'Error al procesar la imagen: ' . $e->getMessage());
+                        throw $e; // Re-lanzar para que se maneje en el catch principal
                     }
                 }
 

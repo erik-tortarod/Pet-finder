@@ -1,34 +1,125 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello LostPetsController!
+{% block title %}Mascotas Perdidas
 {% endblock %}
 
 {% block body %}
-	<style>
-		.example-wrapper {
-			margin: 1em auto;
-			max-width: 800px;
-			width: 95%;
-			font: 18px / 1.5 sans-serif;
-		}
-		.example-wrapper code {
-			background: #F5F5F5;
-			padding: 2px 6px;
-		}
-	</style>
+	<div class="container mt-4">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1>Mascotas Perdidas</h1>
+			<a href="{{ path('app_lost_pets_create') }}" class="btn btn-primary">
+				<i class="fas fa-plus"></i> Registrar Mascota Perdida
+			</a>
+		</div>
 
-	<div class="example-wrapper">
-		<h1>Hello
-			{{ controller_name }}! ✅</h1>
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">{{ message }}</div>
+		{% endfor %}
 
-		This friendly message is coming from:
-		<ul>
-			<li>Your controller at
-				<code>/home/usuario/Escritorio/Aircury/SummerOfCode/Pet-finder/projects/web/src/Controller/LostPetsController.php</code>
-			</li>
-			<li>Your template at
-				<code>/home/usuario/Escritorio/Aircury/SummerOfCode/Pet-finder/projects/web/templates/lost_pets/index.html.twig</code>
-			</li>
-		</ul>
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger">{{ message }}</div>
+		{% endfor %}
+
+		{% if lostPets is empty %}
+			<div class="text-center py-5">
+				<i class="fas fa-search fa-3x text-muted mb-3"></i>
+				<h3 class="text-muted">No hay mascotas perdidas registradas</h3>
+				<p class="text-muted">Sé el primero en registrar una mascota perdida</p>
+				<a href="{{ path('app_lost_pets_create') }}" class="btn btn-primary">
+					Registrar Mascota Perdida
+				</a>
+			</div>
+		{% else %}
+			<div class="row">
+				{% for lostPet in lostPets %}
+					<div class="col-md-6 col-lg-4 mb-4">
+						<div class="card h-100 shadow-sm">
+							{% set primaryPhoto = null %}
+							{% if lostPet.animalId.animalPhotos is not empty %}
+								{% for photo in lostPet.animalId.animalPhotos %}
+									{% if photo.isPrimary %}
+										{% set primaryPhoto = photo %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if primaryPhoto %}
+								<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}"
+									 class="card-img-top"
+									 alt="Foto de {{ lostPet.animalId.name }}"
+									 style="height: 200px; object-fit: cover;">
+							{% else %}
+								<div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+									 style="height: 200px;">
+									<i class="fas fa-paw fa-3x text-muted"></i>
+									<small class="text-muted">Sin foto</small>
+								</div>
+							{% endif %}
+
+							<div class="card-body">
+								<h5 class="card-title">{{ lostPet.animalId.name }}</h5>
+								<p class="card-text">
+									<strong>Tipo:</strong> {{ lostPet.animalId.animalType|title }}<br>
+									<strong>Género:</strong>
+									{% if lostPet.animalId.gender == 'male' %}Macho
+									{% elseif lostPet.animalId.gender == 'female' %}Hembra
+									{% else %}No especificado{% endif %}<br>
+									<strong>Tamaño:</strong>
+									{% if lostPet.animalId.size == 'small' %}Pequeño
+									{% elseif lostPet.animalId.size == 'medium' %}Mediano
+									{% elseif lostPet.animalId.size == 'large' %}Grande
+									{% else %}Extra Grande{% endif %}<br>
+									{% if lostPet.animalId.color %}
+										<strong>Color:</strong> {{ lostPet.animalId.color }}<br>
+									{% endif %}
+									{% if lostPet.animalId.age %}
+										<strong>Edad:</strong> {{ lostPet.animalId.age }}<br>
+									{% endif %}
+								</p>
+
+								<hr>
+
+								<p class="card-text">
+									<strong>Perdido el:</strong> {{ lostPet.lostDate|date('d/m/Y') }}<br>
+									<strong>Zona:</strong> {{ lostPet.lostZone }}<br>
+									{% if lostPet.lostAddress %}
+										<strong>Dirección:</strong> {{ lostPet.lostAddress }}<br>
+									{% endif %}
+								</p>
+
+								{% if lostPet.rewardAmount %}
+									<div class="alert alert-warning py-2">
+										<strong>Recompensa:</strong> {{ lostPet.rewardAmount }}
+									</div>
+								{% endif %}
+
+								<div class="d-flex justify-content-between align-items-center">
+									<span class="badge bg-{% if lostPet.status == 'active' %}success{% elseif lostPet.status == 'found' %}primary{% else %}secondary{% endif %}">
+										{% if lostPet.status == 'active' %}Activo
+										{% elseif lostPet.status == 'found' %}Encontrado
+										{% elseif lostPet.status == 'paused' %}Pausado
+										{% else %}Completado{% endif %}
+									</span>
+									<small class="text-muted">
+										{{ lostPet.createdAt|date('d/m/Y H:i') }}
+									</small>
+								</div>
+							</div>
+
+							<div class="card-footer">
+								<a href="#" class="btn btn-outline-primary btn-sm">
+									<i class="fas fa-eye"></i> Ver Detalles
+								</a>
+								{% if app.user and lostPet.userId.id == app.user.id %}
+									<a href="#" class="btn btn-outline-secondary btn-sm">
+										<i class="fas fa-edit"></i> Editar
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}

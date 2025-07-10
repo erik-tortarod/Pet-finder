@@ -9,9 +9,11 @@ use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\File;
 
 class LostPetType extends AbstractType
 {
@@ -78,6 +80,28 @@ class LostPetType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Ej: amigable, juguetón, tranquilo, etc.'
                 ],
+            ])
+            ->add('animalPhoto', FileType::class, [
+                'label' => 'Foto del animal',
+                'mapped' => false,
+                'required' => false,
+                'constraints' => [
+                    new File([
+                        'maxSize' => '2M',
+                        'mimeTypes' => [
+                            'image/jpeg',
+                            'image/png',
+                            'image/gif',
+                            'image/webp'
+                        ],
+                        'mimeTypesMessage' => 'Por favor sube una imagen válida (JPG, PNG, GIF o WebP)',
+                        'maxSizeMessage' => 'La imagen no puede ser mayor a 2MB'
+                    ])
+                ],
+                'attr' => [
+                    'accept' => 'image/*',
+                    'class' => 'form-control'
+                ]
             ])
 
             // Campos de pérdida
