@@ -7,8 +7,10 @@
         "@symfony/stimulus-bridge": "^3.2.0 || ^4.0.0",
         "@symfony/ux-turbo": "file:vendor/symfony/ux-turbo/assets",
         "@symfony/webpack-encore": "^5.0.0",
+        "autoprefixer": "^10.4.21",
         "core-js": "^3.38.0",
         "regenerator-runtime": "^0.13.9",
+        "tailwindcss": "^4.1.11",
         "webpack": "^5.74.0",
         "webpack-cli": "^5.1.0"
     },
@@ -23,7 +25,6 @@
     "dependencies": {
         "@tailwindcss/postcss": "^4.1.11",
         "postcss": "^8.5.6",
-        "postcss-loader": "^8.1.1",
-        "tailwindcss": "^4.1.11"
+        "postcss-loader": "^8.1.1"
     }
 }
