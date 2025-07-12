@@ -1,0 +1,23 @@
+{# Base Icon Component
+   Este componente define los parámetros comunes para todos los iconos
+   No se usa directamente, sino que se extiende por otros componentes
+#}
+
+{% set size = size|default(24) %}
+{% set class = class|default('') %}
+{% set color = color|default('currentColor') %}
+{% set fill = fill|default('none') %}
+{% set strokeWidth = strokeWidth|default('2') %}
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="{{ size }}"
+     height="{{ size }}"
+     viewBox="0 0 24 24"
+     fill="{{ fill }}"
+     stroke="{{ color }}"
+     stroke-width="{{ strokeWidth }}"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     class="{{ class }}">
+    {{ content|raw }}
+</svg>

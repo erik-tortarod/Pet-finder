@@ -19,7 +19,7 @@
     "scripts": {
         "dev-server": "encore dev-server",
         "dev": "encore dev",
-        "watch": "encore dev --watch",
+        "watch": "encore dev --watch & while true; do sleep 2; php bin/console cache:clear --no-warmup; done",
         "build": "encore production --progress"
     },
     "dependencies": {

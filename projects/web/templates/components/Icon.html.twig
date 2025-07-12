@@ -1,0 +1,46 @@
+{# Icon Helper Component
+   Uso: {% include 'components/Icon.html.twig' with {name: 'paw', size: 24, class: 'text-blue-600'} %}
+
+   Este componente incluye automáticamente el icono correspondiente desde la carpeta icons/
+#}
+
+{% set name = name|default('paw') %}
+{% set size = size|default(24) %}
+{% set class = class|default('') %}
+{% set color = color|default('currentColor') %}
+
+{% if name == 'paw' %}
+    {% include 'components/icons/paw.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'home' %}
+    {% include 'components/icons/home.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'search' %}
+    {% include 'components/icons/search.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'heart' %}
+    {% include 'components/icons/heart.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'plus' %}
+    {% include 'components/icons/plus.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'user' %}
+    {% include 'components/icons/user.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'menu' %}
+    {% include 'components/icons/menu.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'chevron-down' %}
+    {% include 'components/icons/chevron-down.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'x' %}
+    {% include 'components/icons/x.html.twig' with {size: size, class: class, color: color} %}
+{% else %}
+    {# Default icon#}
+    <svg xmlns="http://www.w3.org/2000/svg"
+         width="{{ size }}"
+         height="{{ size }}"
+         viewBox="0 0 24 24"
+         fill="none"
+         stroke="{{ color }}"
+         stroke-width="2"
+         stroke-linecap="round"
+         stroke-linejoin="round"
+         class="lucide lucide-help-circle {{ class }}">
+        <circle cx="12" cy="12" r="10"/>
+        <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+        <line x1="12" x2="12.01" y1="17" y2="17"/>
+    </svg>
+{% endif %}
