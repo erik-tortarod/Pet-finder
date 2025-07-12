@@ -1,0 +1,135 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Registrar Animal Encontrado
+{% endblock %}
+
+{% block body %}
+	<div class="container mt-4">
+		<h1>Registrar Animal Encontrado</h1>
+
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">{{ message }}</div>
+		{% endfor %}
+
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger">{{ message }}</div>
+		{% endfor %}
+
+		{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
+		<div class="row">
+			<div class="col-md-6">
+				<h3>Información del Animal</h3>
+				<div class="mb-3">
+					{{ form_label(form.animalName) }}
+					{{ form_widget(form.animalName, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalName) }}
+					<small class="form-text text-muted">Si conoces el nombre del animal, puedes ingresarlo</small>
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalType) }}
+					{{ form_widget(form.animalType, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalType) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalGender) }}
+					{{ form_widget(form.animalGender, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalGender) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalSize) }}
+					{{ form_widget(form.animalSize, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalSize) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalColor) }}
+					{{ form_widget(form.animalColor, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalColor) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalAge) }}
+					{{ form_widget(form.animalAge, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalAge) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalDescription) }}
+					{{ form_widget(form.animalDescription, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+					{{ form_errors(form.animalDescription) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.animalTags) }}
+					{{ form_widget(form.animalTags, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.animalTags) }}
+					<small class="form-text text-muted">Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)</small>
+				</div>
+
+				<div class="mb-3" data-controller="image-upload" data-image-upload-max-size-value="2097152">
+					{{ form_label(form.animalPhoto) }}
+					{{ form_widget(form.animalPhoto, {
+						'attr': {
+							'class': 'form-control',
+							'data-image-upload-target': 'input',
+							'data-action': 'change->image-upload#selectFile'
+						}
+					}) }}
+					{{ form_errors(form.animalPhoto) }}
+					<small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF, WebP. Tamaño máximo: 2MB</small>
+
+					<div class="mt-2" data-image-upload-target="preview"></div>
+				</div>
+			</div>
+
+			<div class="col-md-6">
+				<h3>Información del Hallazgo</h3>
+				<div class="mb-3">
+					{{ form_label(form.foundDate) }}
+					{{ form_widget(form.foundDate, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.foundDate) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.foundTime) }}
+					{{ form_widget(form.foundTime, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.foundTime) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.foundZone) }}
+					{{ form_widget(form.foundZone, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.foundZone) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.foundAddress) }}
+					{{ form_widget(form.foundAddress, {'attr': {'class': 'form-control'}}) }}
+					{{ form_errors(form.foundAddress) }}
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.foundCircumstances) }}
+					{{ form_widget(form.foundCircumstances, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+					{{ form_errors(form.foundCircumstances) }}
+					<small class="form-text text-muted">Describe las circunstancias en las que encontraste al animal</small>
+				</div>
+
+				<div class="mb-3">
+					{{ form_label(form.additionalNotes) }}
+					{{ form_widget(form.additionalNotes, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+					{{ form_errors(form.additionalNotes) }}
+					<small class="form-text text-muted">Información adicional sobre el animal o el hallazgo</small>
+				</div>
+			</div>
+		</div>
+
+		<div class="text-center">
+			<button type="submit" class="btn btn-primary">Registrar Animal Encontrado</button>
+		</div>
+		{{ form_end(form) }}
+	</div>
+{% endblock %}

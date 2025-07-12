@@ -1,34 +1,126 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello FoundPetsController!
+{% block title %}Mascotas Encontradas
 {% endblock %}
 
 {% block body %}
-	<style>
-		.example-wrapper {
-			margin: 1em auto;
-			max-width: 800px;
-			width: 95%;
-			font: 18px / 1.5 sans-serif;
-		}
-		.example-wrapper code {
-			background: #F5F5F5;
-			padding: 2px 6px;
-		}
-	</style>
+	<div class="container mt-4">
+		<div class="d-flex justify-content-between align-items-center mb-4">
+			<h1>Mascotas Encontradas</h1>
+			<a href="{{ path('app_found_pets_create') }}" class="btn btn-primary">
+				<i class="fas fa-plus"></i> Registrar Mascota Encontrada
+			</a>
+		</div>
 
-	<div class="example-wrapper">
-		<h1>Hello
-			{{ controller_name }}! ✅</h1>
+		{% for message in app.flashes('success') %}
+			<div class="alert alert-success">{{ message }}</div>
+		{% endfor %}
 
-		This friendly message is coming from:
-		<ul>
-			<li>Your controller at
-				<code>/home/usuario/Escritorio/Aircury/SummerOfCode/Pet-finder/projects/web/src/Controller/FoundPetsController.php</code>
-			</li>
-			<li>Your template at
-				<code>/home/usuario/Escritorio/Aircury/SummerOfCode/Pet-finder/projects/web/templates/found_pets/index.html.twig</code>
-			</li>
-		</ul>
+		{% for message in app.flashes('error') %}
+			<div class="alert alert-danger">{{ message }}</div>
+		{% endfor %}
+
+		{% if foundAnimals is empty %}
+			<div class="text-center py-5">
+				<i class="fas fa-hand-holding-heart fa-3x text-muted mb-3"></i>
+				<h3 class="text-muted">No hay mascotas encontradas registradas</h3>
+				<p class="text-muted">Sé el primero en registrar una mascota encontrada</p>
+				<a href="{{ path('app_found_pets_create') }}" class="btn btn-primary">
+					Registrar Mascota Encontrada
+				</a>
+			</div>
+		{% else %}
+			<div class="row">
+				{% for foundAnimal in foundAnimals %}
+					<div class="col-md-6 col-lg-4 mb-4">
+						<div class="card h-100 shadow-sm">
+							{% set primaryPhoto = null %}
+							{% if foundAnimal.animalId.animalPhotos is not empty %}
+								{% for photo in foundAnimal.animalId.animalPhotos %}
+									{% if photo.isPrimary %}
+										{% set primaryPhoto = photo %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							{% if primaryPhoto %}
+								<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}"
+									 class="card-img-top"
+									 alt="Foto de {{ foundAnimal.animalId.name }}"
+									 style="height: 200px; object-fit: cover;">
+							{% else %}
+								<div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+									 style="height: 200px;">
+									<i class="fas fa-paw fa-3x text-muted"></i>
+									<small class="text-muted">Sin foto</small>
+								</div>
+							{% endif %}
+
+							<div class="card-body">
+								<h5 class="card-title">{{ foundAnimal.animalId.name }}</h5>
+								<p class="card-text">
+									<strong>Tipo:</strong> {{ foundAnimal.animalId.animalType|title }}<br>
+									<strong>Género:</strong>
+									{% if foundAnimal.animalId.gender == 'male' %}Macho
+									{% elseif foundAnimal.animalId.gender == 'female' %}Hembra
+									{% else %}No especificado{% endif %}<br>
+									<strong>Tamaño:</strong>
+									{% if foundAnimal.animalId.size == 'small' %}Pequeño
+									{% elseif foundAnimal.animalId.size == 'medium' %}Mediano
+									{% elseif foundAnimal.animalId.size == 'large' %}Grande
+									{% else %}Extra Grande{% endif %}<br>
+									{% if foundAnimal.animalId.color %}
+										<strong>Color:</strong> {{ foundAnimal.animalId.color }}<br>
+									{% endif %}
+									{% if foundAnimal.animalId.age %}
+										<strong>Edad:</strong> {{ foundAnimal.animalId.age }}<br>
+									{% endif %}
+								</p>
+
+								<hr>
+
+								<p class="card-text">
+									<strong>Encontrado el:</strong> {{ foundAnimal.foundDate|date('d/m/Y') }}<br>
+									<strong>Zona:</strong> {{ foundAnimal.foundZone }}<br>
+									{% if foundAnimal.foundAddress %}
+										<strong>Dirección:</strong> {{ foundAnimal.foundAddress }}<br>
+									{% endif %}
+								</p>
+
+								{% if foundAnimal.additionalNotes %}
+									<div class="alert alert-info py-2">
+										<strong>Notas:</strong> {{ foundAnimal.additionalNotes|length > 50 ? foundAnimal.additionalNotes|slice(0, 50) ~ '...' : foundAnimal.additionalNotes }}
+									</div>
+								{% endif %}
+
+								<div class="d-flex justify-content-between align-items-center">
+									<span class="badge bg-{% if foundAnimal.status == 'active' %}success{% elseif foundAnimal.status == 'claimed' %}primary{% elseif foundAnimal.status == 'under_protection' %}warning{% else %}secondary{% endif %}">
+										{% if foundAnimal.status == 'active' %}Activo
+										{% elseif foundAnimal.status == 'claimed' %}Reclamado
+										{% elseif foundAnimal.status == 'under_protection' %}Bajo Protección
+										{% elseif foundAnimal.status == 'paused' %}Pausado
+										{% else %}Completado{% endif %}
+									</span>
+									<small class="text-muted">
+										{{ foundAnimal.createdAt|date('d/m/Y H:i') }}
+									</small>
+								</div>
+							</div>
+
+							<div class="card-footer">
+								<a href="#" class="btn btn-outline-primary btn-sm">
+									<i class="fas fa-eye"></i> Ver Detalles
+								</a>
+								{% if app.user and foundAnimal.userId.id == app.user.id %}
+									<a href="#" class="btn btn-outline-secondary btn-sm">
+										<i class="fas fa-edit"></i> Editar
+									</a>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				{% endfor %}
+			</div>
+		{% endif %}
 	</div>
 {% endblock %}
