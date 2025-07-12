@@ -9,7 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: FoundAnimalsRepository::class)]
 #[ORM\Index(name: 'idx_animal_id', fields: ['animalId'])]
 #[ORM\Index(name: 'idx_user_id', fields: ['userId'])]
-#[ORM\Index(name: 'idx_status', fields: ['status'])]
 #[ORM\Index(name: 'idx_found_date', fields: ['foundDate'])]
 #[ORM\Index(name: 'idx_found_zone', fields: ['foundZone'])]
 #[ORM\Index(name: 'idx_created_at', fields: ['createdAt'])]
@@ -40,9 +39,6 @@ class FoundAnimals
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $foundCircumstances = null;
-
-    #[ORM\Column(type: 'found_animal_status_enum')]
-    private ?string $status = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
@@ -174,18 +170,6 @@ class FoundAnimals
     public function setAdditionalNotes(?string $additionalNotes): static
     {
         $this->additionalNotes = $additionalNotes;
-
-        return $this;
-    }
-
-    public function getStatus(): ?string
-    {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): static
-    {
-        $this->status = $status;
 
         return $this;
     }

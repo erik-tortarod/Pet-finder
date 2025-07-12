@@ -13,8 +13,7 @@ doctrine:
         types:
             gender_enum: App\DBAL\Types\GenderEnumType
             size_enum: App\DBAL\Types\SizeEnumType
-            status_enum: App\DBAL\Types\AnimalStatusType
-            found_animal_status_enum: App\DBAL\Types\FoundAnimalStatusType
+            animal_status_enum: App\DBAL\Types\AnimalStatusType
         mapping_types:
             enum: string
     orm:

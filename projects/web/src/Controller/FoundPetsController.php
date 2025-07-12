@@ -102,7 +102,7 @@ final class FoundPetsController extends AbstractController
                 $foundAnimal->setFoundAddress($form->get('foundAddress')->getData());
                 $foundAnimal->setFoundCircumstances($form->get('foundCircumstances')->getData());
                 $foundAnimal->setAdditionalNotes($form->get('additionalNotes')->getData());
-                $foundAnimal->setStatus('active');
+                $foundAnimal->setStatus('ENCONTRADO');
                 $foundAnimal->setCreatedAt(new \DateTimeImmutable());
                 $foundAnimal->setUpdatedAt(new \DateTimeImmutable());
 

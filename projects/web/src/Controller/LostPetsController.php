@@ -55,6 +55,7 @@ final class LostPetsController extends AbstractController
                 $animal->setColor($form->get('animalColor')->getData());
                 $animal->setAge($form->get('animalAge')->getData());
                 $animal->setDescription($form->get('animalDescription')->getData());
+                $animal->setStatus('PERDIDO');
                 $animal->setCreatedAt(new \DateTimeImmutable());
                 $animal->setUpdatedAt(new \DateTimeImmutable());
 
@@ -105,7 +106,6 @@ final class LostPetsController extends AbstractController
                 $lostPet->setLostCircumstances($form->get('lostCircumstances')->getData());
                 $lostPet->setRewardAmount($form->get('rewardAmount')->getData());
                 $lostPet->setRewardDescription($form->get('rewardDescription')->getData());
-                $lostPet->setStatus('active');
                 $lostPet->setCreatedAt(new \DateTimeImmutable());
                 $lostPet->setUpdatedAt(new \DateTimeImmutable());
 

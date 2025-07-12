@@ -9,7 +9,7 @@ class AnimalStatusType extends Type
 {
     public function getSQLDeclaration(array $column, AbstractPlatform $platform): string
     {
-        return "ENUM('active', 'found', 'paused', 'filled')";
+        return "ENUM('PERDIDO', 'ENCONTRADO', 'ARCHIVADO', 'RECLAMADO')";
     }
 
     public function convertToPHPValue($value, AbstractPlatform $platform): ?string
@@ -24,7 +24,7 @@ class AnimalStatusType extends Type
 
     public function getName(): string
     {
-        return 'status_enum';
+        return 'animal_status_enum';
     }
 
     public function requiresSQLCommentHint(AbstractPlatform $platform): bool

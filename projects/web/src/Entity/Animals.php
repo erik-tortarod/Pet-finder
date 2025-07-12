@@ -11,6 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Index(name: 'idx_animal_type', fields: ['animalType'])]
 #[ORM\Index(name: 'idx_animal_gender', fields: ['gender'])]
 #[ORM\Index(name: 'idx_animal_size', fields: ['size'])]
+#[ORM\Index(name: 'idx_animal_status', fields: ['status'])]
 #[ORM\Index(name: 'idx_animal_created_at', fields: ['createdAt'])]
 #[ORM\Index(name: 'idx_animal_updated_at', fields: ['updatedAt'])]
 #[ORM\Index(name: 'idx_animal_color', fields: ['color'])]
@@ -47,6 +48,9 @@ class Animals
 
     #[ORM\Column(type: 'size_enum')]
     private ?string $size = null;
+
+    #[ORM\Column(type: 'animal_status_enum')]
+    private ?string $status = null;
 
     #[ORM\OneToOne(mappedBy: 'animalId', cascade: ['persist', 'remove'])]
     private ?LostPets $lostPets = null;
@@ -181,6 +185,18 @@ class Animals
     public function setSize(string $size): static
     {
         $this->size = $size;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(string $status): static
+    {
+        $this->status = $status;
 
         return $this;
     }
