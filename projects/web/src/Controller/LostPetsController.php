@@ -25,8 +25,10 @@ final class LostPetsController extends AbstractController
         $lostPets = $lostPetsRepository->createQueryBuilder('lp')
             ->leftJoin('lp.animalId', 'a')
             ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
             ->leftJoin('lp.userId', 'u')
-            ->addSelect('a', 'ap', 'u')
+            ->addSelect('a', 'ap', 'at', 't', 'u')
             ->orderBy('lp.createdAt', 'DESC')
             ->getQuery()
             ->getResult();

@@ -27,6 +27,10 @@
     {% include 'components/icons/chevron-down.html.twig' with {size: size, class: class, color: color} %}
 {% elseif name == 'x' %}
     {% include 'components/icons/x.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'map-pin' %}
+    {% include 'components/icons/map-pin.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'phone' %}
+    {% include 'components/icons/phone.html.twig' with {size: size, class: class, color: color} %}
 {% else %}
     {# Default icon#}
     <svg xmlns="http://www.w3.org/2000/svg"

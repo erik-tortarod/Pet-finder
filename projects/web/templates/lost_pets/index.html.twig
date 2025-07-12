@@ -4,122 +4,152 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-4">
-		<div class="d-flex justify-content-between align-items-center mb-4">
-			<h1>Mascotas Perdidas</h1>
-			<a href="{{ path('app_lost_pets_create') }}" class="btn btn-primary">
-				<i class="fas fa-plus"></i> Registrar Mascota Perdida
-			</a>
+
+	{# Header #}
+	<section class="bg-white shadow">
+		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+			<h1 class="text-3xl font-bold text-gray-900">Mascotas Buscadas</h1>
+			<p class="mt-2 text-gray-600">Encuentra mascotas perdidas en tu zona</p>
 		</div>
+	</section>
 
-		{% for message in app.flashes('success') %}
-			<div class="alert alert-success">{{ message }}</div>
-		{% endfor %}
+	{# Search and Filters #}
+	<section class="bg-white border-b">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+			<div
+				class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
-		{% for message in app.flashes('error') %}
-			<div class="alert alert-danger">{{ message }}</div>
-		{% endfor %}
-
-		{% if lostPets is empty %}
-			<div class="text-center py-5">
-				<i class="fas fa-search fa-3x text-muted mb-3"></i>
-				<h3 class="text-muted">No hay mascotas perdidas registradas</h3>
-				<p class="text-muted">Sé el primero en registrar una mascota perdida</p>
-				<a href="{{ path('app_lost_pets_create') }}" class="btn btn-primary">
-					Registrar Mascota Perdida
-				</a>
-			</div>
-		{% else %}
-			<div class="row">
-				{% for lostPet in lostPets %}
-					<div class="col-md-6 col-lg-4 mb-4">
-						<div class="card h-100 shadow-sm">
-							{% set primaryPhoto = null %}
-							{% if lostPet.animalId.animalPhotos is not empty %}
-								{% for photo in lostPet.animalId.animalPhotos %}
-									{% if photo.isPrimary %}
-										{% set primaryPhoto = photo %}
-									{% endif %}
-								{% endfor %}
-							{% endif %}
-
-							{% if primaryPhoto %}
-								<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}"
-									 class="card-img-top"
-									 alt="Foto de {{ lostPet.animalId.name }}"
-									 style="height: 200px; object-fit: cover;">
-							{% else %}
-								<div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-									 style="height: 200px;">
-									<i class="fas fa-paw fa-3x text-muted"></i>
-									<small class="text-muted">Sin foto</small>
-								</div>
-							{% endif %}
-
-							<div class="card-body">
-								<h5 class="card-title">{{ lostPet.animalId.name }}</h5>
-								<p class="card-text">
-									<strong>Tipo:</strong> {{ lostPet.animalId.animalType|title }}<br>
-									<strong>Género:</strong>
-									{% if lostPet.animalId.gender == 'male' %}Macho
-									{% elseif lostPet.animalId.gender == 'female' %}Hembra
-									{% else %}No especificado{% endif %}<br>
-									<strong>Tamaño:</strong>
-									{% if lostPet.animalId.size == 'small' %}Pequeño
-									{% elseif lostPet.animalId.size == 'medium' %}Mediano
-									{% elseif lostPet.animalId.size == 'large' %}Grande
-									{% else %}Extra Grande{% endif %}<br>
-									{% if lostPet.animalId.color %}
-										<strong>Color:</strong> {{ lostPet.animalId.color }}<br>
-									{% endif %}
-									{% if lostPet.animalId.age %}
-										<strong>Edad:</strong> {{ lostPet.animalId.age }}<br>
-									{% endif %}
-								</p>
-
-								<hr>
-
-								<p class="card-text">
-									<strong>Perdido el:</strong> {{ lostPet.lostDate|date('d/m/Y') }}<br>
-									<strong>Zona:</strong> {{ lostPet.lostZone }}<br>
-									{% if lostPet.lostAddress %}
-										<strong>Dirección:</strong> {{ lostPet.lostAddress }}<br>
-									{% endif %}
-								</p>
-
-								{% if lostPet.rewardAmount %}
-									<div class="alert alert-warning py-2">
-										<strong>Recompensa:</strong> {{ lostPet.rewardAmount }}
-									</div>
-								{% endif %}
-
-								<div class="d-flex justify-content-between align-items-center">
-									<span class="badge bg-{% if lostPet.status == 'active' %}success{% elseif lostPet.status == 'found' %}primary{% else %}secondary{% endif %}">
-										{% if lostPet.status == 'active' %}Activo
-										{% elseif lostPet.status == 'found' %}Encontrado
-										{% elseif lostPet.status == 'paused' %}Pausado
-										{% else %}Completado{% endif %}
-									</span>
-									<small class="text-muted">
-										{{ lostPet.createdAt|date('d/m/Y H:i') }}
-									</small>
-								</div>
-							</div>
-
-							<div class="card-footer">
-								<a href="#" class="btn btn-outline-primary btn-sm">
-									<i class="fas fa-eye"></i> Ver Detalles
-								</a>
-								{% if app.user and lostPet.userId.id == app.user.id %}
-									<a href="#" class="btn btn-outline-secondary btn-sm">
-										<i class="fas fa-edit"></i> Editar
-									</a>
-								{% endif %}
-							</div>
+				{# Search Input #}
+				<div class="md:col-span-2">
+					<div class="relative">
+						<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+							{% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'text-gray-400'} %}
 						</div>
+						<input type="text" placeholder="Buscar por nombre, descripción ..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
 					</div>
-				{% endfor %}
+				</div>
+
+				{# Type of Animal #}
+				<div>
+					<select class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+						<option value="">Tipo de animal</option>
+						<option value="perro">Perro</option>
+						<option value="gato">Gato</option>
+						<option value="ave">Ave</option>
+						<option value="otro">Otro</option>
+					</select>
+				</div>
+
+				{# Location Filter #}
+				<div>
+					<select class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+						<option value="">Zona</option>
+						<option value="centro">Centro</option>
+						<option value="norte">Norte</option>
+						<option value="sur">Sur</option>
+						<option value="este">Este</option>
+						<option value="oeste">Oeste</option>
+					</select>
+				</div>
+
 			</div>
-		{% endif %}
-	</div>
+			{# Tag Filters #}
+			<div class="mt-4">
+				<h3 class="text-sm font-medium text-gray-700 mb-2">Filtros rápidos:</h3>
+				<div class="flex flex-wrap gap-2">
+					<button class="tag tag-active">Pequeño</button>
+					<button class="tag tag-innactive">Grande</button>
+					<button class="tag tag-innactive">Blanco</button>
+					<button class="tag tag-innactive">Negro</button>
+					<button class="tag tag-innactive">Marrón</button>
+					<button class="tag tag-innactive">Con collar</button>
+					<button class="tag tag-innactive">Sin collar</button>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	{# Results #}
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			{% for lostPet in lostPets %}
+				{% set animal = lostPet.animalId %}
+				{% set user = lostPet.userId %}
+				{% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
+				{% set tags = animal.animalTags|map(tag => tag.tagId.name)|join(', ') %}
+
+				<article
+					class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+
+					{# Image + Tags #}
+					<div class="relative">
+						{% if primaryPhoto %}
+							<img src="{{ asset(primaryPhoto.filePath) }}" alt="{{ animal.name }}" class="w-full h-48 object-cover"/>
+						{% else %}
+							<div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+								{% include 'components/Icon.html.twig' with {name: 'paw', size: 48, class: 'text-gray-400'} %}
+							</div>
+						{% endif %}
+						<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">PERDIDO</div>
+					</div>
+
+					{# Information #}
+					<div class="p-4">
+						<h3 class="text-lg font-semibold text-gray-900">{{ animal.name }}</h3>
+						<p class="text-sm text-gray-600 mb-2">
+							{{ animal.animalType|capitalize }}
+							•
+							{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
+							{% endif %}
+							•
+							{% if animal.age %}
+								{{ animal.age }}{% else %}Edad no especificada
+							{% endif %}
+						</p>
+						<p class="text-sm text-gray-700 mb-3">{{ animal.description }}</p>
+
+						{# Tags #}
+						{% if tags %}
+							<div class="flex flex-wrap gap-1 mb-3">
+								{% for tag in animal.animalTags %}
+									<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">{{ tag.tagId.name }}</span>
+								{% endfor %}
+							</div>
+						{% endif %}
+
+						<div class="flex items-center justify-between">
+							<span class="text-sm text-gray-500">
+								{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ lostPet.lostZone|capitalize }}
+							</span>
+							<span class="text-sm text-gray-500">
+								{% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}
+								{% if daysAgo < 1 %}Hoy
+									{% elseif daysAgo < 2 %}Ayer
+									{% elseif daysAgo < 7 %}Hace
+									{{ daysAgo|round(0, 'floor') }}
+									días
+									{% else %}Hace
+									{{ (daysAgo / 7)|round(0, 'floor') }}
+									semanas
+								{% endif %}
+							</span>
+						</div>
+
+						{# Contact Button #}
+						<button class="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
+							{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
+						</button>
+					</div>
+
+				</article>
+			{% else %}
+				{# No pets found message #}
+				<div class="col-span-full text-center py-12">
+					{% include 'components/Icon.html.twig' with {name: 'paw', size: 64, class: 'mx-auto text-gray-300 mb-4'} %}
+					<h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas perdidas</h3>
+					<p class="text-gray-500">No se encontraron mascotas perdidas en este momento.</p>
+				</div>
+			{% endfor %}
+		</div>
+	</section>
 {% endblock %}
