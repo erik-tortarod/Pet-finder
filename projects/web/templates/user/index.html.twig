@@ -4,296 +4,32 @@
 {% endblock %}
 
 {% block body %}
-	<style>
-		.user-profile {
-			max-width: 800px;
-			margin: 2rem auto;
-			padding: 2rem;
-			background: white;
-			border-radius: 10px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
 
-		.profile-header {
-			text-align: center;
-			margin-bottom: 2rem;
-			padding-bottom: 1rem;
-			border-bottom: 2px solid #f0f0f0;
-		}
-
-		.profile-header h1 {
-			color: #333;
-			margin-bottom: 0.5rem;
-		}
-
-		.user-avatar {
-			width: 100px;
-			height: 100px;
-			border-radius: 50%;
-			background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			margin: 0 auto 1rem;
-			color: white;
-			font-size: 2.5rem;
-			font-weight: bold;
-		}
-
-		.profile-info {
-			display: grid;
-			grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-			gap: 2rem;
-			margin-bottom: 2rem;
-		}
-
-		.info-section {
-			background: #f8f9fa;
-			padding: 1.5rem;
-			border-radius: 8px;
-			border-left: 4px solid #667eea;
-		}
-
-		.info-section h3 {
-			color: #333;
-			margin-bottom: 1rem;
-			font-size: 1.2rem;
-		}
-
-		.info-item {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-			padding: 0.5rem 0;
-			border-bottom: 1px solid #e9ecef;
-		}
-
-		.info-item:last-child {
-			border-bottom: none;
-		}
-
-		.info-label {
-			font-weight: 600;
-			color: #555;
-		}
-
-		.info-value {
-			color: #333;
-		}
-
-		.status-badge {
-			padding: 0.25rem 0.75rem;
-			border-radius: 20px;
-			font-size: 0.875rem;
-			font-weight: 500;
-		}
-
-		.status-active {
-			background: #d4edda;
-			color: #155724;
-		}
-
-		.status-inactive {
-			background: #f8d7da;
-			color: #721c24;
-		}
-
-		.notification-badge {
-			background: #007bff;
-			color: white;
-		}
-
-		.shelter-badge {
-			background: #28a745;
-			color: white;
-		}
-
-		.user-actions {
-			text-align: center;
-			margin-top: 2rem;
-			padding-top: 1rem;
-			border-top: 2px solid #f0f0f0;
-		}
-
-		.btn {
-			display: inline-block;
-			padding: 0.75rem 1.5rem;
-			margin: 0 0.5rem;
-			text-decoration: none;
-			border-radius: 5px;
-			font-weight: 500;
-			transition: all 0.3s ease;
-		}
-
-		.btn-primary {
-			background: #667eea;
-			color: white;
-		}
-
-		.btn-primary:hover {
-			background: #5a6fd8;
-			transform: translateY(-2px);
-		}
-
-		.btn-danger {
-			background: #dc3545;
-			color: white;
-		}
-
-		.btn-danger:hover {
-			background: #c82333;
-			transform: translateY(-2px);
-		}
-
-		.flash-messages {
-			margin-bottom: 1rem;
-		}
-
-		.alert {
-			padding: 1rem;
-			margin-bottom: 1rem;
-			border-radius: 5px;
-		}
-
-		.alert-success {
-			background: #d4edda;
-			color: #155724;
-			border: 1px solid #c3e6cb;
-		}
-
-		.alert-error {
-			background: #f8d7da;
-			color: #721c24;
-			border: 1px solid #f5c6cb;
-		}
-	</style>
-
-	<div
-		class="user-profile">
-		{# Flash Messages #}
-		<div class="flash-messages">
-			{% for message in app.flashes('success') %}
-				<div class="alert alert-success">
-					{{ message }}
+	{# Header #}
+	<div class="bg-white shadow">
+		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+				<div>
+					<h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Mi Cuenta</h1>
+					<p class="mt-2 text-sm sm:text-base text-gray-600">Gestiona tus publicaciones y configuración</p>
 				</div>
-			{% endfor %}
-
-			{% for message in app.flashes('error') %}
-				<div class="alert alert-error">
-					{{ message }}
-				</div>
-			{% endfor %}
-		</div>
-
-		<div class="profile-header">
-			<div class="user-avatar">
-				{{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
-			</div>
-			<h1>{{ user.firstName }}
-				{{ user.lastName }}</h1>
-			<p>{{ user.email }}</p>
-		</div>
-
-		<div class="profile-info">
-			<div class="info-section">
-				<h3>Información Personal</h3>
-				<div class="info-item">
-					<span class="info-label">Nombre:</span>
-					<span class="info-value">{{ user.firstName }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Apellido:</span>
-					<span class="info-value">{{ user.lastName }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Email:</span>
-					<span class="info-value">{{ user.email }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Teléfono:</span>
-					<span class="info-value">{{ user.phone ?: 'No especificado' }}</span>
-				</div>
-			</div>
-
-			<div class="info-section">
-				<h3>Estado de la Cuenta</h3>
-				<div class="info-item">
-					<span class="info-label">Estado:</span>
-					<span class="status-badge {{ user.isActive ? 'status-active' : 'status-inactive' }}">
-						{{ user.isActive ? 'Activo' : 'Inactivo' }}
+				<div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+					<span class="text-sm text-gray-500">Bienvenido,
+						<strong>{{ user.firstName }}
+							{{ user.lastName|default("") }}</strong>
 					</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Tipo de cuenta:</span>
-					<span class="status-badge {{ user.isShelter ? 'shelter-badge' : 'notification-badge' }}">
-						{{ user.isShelter ? 'Refugio' : 'Usuario' }}
-					</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Notificaciones:</span>
-					<span class="status-badge {{ user.emailNotifications ? 'status-active' : 'status-inactive' }}">
-						{{ user.emailNotifications ? 'Activadas' : 'Desactivadas' }}
-					</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Último acceso:</span>
-					<span class="info-value">{{ user.lastLogin ? user.lastLogin|date('d/m/Y H:i') : 'Nunca' }}</span>
+					<a href="{{ path('app_auth_logout') }}" class="btn btn-danger">
+						<i class="fas fa-sign-out-alt mr-2"></i>Cerrar Sesión
+					</a>
 				</div>
 			</div>
-		</div>
-
-		{% if user.isShelter %}
-			<div class="info-section">
-				<h3>Información del Refugio</h3>
-				<div class="info-item">
-					<span class="info-label">Nombre del refugio:</span>
-					<span class="info-value">{{ user.shelterName ?: 'No especificado' }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Descripción:</span>
-					<span class="info-value">{{ user.shelterDescription ?: 'No especificada' }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Dirección:</span>
-					<span class="info-value">{{ user.shelterAddress ?: 'No especificada' }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Teléfono del refugio:</span>
-					<span class="info-value">{{ user.shelterPhone ?: 'No especificado' }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Sitio web:</span>
-					<span class="info-value">{{ user.shelterWebsite ?: 'No especificado' }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Facebook:</span>
-					<span class="info-value">{{ user.shelterFacebook ?: 'No especificado' }}</span>
-				</div>
-				<div class="info-item">
-					<span class="info-label">Estado de verificación:</span>
-					<span class="info-value">{{ user.shelterVerificationStatus ?: 'Pendiente' }}</span>
-				</div>
-			</div>
-		{% endif %}
-
-		<div class="info-section">
-			<h3>Información de la Cuenta</h3>
-			<div class="info-item">
-				<span class="info-label">Fecha de registro:</span>
-				<span class="info-value">{{ user.createdAt|date('d/m/Y H:i') }}</span>
-			</div>
-			<div class="info-item">
-				<span class="info-label">Última actualización:</span>
-				<span class="info-value">{{ user.updatedAt|date('d/m/Y H:i') }}</span>
-			</div>
-			<div class="info-item">
-				<span class="info-label">ID de usuario:</span>
-				<span class="info-value">#{{ user.id }}</span>
-			</div>
-		</div>
-
-		<div class="user-actions">
-			<a href="{{ path('app_auth_logout') }}" class="btn btn-danger">Cerrar Sesión</a>
 		</div>
 	</div>
+
+
+	{# Main Content #}
+	<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-y">
+   
+   
+   </div>
 {% endblock %}
