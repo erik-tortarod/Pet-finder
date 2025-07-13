@@ -25,12 +25,32 @@
     {% include 'components/icons/menu.html.twig' with {size: size, class: class, color: color} %}
 {% elseif name == 'chevron-down' %}
     {% include 'components/icons/chevron-down.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'chevron-right' %}
+    {% include 'components/icons/chevron-right.html.twig' with {size: size, class: class, color: color} %}
 {% elseif name == 'x' %}
     {% include 'components/icons/x.html.twig' with {size: size, class: class, color: color} %}
 {% elseif name == 'map-pin' %}
     {% include 'components/icons/map-pin.html.twig' with {size: size, class: class, color: color} %}
 {% elseif name == 'phone' %}
     {% include 'components/icons/phone.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'alert-triangle' %}
+    {% include 'components/icons/alert-triangle.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'check-circle' %}
+    {% include 'components/icons/check-circle.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'info' %}
+    {% include 'components/icons/info.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'list' %}
+    {% include 'components/icons/list.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'mail' %}
+    {% include 'components/icons/mail.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'arrow-left' %}
+    {% include 'components/icons/arrow-left.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'share' %}
+    {% include 'components/icons/share.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'image' %}
+    {% include 'components/icons/image.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'gift' %}
+    {% include 'components/icons/gift.html.twig' with {size: size, class: class, color: color} %}
 {% else %}
     {# Default icon#}
     <svg xmlns="http://www.w3.org/2000/svg"

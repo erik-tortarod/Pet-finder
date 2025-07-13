@@ -1,0 +1,26 @@
+{# Gift Icon Component
+   Parámetros disponibles:
+   - size: tamaño del icono (default: 24)
+   - class: clases CSS adicionales (default: '')
+   - color: color del stroke (default: 'currentColor')
+#}
+
+{% set size = size|default(24) %}
+{% set class = class|default('') %}
+{% set color = color|default('currentColor') %}
+
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="{{ size }}"
+     height="{{ size }}"
+     viewBox="0 0 24 24"
+     fill="none"
+     stroke="{{ color }}"
+     stroke-width="2"
+     stroke-linecap="round"
+     stroke-linejoin="round"
+     class="lucide lucide-gift {{ class }}">
+    <rect width="20" height="14" x="2" y="7" rx="2" ry="2"/>
+    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+    <path d="M12 3v18"/>
+    <path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/>
+</svg>
