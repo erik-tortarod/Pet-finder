@@ -39,6 +39,34 @@ final class FoundPetsController extends AbstractController
     #[Route('/found/pets/create', name: 'app_found_pets_create')]
     public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService): Response
     {
+        // Verificar si el usuario está autenticado usando sesión
+        $session = $request->getSession();
+        $userId = $session->get('user_id');
+
+        if (!$userId) {
+            $this->addFlash('error', 'Debes iniciar sesión para reportar una mascota encontrada.');
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        // Obtener el usuario desde la base de datos
+        $userRepository = $entityManager->getRepository(\App\Entity\User::class);
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            $this->addFlash('error', 'Usuario no encontrado');
+            $session->clear();
+            $session->invalidate();
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        // Verificar que el usuario esté activo
+        if (!$user->isActive()) {
+            $this->addFlash('error', 'Tu cuenta está desactivada');
+            $session->clear();
+            $session->invalidate();
+            return $this->redirectToRoute('app_auth_login');
+        }
+
         $form = $this->createForm(FoundPetType::class);
         $form->handleRequest($request);
 
@@ -83,7 +111,6 @@ final class FoundPetsController extends AbstractController
                 $photoFile = $form->get('animalPhoto')->getData();
                 if ($photoFile) {
                     try {
-                        $user = $this->getUser();
                         $animalPhoto = $fileUploadService->uploadAnimalPhoto($photoFile, $animal, $user->getEmail());
                         $entityManager->persist($animalPhoto);
                     } catch (\Exception $e) {
@@ -95,7 +122,7 @@ final class FoundPetsController extends AbstractController
                 // Crear el registro de animal encontrado
                 $foundAnimal = new FoundAnimals();
                 $foundAnimal->setAnimalId($animal);
-                $foundAnimal->setUserId($this->getUser());
+                $foundAnimal->setUserId($user);
                 $foundAnimal->setFoundDate($form->get('foundDate')->getData());
                 $foundAnimal->setFoundTime($form->get('foundTime')->getData());
                 $foundAnimal->setFoundZone($form->get('foundZone')->getData());
