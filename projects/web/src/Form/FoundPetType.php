@@ -92,9 +92,10 @@ class FoundPetType extends AbstractType
                      'image/jpeg',
                      'image/png',
                      'image/gif',
-                     'image/webp'
+                     'image/webp',
+                     'image/avif'
                   ],
-                  'mimeTypesMessage' => 'Por favor sube una imagen válida (JPG, PNG, GIF o WebP)',
+                  'mimeTypesMessage' => 'Por favor sube una imagen válida (JPG, PNG, GIF, WebP, AVIF)',
                   'maxSizeMessage' => 'La imagen no puede ser mayor a 2MB'
                ])
             ],

@@ -138,15 +138,9 @@
 							</div>
 
 							{# Contact Button #}
-							{% if user %}
-								<button class="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email ?? 'No disponible' }}')">
-									{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
-								</button>
-							{% else %}
-								<button class="mt-3 w-full bg-gray-400 text-white py-2 px-4 rounded-md cursor-not-allowed" disabled>
-									{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Información de contacto no disponible
-								</button>
-							{% endif %}
+							<button class="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
+								{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
+							</button>
 						</div>
 
 					</article>

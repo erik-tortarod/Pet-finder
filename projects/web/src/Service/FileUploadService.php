@@ -22,11 +22,11 @@ class FileUploadService
       }
 
       // Validar que el archivo sea una imagen
-      $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/avif'];
       $mimeType = $file->getMimeType();
 
       if (!in_array($mimeType, $allowedMimeTypes)) {
-         throw new \InvalidArgumentException('Tipo de archivo no permitido. Solo se permiten imágenes (JPG, PNG, GIF, WebP)');
+         throw new \InvalidArgumentException('Tipo de archivo no permitido. Solo se permiten imágenes (JPG, PNG, GIF, WebP, AVIF)');
       }
 
       // Validar tamaño máximo (2MB)

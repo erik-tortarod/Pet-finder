@@ -21,10 +21,12 @@ export default class extends Controller {
             "image/png",
             "image/gif",
             "image/webp",
+            "image/jpg",
+            "image/avif",
         ];
         if (!allowedTypes.includes(file.type)) {
             this.showError(
-                "Por favor selecciona una imagen válida (JPG, PNG, GIF o WebP)"
+                "Por favor selecciona una imagen válida (JPG, PNG, GIF, WebP, JPG, AVIF)"
             );
             this.clearFile();
             return;

@@ -15,6 +15,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use App\Repository\UserRepository;
 
 final class FoundPetsController extends AbstractController
 {
@@ -37,33 +38,12 @@ final class FoundPetsController extends AbstractController
     }
 
     #[Route('/found/pets/create', name: 'app_found_pets_create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository): Response
     {
-        // Verificar si el usuario está autenticado usando sesión
-        $session = $request->getSession();
-        $userId = $session->get('user_id');
-
-        if (!$userId) {
-            $this->addFlash('error', 'Debes iniciar sesión para reportar una mascota encontrada.');
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        // Obtener el usuario desde la base de datos
-        $userRepository = $entityManager->getRepository(\App\Entity\User::class);
-        $user = $userRepository->find($userId);
-
+        // Verificar que el usuario esté autenticado usando sesión manual
+        $user = $this->getUserFromSession($request, $userRepository);
         if (!$user) {
-            $this->addFlash('error', 'Usuario no encontrado');
-            $session->clear();
-            $session->invalidate();
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        // Verificar que el usuario esté activo
-        if (!$user->isActive()) {
-            $this->addFlash('error', 'Tu cuenta está desactivada');
-            $session->clear();
-            $session->invalidate();
+            $this->addFlash('error', 'Debes iniciar sesión para crear una publicación');
             return $this->redirectToRoute('app_auth_login');
         }
 
@@ -81,6 +61,7 @@ final class FoundPetsController extends AbstractController
                 $animal->setColor($form->get('animalColor')->getData());
                 $animal->setAge($form->get('animalAge')->getData());
                 $animal->setDescription($form->get('animalDescription')->getData());
+                $animal->setStatus('ENCONTRADO'); // El status va en la entidad Animals, no en FoundAnimals
                 $animal->setCreatedAt(new \DateTimeImmutable());
                 $animal->setUpdatedAt(new \DateTimeImmutable());
 
@@ -129,7 +110,7 @@ final class FoundPetsController extends AbstractController
                 $foundAnimal->setFoundAddress($form->get('foundAddress')->getData());
                 $foundAnimal->setFoundCircumstances($form->get('foundCircumstances')->getData());
                 $foundAnimal->setAdditionalNotes($form->get('additionalNotes')->getData());
-                $foundAnimal->setStatus('ENCONTRADO');
+                // Removido setStatus() ya que FoundAnimals no tiene este método
                 $foundAnimal->setCreatedAt(new \DateTimeImmutable());
                 $foundAnimal->setUpdatedAt(new \DateTimeImmutable());
 
@@ -147,5 +128,27 @@ final class FoundPetsController extends AbstractController
             'controller_name' => 'FoundPetsController',
             'form' => $form->createView(),
         ]);
+    }
+
+    /**
+     * Obtiene el usuario desde la sesión manual
+     */
+    private function getUserFromSession(Request $request, UserRepository $userRepository)
+    {
+        // Primero intentar con el sistema de seguridad de Symfony
+        $user = $this->getUser();
+        if ($user) {
+            return $user;
+        }
+
+        // Si no funciona, usar la sesión manual
+        $session = $request->getSession();
+        $userId = $session->get('user_id');
+
+        if (!$userId) {
+            return null;
+        }
+
+        return $userRepository->find($userId);
     }
 }
