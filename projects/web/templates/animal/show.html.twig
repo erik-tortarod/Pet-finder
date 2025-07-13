@@ -1,0 +1,335 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ animal.name }} - Detalles{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    {# Breadcrumb #}
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{{ path('app_home') }}">Inicio</a></li>
+            {% if lostPet %}
+                <li class="breadcrumb-item"><a href="{{ path('app_lost_pets') }}">Mascotas Perdidas</a></li>
+            {% elseif foundAnimal %}
+                <li class="breadcrumb-item"><a href="{{ path('app_found_pets') }}">Mascotas Encontradas</a></li>
+            {% endif %}
+            <li class="breadcrumb-item active" aria-current="page">{{ animal.name }}</li>
+        </ol>
+    </nav>
+
+    {# Status Badge #}
+    <div class="mb-4">
+        {% if animal.status == 'PERDIDO' %}
+            <span class="badge bg-danger fs-6">PERDIDO</span>
+        {% elseif animal.status == 'ENCONTRADO' %}
+            <span class="badge bg-success fs-6">ENCONTRADO</span>
+        {% else %}
+            <span class="badge bg-secondary fs-6">{{ animal.status }}</span>
+        {% endif %}
+    </div>
+
+    <div class="row">
+        {# Columna de la imagen #}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                {% if primaryPhoto %}
+                    <img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}"
+                         class="card-img-top"
+                         alt="Foto de {{ animal.name }}"
+                         style="height: 400px; object-fit: cover;">
+                {% else %}
+                    <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                         style="height: 400px;">
+                        <div class="text-center">
+                            <i class="fas fa-paw fa-4x text-muted mb-3"></i>
+                            <p class="text-muted">Sin foto disponible</p>
+                        </div>
+                    </div>
+                {% endif %}
+
+                {# Galería de fotos adicionales #}
+                {% if animal.animalPhotos|length > 1 %}
+                    <div class="card-body">
+                        <h6 class="card-title">Más fotos</h6>
+                        <div class="row">
+                            {% for photo in animal.animalPhotos %}
+                                {% if photo != primaryPhoto %}
+                                    <div class="col-4 mb-2">
+                                        <img src="{{ path('app_image_animal', {'id': photo.id}) }}"
+                                             class="img-thumbnail"
+                                             alt="Foto adicional"
+                                             style="height: 80px; object-fit: cover; cursor: pointer;"
+                                             onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {# Columna de información #}
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title mb-0">{{ animal.name }}</h2>
+                </div>
+                <div class="card-body">
+                    {# Información básica del animal #}
+                    <h5 class="card-subtitle mb-3 text-muted">Información del Animal</h5>
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <strong>Tipo:</strong> {{ animal.animalType|title }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Género:</strong>
+                            {% if animal.gender == 'male' %}Macho
+                            {% elseif animal.gender == 'female' %}Hembra
+                            {% else %}No especificado{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-sm-6">
+                            <strong>Tamaño:</strong>
+                            {% if animal.size == 'small' %}Pequeño
+                            {% elseif animal.size == 'medium' %}Mediano
+                            {% elseif animal.size == 'large' %}Grande
+                            {% elseif animal.size == 'extra_large' %}Extra Grande
+                            {% else %}No especificado{% endif %}
+                        </div>
+                        <div class="col-sm-6">
+                            {% if animal.age %}
+                                <strong>Edad:</strong> {{ animal.age }}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    {% if animal.color %}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <strong>Color:</strong> {{ animal.color }}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    {% if animal.description %}
+                        <div class="mb-3">
+                            <strong>Descripción:</strong>
+                            <p class="mt-2">{{ animal.description }}</p>
+                        </div>
+                    {% endif %}
+
+                    {# Etiquetas #}
+                    {% if animal.animalTags|length > 0 %}
+                        <div class="mb-3">
+                            <strong>Características:</strong>
+                            <div class="mt-2">
+                                {% for animalTag in animal.animalTags %}
+                                    <span class="badge bg-primary me-1">{{ animalTag.tagId.name }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <hr>
+
+                    {# Información específica según el tipo #}
+                    {% if lostPet %}
+                        <h5 class="card-subtitle mb-3 text-muted">Información de la Pérdida</h5>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong>Fecha de pérdida:</strong><br>
+                                {{ lostPet.lostDate|date('d/m/Y') }}
+                            </div>
+                            <div class="col-sm-6">
+                                {% if lostPet.lostTime %}
+                                    <strong>Hora aproximada:</strong><br>
+                                    {{ lostPet.lostTime|date('H:i') }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <strong>Zona donde se perdió:</strong><br>
+                                {{ lostPet.lostZone }}
+                            </div>
+                        </div>
+
+                        {% if lostPet.lostAddress %}
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <strong>Dirección específica:</strong><br>
+                                    {{ lostPet.lostAddress }}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if lostPet.lostCircumstances %}
+                            <div class="mb-3">
+                                <strong>Circunstancias de la pérdida:</strong>
+                                <p class="mt-2">{{ lostPet.lostCircumstances }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if lostPet.rewardAmount or lostPet.rewardDescription %}
+                            <div class="alert alert-warning">
+                                <h6><i class="fas fa-gift"></i> Recompensa</h6>
+                                {% if lostPet.rewardAmount %}
+                                    <strong>Monto:</strong> {{ lostPet.rewardAmount }}<br>
+                                {% endif %}
+                                {% if lostPet.rewardDescription %}
+                                    <strong>Descripción:</strong> {{ lostPet.rewardDescription }}
+                                {% endif %}
+                            </div>
+                        {% endif %}
+
+                        {# Información de contacto #}
+                        {% if lostPet.userId %}
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-user"></i> Información de Contacto</h6>
+                                    <p class="mb-1"><strong>Publicado por:</strong> {{ lostPet.userId.firstName }} {{ lostPet.userId.lastName }}</p>
+                                    {% if lostPet.userId.phone %}
+                                        <p class="mb-1"><strong>Teléfono:</strong> {{ lostPet.userId.phone }}</p>
+                                    {% endif %}
+                                    <p class="mb-0"><strong>Email:</strong> {{ lostPet.userId.email }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+
+                    {% elseif foundAnimal %}
+                        <h5 class="card-subtitle mb-3 text-muted">Información del Hallazgo</h5>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <strong>Fecha de hallazgo:</strong><br>
+                                {{ foundAnimal.foundDate|date('d/m/Y') }}
+                            </div>
+                            <div class="col-sm-6">
+                                {% if foundAnimal.foundTime %}
+                                    <strong>Hora aproximada:</strong><br>
+                                    {{ foundAnimal.foundTime|date('H:i') }}
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <strong>Zona donde se encontró:</strong><br>
+                                {{ foundAnimal.foundZone }}
+                            </div>
+                        </div>
+
+                        {% if foundAnimal.foundAddress %}
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <strong>Dirección específica:</strong><br>
+                                    {{ foundAnimal.foundAddress }}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        {% if foundAnimal.foundCircumstances %}
+                            <div class="mb-3">
+                                <strong>Circunstancias del hallazgo:</strong>
+                                <p class="mt-2">{{ foundAnimal.foundCircumstances }}</p>
+                            </div>
+                        {% endif %}
+
+                        {% if foundAnimal.additionalNotes %}
+                            <div class="mb-3">
+                                <strong>Notas adicionales:</strong>
+                                <p class="mt-2">{{ foundAnimal.additionalNotes }}</p>
+                            </div>
+                        {% endif %}
+
+                        {# Información de contacto #}
+                        {% if foundAnimal.userId %}
+                            <div class="card bg-light">
+                                <div class="card-body">
+                                    <h6 class="card-title"><i class="fas fa-user"></i> Información de Contacto</h6>
+                                    <p class="mb-1"><strong>Encontrado por:</strong> {{ foundAnimal.userId.firstName }} {{ foundAnimal.userId.lastName }}</p>
+                                    {% if foundAnimal.userId.phone %}
+                                        <p class="mb-1"><strong>Teléfono:</strong> {{ foundAnimal.userId.phone }}</p>
+                                    {% endif %}
+                                    <p class="mb-0"><strong>Email:</strong> {{ foundAnimal.userId.email }}</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                    <hr>
+
+                    {# Información temporal #}
+                    <div class="text-muted">
+                        <small>
+                            <strong>Publicado:</strong> {{ animal.createdAt|date('d/m/Y H:i') }}
+                            {% if animal.updatedAt != animal.createdAt %}
+                                <br><strong>Actualizado:</strong> {{ animal.updatedAt|date('d/m/Y H:i') }}
+                            {% endif %}
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Botones de acción #}
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            {% if lostPet %}
+                <a href="{{ path('app_lost_pets') }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Volver a Mascotas Perdidas
+                </a>
+            {% elseif foundAnimal %}
+                <a href="{{ path('app_found_pets') }}" class="btn btn-secondary me-2">
+                    <i class="fas fa-arrow-left"></i> Volver a Mascotas Encontradas
+                </a>
+            {% endif %}
+
+            <button class="btn btn-primary" onclick="shareAnimal()">
+                <i class="fas fa-share"></i> Compartir
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Modal para mostrar imágenes en tamaño completo -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Foto del animal</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" class="img-fluid" alt="Foto del animal">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function showImageModal(imageSrc) {
+    document.getElementById('modalImage').src = imageSrc;
+    new bootstrap.Modal(document.getElementById('imageModal')).show();
+}
+
+function shareAnimal() {
+    if (navigator.share) {
+        navigator.share({
+            title: '{{ animal.name }} - {{ animal.status }}',
+            text: 'Mira los detalles de {{ animal.name }}, un {{ animal.animalType }} que está {{ animal.status|lower }}',
+            url: window.location.href
+        });
+    } else {
+        // Fallback: copiar URL al portapapeles
+        navigator.clipboard.writeText(window.location.href).then(function() {
+            alert('Enlace copiado al portapapeles');
+        });
+    }
+}
+</script>
+{% endblock %}

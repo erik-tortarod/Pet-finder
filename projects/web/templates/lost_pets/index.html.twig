@@ -3,6 +3,29 @@
 {% block title %}Mascotas Perdidas
 {% endblock %}
 
+{% block stylesheets %}
+{{ parent() }}
+<style>
+.cursor-pointer {
+    cursor: pointer;
+}
+
+.cursor-pointer:hover {
+    transform: translateY(-2px);
+    transition: transform 0.2s ease-in-out;
+}
+
+.cursor-pointer:active {
+    transform: translateY(0);
+}
+
+/* Estilo para el botón de contacto para que no se vea afectado por el hover de la card */
+.cursor-pointer .btn:hover {
+    transform: none;
+}
+</style>
+{% endblock %}
+
 {% block body %}
 
 	{# Header #}
@@ -81,7 +104,8 @@
 				{# Solo mostrar animales con status PERDIDO #}
 				{% if animal.status == 'PERDIDO' %}
 					<article
-						class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+						class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
+						onclick="window.location.href='{{ path('app_animal_show_slug', {'slug': animal.generateSlug()}) }}'">
 
 						{# Image + Tags #}
 						<div class="relative">
@@ -103,9 +127,10 @@
 								•
 								{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
 								{% endif %}
-								•
+
 								{% if animal.age %}
-									{{ animal.age }}{% else %}Edad no especificada
+								•
+									{{ animal.age }}{% else %}
 								{% endif %}
 							</p>
 							<p class="text-sm text-gray-700 mb-3">{{ animal.description }}</p>
@@ -137,8 +162,9 @@
 								</span>
 							</div>
 
-							{# Contact Button #}
-							<button class="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
+							{# Contact Button - Prevent event bubbling #}
+							<button class="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+									onclick="event.stopPropagation(); openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
 								{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
 							</button>
 						</div>

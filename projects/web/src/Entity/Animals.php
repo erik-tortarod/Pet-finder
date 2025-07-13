@@ -304,4 +304,78 @@ class Animals
 
         return $this;
     }
+
+    /**
+     * Genera un slug descriptivo para la URL
+     * Formato: nombre-animal-estado-lugar-id
+     */
+    public function generateSlug(): string
+    {
+        $parts = [];
+
+        // Nombre del animal (si existe)
+        if ($this->name && $this->name !== 'Sin nombre') {
+            $parts[] = $this->slugify($this->name);
+        }
+
+        // Tipo de animal
+        $parts[] = $this->slugify($this->animalType);
+
+        // Estado (perdido/encontrado)
+        $parts[] = $this->slugify($this->status);
+
+        // Lugar (si existe)
+        $location = $this->getLocation();
+        if ($location) {
+            $parts[] = $this->slugify($location);
+        }
+
+        // ID al final para garantizar unicidad
+        $parts[] = $this->id;
+
+        return implode('-', $parts);
+    }
+
+    /**
+     * Obtiene la ubicación del animal (zona de pérdida o hallazgo)
+     */
+    private function getLocation(): ?string
+    {
+        if ($this->lostPets && $this->lostPets->getLostZone()) {
+            return $this->lostPets->getLostZone();
+        }
+
+        if ($this->foundAnimals && $this->foundAnimals->getFoundZone()) {
+            return $this->foundAnimals->getFoundZone();
+        }
+
+        return null;
+    }
+
+    /**
+     * Convierte un string a slug (URL-friendly)
+     */
+    private function slugify(string $text): string
+    {
+        // Convertir a minúsculas
+        $text = strtolower($text);
+
+        // Reemplazar caracteres especiales
+        $text = str_replace(
+            ['á', 'é', 'í', 'ó', 'ú', 'ñ', 'ü', 'ç', ' '],
+            ['a', 'e', 'i', 'o', 'u', 'n', 'u', 'c', '-'],
+            $text
+        );
+
+        // Remover caracteres no alfanuméricos excepto guiones
+        $text = preg_replace('/[^a-z0-9\-]/', '', $text);
+
+        // Remover guiones múltiples
+        $text = preg_replace('/-+/', '-', $text);
+
+        // Remover guiones al inicio y final
+        $text = trim($text, '-');
+
+        return $text;
+    }
 }
