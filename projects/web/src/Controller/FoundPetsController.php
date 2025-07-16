@@ -61,7 +61,7 @@ final class FoundPetsController extends AbstractController
                 $animal->setColor($form->get('animalColor')->getData());
                 $animal->setAge($form->get('animalAge')->getData());
                 $animal->setDescription($form->get('animalDescription')->getData());
-                $animal->setStatus('ENCONTRADO'); // El status va en la entidad Animals, no en FoundAnimals
+                $animal->setStatus('FOUND'); // El status va en la entidad Animals, no en FoundAnimals
                 $animal->setCreatedAt(new \DateTimeImmutable());
                 $animal->setUpdatedAt(new \DateTimeImmutable());
 

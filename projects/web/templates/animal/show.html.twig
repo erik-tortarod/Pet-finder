@@ -1,446 +1,465 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ animal.name }} - Detalles{% endblock %}
+{% block title %}
+	{{ animal.name }}
+	- Detalles
+{% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
-    <link rel="stylesheet" href="{{ asset('page/animal/show.css') }}">
+	{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('page/animal/show.css') }}">
 {% endblock %}
 
 {% block body %}
-<div class="min-h-screen bg-gray-50">
-    {# Header #}
-    <section class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            {# Breadcrumb #}
-            <nav class="flex mb-4" aria-label="Breadcrumb">
-                <ol class="inline-flex items-center space-x-1 md:space-x-3">
-                    <li class="inline-flex items-center">
-                        <a href="{{ path('app_home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
-                            {% include 'components/Icon.html.twig' with {name: 'home', size: 16, class: 'mr-2'} %}
-                            Inicio
-                        </a>
-                    </li>
-                    <li>
-                        <div class="flex items-center">
-                            {% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 24, class: 'text-gray-400'} %}
-                            {% if lostPet %}
-                                <a href="{{ path('app_lost_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Mascotas Perdidas</a>
-                            {% elseif foundAnimal %}
-                                <a href="{{ path('app_found_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Mascotas Encontradas</a>
-                            {% endif %}
-                        </div>
-                    </li>
-                    <li aria-current="page">
-                        <div class="flex items-center">
-                            {% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 24, class: 'text-gray-400'} %}
-                            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">{{ animal.name }}</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
+	<div
+		class="min-h-screen bg-gray-50">
+		{# Header #}
+		<section class="bg-white shadow-sm border-b">
+			<div
+				class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+				{# Breadcrumb #}
+				<nav class="flex mb-4" aria-label="Breadcrumb">
+					<ol class="inline-flex items-center space-x-1 md:space-x-3">
+						<li class="inline-flex items-center">
+							<a href="{{ path('app_home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
+								{% include 'components/Icon.html.twig' with {name: 'home', size: 16, class: 'mr-2'} %}
+								Inicio
+							</a>
+						</li>
+						<li>
+							<div class="flex items-center">
+								{% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 24, class: 'text-gray-400'} %}
+								{% if lostPet %}
+									<a href="{{ path('app_lost_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Mascotas Perdidas</a>
+								{% elseif foundAnimal %}
+									<a href="{{ path('app_found_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Mascotas Encontradas</a>
+								{% endif %}
+							</div>
+						</li>
+						<li aria-current="page">
+							<div class="flex items-center">
+								{% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 24, class: 'text-gray-400'} %}
+								<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">{{ animal.name }}</span>
+							</div>
+						</li>
+					</ol>
+				</nav>
 
-            {# Status Badge #}
-            <div class="flex items-center justify-between">
-                <div>
-                    <h1 class="text-3xl font-bold text-gray-900">{{ animal.name }}</h1>
-                    <p class="mt-1 text-lg text-gray-600">{{ animal.animalType|title }} •
-                        {% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado{% endif %}
-                        {% if animal.age %} • {{ animal.age }}{% endif %}
-                    </p>
-                </div>
-                <div class="flex items-center space-x-3">
-                    {% if animal.status == 'PERDIDO' %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                            {% include 'components/Icon.html.twig' with {name: 'alert-triangle', size: 16, class: 'mr-1'} %}
-                            PERDIDO
-                        </span>
-                    {% elseif animal.status == 'ENCONTRADO' %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                            {% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
-                            ENCONTRADO
-                        </span>
-                    {% else %}
-                        <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
-                            {{ animal.status }}
-                        </span>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </section>
+				{# Status Badge #}
+				<div class="flex items-center justify-between">
+					<div>
+						<h1 class="text-3xl font-bold text-gray-900">{{ animal.name }}</h1>
+						<p class="mt-1 text-lg text-gray-600">{{ animal.animalType|title }}
+							•
+							{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
+							{% endif %}
+							{% if animal.age %}
+								•
+								{{ animal.age }}
+							{% endif %}
+						</p>
+					</div>
+					<div class="flex items-center space-x-3">
+						<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
+															{% if animal.status == 'LOST' %}bg-red-100 text-red-800
+															{% elseif animal.status == 'FOUND' %}bg-yellow-100 text-yellow-800
+															{% elseif animal.status == 'CLAIMED' %}bg-green-100 text-green-800
+															{% elseif animal.status == 'FILLED' %}bg-gray-100 text-gray-800
+															{% else %}bg-gray-100 text-gray-800{% endif %}">
+							{% include 'components/Icon.html.twig' with {
+                            name: animal.status == 'LOST' ? 'search' :
+                                  (animal.status == 'FOUND' ? 'alert-triangle' :
+                                  (animal.status == 'CLAIMED' ? 'check-circle' :
+                                  (animal.status == 'FILLED' ? 'archive' : 'question'))),
+                            size: 14,
+                            class: 'mr-1'
+                        } %}
+							{{ animal_status_label(animal.status) }}
+						</span>
+					</div>
+				</div>
+			</div>
+		</section>
 
-    {# Main Content #}
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {# Image Gallery - Always Visible #}
-            <div class="lg:col-span-1 space-y-6">
-                {# Main Image #}
-                <div class="bg-white rounded-lg shadow-sm overflow-hidden">
-                    {% if primaryPhoto %}
-                        <img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}"
-                             class="w-full h-80 object-cover"
-                             alt="Foto de {{ animal.name }}">
-                    {% else %}
-                        <div class="w-full h-80 bg-gray-200 flex items-center justify-center">
-                            <div class="text-center">
-                                {% include 'components/Icon.html.twig' with {name: 'image', size: 96, class: 'text-gray-400 mb-4'} %}
-                                <p class="text-gray-500 text-lg">Sin foto disponible</p>
-                            </div>
-                        </div>
-                    {% endif %}
-                </div>
+		{# Main Content #}
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+			<div
+				class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+				{# Image Gallery - Always Visible #}
+				<div
+					class="lg:col-span-1 space-y-6">
+					{# Main Image #}
+					<div class="bg-white rounded-lg shadow-sm overflow-hidden">
+						{% if primaryPhoto %}
+							<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}" class="w-full h-80 object-cover" alt="Foto de {{ animal.name }}">
+						{% else %}
+							<div class="w-full h-80 bg-gray-200 flex items-center justify-center">
+								<div class="text-center">
+									{% include 'components/Icon.html.twig' with {name: 'image', size: 96, class: 'text-gray-400 mb-4'} %}
+									<p class="text-gray-500 text-lg">Sin foto disponible</p>
+								</div>
+							</div>
+						{% endif %}
+					</div>
 
-                {# Thumbnail Gallery - Only visible on mobile #}
-                {% if animal.animalPhotos|length > 1 %}
-                    <div class="sm:hidden bg-white rounded-lg shadow-sm p-4">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-3">Más fotos</h3>
-                        <div class="grid grid-cols-3 gap-2">
-                            {% for photo in animal.animalPhotos %}
-                                {% if photo != primaryPhoto %}
-                                    <div class="aspect-square overflow-hidden rounded-lg">
-                                        <img src="{{ path('app_image_animal', {'id': photo.id}) }}"
-                                             class="w-full h-full object-cover gallery-thumbnail cursor-pointer"
-                                             alt="Foto adicional"
-                                             onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
+					{# Thumbnail Gallery - Only visible on mobile #}
+					{% if animal.animalPhotos|length > 1 %}
+						<div class="sm:hidden bg-white rounded-lg shadow-sm p-4">
+							<h3 class="text-lg font-semibold text-gray-900 mb-3">Más fotos</h3>
+							<div class="grid grid-cols-3 gap-2">
+								{% for photo in animal.animalPhotos %}
+									{% if photo != primaryPhoto %}
+										<div class="aspect-square overflow-hidden rounded-lg">
+											<img src="{{ path('app_image_animal', {'id': photo.id}) }}" class="w-full h-full object-cover gallery-thumbnail cursor-pointer" alt="Foto adicional" onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
 
-                {# Quick Info Card #}
-                <div class="bg-white rounded-lg shadow-sm p-4">
-                    <h3 class="text-lg font-semibold text-gray-900 mb-3">Información Rápida</h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Tipo:</span>
-                            <span class="font-medium">{{ animal.animalType|title }}</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Género:</span>
-                            <span class="font-medium">
-                                {% if animal.gender == 'male' %}Macho
-                                {% elseif animal.gender == 'female' %}Hembra
-                                {% else %}No especificado{% endif %}
-                            </span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-500">Tamaño:</span>
-                            <span class="font-medium">
-                                {% if animal.size == 'small' %}Pequeño
-                                {% elseif animal.size == 'medium' %}Mediano
-                                {% elseif animal.size == 'large' %}Grande
-                                {% elseif animal.size == 'extra_large' %}Extra Grande
-                                {% else %}No especificado{% endif %}
-                            </span>
-                        </div>
-                        {% if animal.age %}
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Edad:</span>
-                                <span class="font-medium">{{ animal.age }}</span>
-                            </div>
-                        {% endif %}
-                        {% if animal.color %}
-                            <div class="flex justify-between">
-                                <span class="text-gray-500">Color:</span>
-                                <span class="font-medium">{{ animal.color }}</span>
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
+					{# Quick Info Card #}
+					<div class="bg-white rounded-lg shadow-sm p-4">
+						<h3 class="text-lg font-semibold text-gray-900 mb-3">Información Rápida</h3>
+						<div class="space-y-2 text-sm">
+							<div class="flex justify-between">
+								<span class="text-gray-500">Tipo:</span>
+								<span class="font-medium">{{ animal.animalType|title }}</span>
+							</div>
+							<div class="flex justify-between">
+								<span class="text-gray-500">Género:</span>
+								<span class="font-medium">
+									{% if animal.gender == 'male' %}Macho
+										{% elseif animal.gender == 'female' %}Hembra
+										{% else %}No especificado
+									{% endif %}
+								</span>
+							</div>
+							<div class="flex justify-between">
+								<span class="text-gray-500">Tamaño:</span>
+								<span class="font-medium">
+									{% if animal.size == 'small' %}Pequeño
+										{% elseif animal.size == 'medium' %}Mediano
+										{% elseif animal.size == 'large' %}Grande
+										{% elseif animal.size == 'extra_large' %}Extra Grande
+										{% else %}No especificado
+									{% endif %}
+								</span>
+							</div>
+							{% if animal.age %}
+								<div class="flex justify-between">
+									<span class="text-gray-500">Edad:</span>
+									<span class="font-medium">{{ animal.age }}</span>
+								</div>
+							{% endif %}
+							{% if animal.color %}
+								<div class="flex justify-between">
+									<span class="text-gray-500">Color:</span>
+									<span class="font-medium">{{ animal.color }}</span>
+								</div>
+							{% endif %}
+						</div>
+					</div>
+				</div>
 
-            {# Tabs Content - Takes 2/3 of the space #}
-            <div class="lg:col-span-2 space-y-6">
-                {# Tab Navigation #}
-                <div class="bg-white rounded-lg shadow-sm">
-                    <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex flex-wrap sm:flex-nowrap space-x-0 sm:space-x-8 px-4 sm:px-6" aria-label="Tabs">
-                            <button onclick="showTab('general')"
-                                    class="tab-button active py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
-                                {% include 'components/Icon.html.twig' with {name: 'info', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
-                                <span class="hidden sm:inline">Información General</span>
-                                <span class="sm:hidden">General</span>
-                            </button>
+				{# Tabs Content - Takes 2/3 of the space #}
+				<div
+					class="lg:col-span-2 space-y-6">
+					{# Tab Navigation #}
+					<div class="bg-white rounded-lg shadow-sm">
+						<div class="border-b border-gray-200">
+							<nav class="-mb-px flex flex-wrap sm:flex-nowrap space-x-0 sm:space-x-8 px-4 sm:px-6" aria-label="Tabs">
+								<button onclick="showTab('general')" class="tab-button active py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
+									{% include 'components/Icon.html.twig' with {name: 'info', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
+									<span class="hidden sm:inline">Información General</span>
+									<span class="sm:hidden">General</span>
+								</button>
 
-                            {% if lostPet or foundAnimal %}
-                                <button onclick="showTab('details')"
-                                        class="tab-button py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
-                                    {% include 'components/Icon.html.twig' with {name: 'list', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
-                                    <span class="hidden sm:inline">{% if lostPet %}Detalles de Pérdida{% else %}Detalles de Hallazgo{% endif %}</span>
-                                    <span class="sm:hidden">{% if lostPet %}Pérdida{% else %}Hallazgo{% endif %}</span>
-                                </button>
-                            {% endif %}
+								{% if lostPet or foundAnimal %}
+									<button onclick="showTab('details')" class="tab-button py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
+										{% include 'components/Icon.html.twig' with {name: 'list', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
+										<span class="hidden sm:inline">
+											{% if lostPet %}Detalles de Pérdida{% else %}Detalles de Hallazgo
+											{% endif %}
+										</span>
+										<span class="sm:hidden">
+											{% if lostPet %}Pérdida{% else %}Hallazgo
+											{% endif %}
+										</span>
+									</button>
+								{% endif %}
 
-                            <button onclick="showTab('contact')"
-                                    class="tab-button py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
-                                {% include 'components/Icon.html.twig' with {name: 'mail', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
-                                <span class="hidden sm:inline">Contacto</span>
-                                <span class="sm:hidden">Contacto</span>
-                            </button>
-                        </nav>
-                    </div>
-                </div>
+								<button onclick="showTab('contact')" class="tab-button py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
+									{% include 'components/Icon.html.twig' with {name: 'mail', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
+									<span class="hidden sm:inline">Contacto</span>
+									<span class="sm:hidden">Contacto</span>
+								</button>
+							</nav>
+						</div>
+					</div>
 
-                {# Tab Content #}
-                <div class="space-y-6">
-                    {# General Information Tab #}
-                    <div id="tab-general" class="tab-content active">
-                        <div class="bg-white rounded-lg shadow-sm p-6">
-                            <h2 class="text-xl font-semibold text-gray-900 mb-4">Información del Animal</h2>
+					{# Tab Content #}
+					<div
+						class="space-y-6">
+						{# General Information Tab #}
+						<div id="tab-general" class="tab-content active">
+							<div class="bg-white rounded-lg shadow-sm p-6">
+								<h2 class="text-xl font-semibold text-gray-900 mb-4">Información del Animal</h2>
 
-                            {% if animal.description %}
-                                <div class="mb-6">
-                                    <dt class="text-sm font-medium text-gray-500 mb-2">Descripción</dt>
-                                    <dd class="text-sm text-gray-900 leading-relaxed">{{ animal.description }}</dd>
-                                </div>
-                            {% endif %}
+								{% if animal.description %}
+									<div class="mb-6">
+										<dt class="text-sm font-medium text-gray-500 mb-2">Descripción</dt>
+										<dd class="text-sm text-gray-900 leading-relaxed">{{ animal.description }}</dd>
+									</div>
+								{% endif %}
 
-                            {# Tags #}
-                            {% if animal.animalTags|length > 0 %}
-                                <div class="mb-6">
-                                    <dt class="text-sm font-medium text-gray-500 mb-3">Características</dt>
-                                    <dd class="flex flex-wrap gap-2">
-                                        {% for animalTag in animal.animalTags %}
-                                            <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
-                                                {{ animalTag.tagId.name }}
-                                            </span>
-                                        {% endfor %}
-                                    </dd>
-                                </div>
-                            {% endif %}
+								{# Tags #}
+								{% if animal.animalTags|length > 0 %}
+									<div class="mb-6">
+										<dt class="text-sm font-medium text-gray-500 mb-3">Características</dt>
+										<dd class="flex flex-wrap gap-2">
+											{% for animalTag in animal.animalTags %}
+												<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
+													{{ animalTag.tagId.name }}
+												</span>
+											{% endfor %}
+										</dd>
+									</div>
+								{% endif %}
 
-                            {# Timestamp Information #}
-                            <div class="border-t pt-4">
-                                <div class="text-sm text-gray-500">
-                                    <p><strong>Publicado:</strong> {{ animal.createdAt|date('d/m/Y H:i') }}</p>
-                                    {% if animal.updatedAt != animal.createdAt %}
-                                        <p class="mt-1"><strong>Actualizado:</strong> {{ animal.updatedAt|date('d/m/Y H:i') }}</p>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+								{# Timestamp Information #}
+								<div class="border-t pt-4">
+									<div class="text-sm text-gray-500">
+										<p>
+											<strong>Publicado:</strong>
+											{{ animal.createdAt|date('d/m/Y H:i') }}</p>
+										{% if animal.updatedAt != animal.createdAt %}
+											<p class="mt-1">
+												<strong>Actualizado:</strong>
+												{{ animal.updatedAt|date('d/m/Y H:i') }}</p>
+										{% endif %}
+									</div>
+								</div>
+							</div>
+						</div>
 
-                    {# Details Tab #}
-                    {% if lostPet or foundAnimal %}
-                        <div id="tab-details" class="tab-content">
-                            <div class="bg-white rounded-lg shadow-sm p-6">
-                                {% if lostPet %}
-                                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Información de la Pérdida</h2>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Fecha de pérdida</dt>
-                                            <dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostDate|date('d/m/Y') }}</dd>
-                                        </div>
-                                        {% if lostPet.lostTime %}
-                                            <div>
-                                                <dt class="text-sm font-medium text-gray-500">Hora aproximada</dt>
-                                                <dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostTime|date('H:i') }}</dd>
-                                            </div>
-                                        {% endif %}
-                                        <div class="md:col-span-2">
-                                            <dt class="text-sm font-medium text-gray-500">Zona donde se perdió</dt>
-                                            <dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostZone }}</dd>
-                                        </div>
-                                        {% if lostPet.lostAddress %}
-                                            <div class="md:col-span-2">
-                                                <dt class="text-sm font-medium text-gray-500">Dirección específica</dt>
-                                                <dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostAddress }}</dd>
-                                            </div>
-                                        {% endif %}
-                                    </div>
+						{# Details Tab #}
+						{% if lostPet or foundAnimal %}
+							<div id="tab-details" class="tab-content">
+								<div class="bg-white rounded-lg shadow-sm p-6">
+									{% if lostPet %}
+										<h2 class="text-xl font-semibold text-gray-900 mb-4">Información de la Pérdida</h2>
+										<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div>
+												<dt class="text-sm font-medium text-gray-500">Fecha de pérdida</dt>
+												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostDate|date('d/m/Y') }}</dd>
+											</div>
+											{% if lostPet.lostTime %}
+												<div>
+													<dt class="text-sm font-medium text-gray-500">Hora aproximada</dt>
+													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostTime|date('H:i') }}</dd>
+												</div>
+											{% endif %}
+											<div class="md:col-span-2">
+												<dt class="text-sm font-medium text-gray-500">Zona donde se perdió</dt>
+												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostZone }}</dd>
+											</div>
+											{% if lostPet.lostAddress %}
+												<div class="md:col-span-2">
+													<dt class="text-sm font-medium text-gray-500">Dirección específica</dt>
+													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostAddress }}</dd>
+												</div>
+											{% endif %}
+										</div>
 
-                                    {% if lostPet.lostCircumstances %}
-                                        <div class="mt-6">
-                                            <dt class="text-sm font-medium text-gray-500 mb-2">Circunstancias de la pérdida</dt>
-                                            <dd class="text-sm text-gray-900 leading-relaxed">{{ lostPet.lostCircumstances }}</dd>
-                                        </div>
-                                    {% endif %}
+										{% if lostPet.lostCircumstances %}
+											<div class="mt-6">
+												<dt class="text-sm font-medium text-gray-500 mb-2">Circunstancias de la pérdida</dt>
+												<dd class="text-sm text-gray-900 leading-relaxed">{{ lostPet.lostCircumstances }}</dd>
+											</div>
+										{% endif %}
 
-                                    {% if lostPet.rewardAmount or lostPet.rewardDescription %}
-                                        <div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                                            <div class="flex">
-                                                <div class="flex-shrink-0">
-                                                    {% include 'components/Icon.html.twig' with {name: 'gift', size: 20, class: 'text-yellow-400'} %}
-                                                </div>
-                                                <div class="ml-3">
-                                                    <h3 class="text-sm font-medium text-yellow-800">Recompensa</h3>
-                                                    <div class="mt-2 text-sm text-yellow-700">
-                                                        {% if lostPet.rewardAmount %}
-                                                            <p><strong>Monto:</strong> {{ lostPet.rewardAmount }}</p>
-                                                        {% endif %}
-                                                        {% if lostPet.rewardDescription %}
-                                                            <p><strong>Descripción:</strong> {{ lostPet.rewardDescription }}</p>
-                                                        {% endif %}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    {% endif %}
+										{% if lostPet.rewardAmount or lostPet.rewardDescription %}
+											<div class="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+												<div class="flex">
+													<div class="flex-shrink-0">
+														{% include 'components/Icon.html.twig' with {name: 'gift', size: 20, class: 'text-yellow-400'} %}
+													</div>
+													<div class="ml-3">
+														<h3 class="text-sm font-medium text-yellow-800">Recompensa</h3>
+														<div class="mt-2 text-sm text-yellow-700">
+															{% if lostPet.rewardAmount %}
+																<p>
+																	<strong>Monto:</strong>
+																	{{ lostPet.rewardAmount }}</p>
+															{% endif %}
+															{% if lostPet.rewardDescription %}
+																<p>
+																	<strong>Descripción:</strong>
+																	{{ lostPet.rewardDescription }}</p>
+															{% endif %}
+														</div>
+													</div>
+												</div>
+											</div>
+										{% endif %}
 
-                                {% elseif foundAnimal %}
-                                    <h2 class="text-xl font-semibold text-gray-900 mb-4">Información del Hallazgo</h2>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div>
-                                            <dt class="text-sm font-medium text-gray-500">Fecha de hallazgo</dt>
-                                            <dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundDate|date('d/m/Y') }}</dd>
-                                        </div>
-                                        {% if foundAnimal.foundTime %}
-                                            <div>
-                                                <dt class="text-sm font-medium text-gray-500">Hora aproximada</dt>
-                                                <dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundTime|date('H:i') }}</dd>
-                                            </div>
-                                        {% endif %}
-                                        <div class="md:col-span-2">
-                                            <dt class="text-sm font-medium text-gray-500">Zona donde se encontró</dt>
-                                            <dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundZone }}</dd>
-                                        </div>
-                                        {% if foundAnimal.foundAddress %}
-                                            <div class="md:col-span-2">
-                                                <dt class="text-sm font-medium text-gray-500">Dirección específica</dt>
-                                                <dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundAddress }}</dd>
-                                            </div>
-                                        {% endif %}
-                                    </div>
+									{% elseif foundAnimal %}
+										<h2 class="text-xl font-semibold text-gray-900 mb-4">Información del Hallazgo</h2>
+										<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+											<div>
+												<dt class="text-sm font-medium text-gray-500">Fecha de hallazgo</dt>
+												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundDate|date('d/m/Y') }}</dd>
+											</div>
+											{% if foundAnimal.foundTime %}
+												<div>
+													<dt class="text-sm font-medium text-gray-500">Hora aproximada</dt>
+													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundTime|date('H:i') }}</dd>
+												</div>
+											{% endif %}
+											<div class="md:col-span-2">
+												<dt class="text-sm font-medium text-gray-500">Zona donde se encontró</dt>
+												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundZone }}</dd>
+											</div>
+											{% if foundAnimal.foundAddress %}
+												<div class="md:col-span-2">
+													<dt class="text-sm font-medium text-gray-500">Dirección específica</dt>
+													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundAddress }}</dd>
+												</div>
+											{% endif %}
+										</div>
 
-                                    {% if foundAnimal.foundCircumstances %}
-                                        <div class="mt-6">
-                                            <dt class="text-sm font-medium text-gray-500 mb-2">Circunstancias del hallazgo</dt>
-                                            <dd class="text-sm text-gray-900 leading-relaxed">{{ foundAnimal.foundCircumstances }}</dd>
-                                        </div>
-                                    {% endif %}
+										{% if foundAnimal.foundCircumstances %}
+											<div class="mt-6">
+												<dt class="text-sm font-medium text-gray-500 mb-2">Circunstancias del hallazgo</dt>
+												<dd class="text-sm text-gray-900 leading-relaxed">{{ foundAnimal.foundCircumstances }}</dd>
+											</div>
+										{% endif %}
 
-                                    {% if foundAnimal.additionalNotes %}
-                                        <div class="mt-6">
-                                            <dt class="text-sm font-medium text-gray-500 mb-2">Notas adicionales</dt>
-                                            <dd class="text-sm text-gray-900 leading-relaxed">{{ foundAnimal.additionalNotes }}</dd>
-                                        </div>
-                                    {% endif %}
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endif %}
+										{% if foundAnimal.additionalNotes %}
+											<div class="mt-6">
+												<dt class="text-sm font-medium text-gray-500 mb-2">Notas adicionales</dt>
+												<dd class="text-sm text-gray-900 leading-relaxed">{{ foundAnimal.additionalNotes }}</dd>
+											</div>
+										{% endif %}
+									{% endif %}
+								</div>
+							</div>
+						{% endif %}
 
-                    {# Contact Tab #}
-                    <div id="tab-contact" class="tab-content">
-                        <div class="bg-white rounded-lg shadow-sm p-6">
-                            {% if (lostPet and lostPet.userId) or (foundAnimal and foundAnimal.userId) %}
-                                <h2 class="text-xl font-semibold text-gray-900 mb-4">Información de Contacto</h2>
-                                {% set user = lostPet ? lostPet.userId : foundAnimal.userId %}
-                                <div class="space-y-4">
-                                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                                        <div class="flex-shrink-0">
-                                            {% include 'components/Icon.html.twig' with {name: 'user', size: 24, class: 'text-gray-400'} %}
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <dt class="text-sm font-medium text-gray-500">
-                                                {% if lostPet %}Publicado por{% else %}Encontrado por{% endif %}
-                                            </dt>
-                                            <dd class="text-sm text-gray-900 font-medium break-words">{{ user.firstName }} {{ user.lastName }}</dd>
-                                        </div>
-                                    </div>
+						{# Contact Tab #}
+						<div id="tab-contact" class="tab-content">
+							<div class="bg-white rounded-lg shadow-sm p-6">
+								{% if (lostPet and lostPet.userId) or (foundAnimal and foundAnimal.userId) %}
+									<h2 class="text-xl font-semibold text-gray-900 mb-4">Información de Contacto</h2>
+									{% set user = lostPet ? lostPet.userId : foundAnimal.userId %}
+									<div class="space-y-4">
+										<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+											<div class="flex-shrink-0">
+												{% include 'components/Icon.html.twig' with {name: 'user', size: 24, class: 'text-gray-400'} %}
+											</div>
+											<div class="flex-1 min-w-0">
+												<dt class="text-sm font-medium text-gray-500">
+													{% if lostPet %}Publicado por{% else %}Encontrado por
+													{% endif %}
+												</dt>
+												<dd class="text-sm text-gray-900 font-medium break-words">{{ user.firstName }}
+													{{ user.lastName }}</dd>
+											</div>
+										</div>
 
-                                    {% if user.phone %}
-                                        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                                            <div class="flex-shrink-0">
-                                                {% include 'components/Icon.html.twig' with {name: 'phone', size: 24, class: 'text-gray-400'} %}
-                                            </div>
-                                            <div class="flex-1 min-w-0">
-                                                <dt class="text-sm font-medium text-gray-500">Teléfono</dt>
-                                                <dd class="text-sm text-gray-900 font-medium break-all">
-                                                    <a href="tel:{{ user.phone }}" class="hover:text-blue-600 transition-colors">{{ user.phone }}</a>
-                                                </dd>
-                                            </div>
-                                        </div>
-                                    {% endif %}
+										{% if user.phone %}
+											<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+												<div class="flex-shrink-0">
+													{% include 'components/Icon.html.twig' with {name: 'phone', size: 24, class: 'text-gray-400'} %}
+												</div>
+												<div class="flex-1 min-w-0">
+													<dt class="text-sm font-medium text-gray-500">Teléfono</dt>
+													<dd class="text-sm text-gray-900 font-medium break-all">
+														<a href="tel:{{ user.phone }}" class="hover:text-blue-600 transition-colors">{{ user.phone }}</a>
+													</dd>
+												</div>
+											</div>
+										{% endif %}
 
-                                    <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
-                                        <div class="flex-shrink-0">
-                                            {% include 'components/Icon.html.twig' with {name: 'mail', size: 24, class: 'text-gray-400'} %}
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <dt class="text-sm font-medium text-gray-500">Email</dt>
-                                            <dd class="text-sm text-gray-900 font-medium break-all">
-                                                <a href="mailto:{{ user.email }}" class="hover:text-blue-600 transition-colors">{{ user.email }}</a>
-                                            </dd>
-                                        </div>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <div class="text-center py-8">
-                                    {% include 'components/Icon.html.twig' with {name: 'info', size: 48, class: 'text-gray-400 mx-auto mb-4'} %}
-                                    <h3 class="text-lg font-medium text-gray-900 mb-2">Información de contacto no disponible</h3>
-                                    <p class="text-gray-500">No se ha proporcionado información de contacto para este animal.</p>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </div>
-                </div>
+										<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+											<div class="flex-shrink-0">
+												{% include 'components/Icon.html.twig' with {name: 'mail', size: 24, class: 'text-gray-400'} %}
+											</div>
+											<div class="flex-1 min-w-0">
+												<dt class="text-sm font-medium text-gray-500">Email</dt>
+												<dd class="text-sm text-gray-900 font-medium break-all">
+													<a href="mailto:{{ user.email }}" class="hover:text-blue-600 transition-colors">{{ user.email }}</a>
+												</dd>
+											</div>
+										</div>
+									</div>
+								{% else %}
+									<div class="text-center py-8">
+										{% include 'components/Icon.html.twig' with {name: 'info', size: 48, class: 'text-gray-400 mx-auto mb-4'} %}
+										<h3 class="text-lg font-medium text-gray-900 mb-2">Información de contacto no disponible</h3>
+										<p class="text-gray-500">No se ha proporcionado información de contacto para este animal.</p>
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
 
-                {# Additional Photos - Only visible on PC, below tabs #}
-                {% if animal.animalPhotos|length > 1 %}
-                    <div class="hidden md:block bg-white rounded-lg shadow-sm p-6">
-                        <h3 class="text-lg font-semibold text-gray-900 mb-4">Más fotos</h3>
-                        <div class="grid grid-cols-4 gap-4">
-                            {% for photo in animal.animalPhotos %}
-                                {% if photo != primaryPhoto %}
-                                    <div class="aspect-square overflow-hidden rounded-lg">
-                                        <img src="{{ path('app_image_animal', {'id': photo.id}) }}"
-                                             class="w-full h-full object-cover gallery-thumbnail cursor-pointer"
-                                             alt="Foto adicional"
-                                             onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
-                                    </div>
-                                {% endif %}
-                            {% endfor %}
-                        </div>
-                    </div>
-                {% endif %}
-            </div>
-        </div>
+					{# Additional Photos - Only visible on PC, below tabs #}
+					{% if animal.animalPhotos|length > 1 %}
+						<div class="hidden md:block bg-white rounded-lg shadow-sm p-6">
+							<h3 class="text-lg font-semibold text-gray-900 mb-4">Más fotos</h3>
+							<div class="grid grid-cols-4 gap-4">
+								{% for photo in animal.animalPhotos %}
+									{% if photo != primaryPhoto %}
+										<div class="aspect-square overflow-hidden rounded-lg">
+											<img src="{{ path('app_image_animal', {'id': photo.id}) }}" class="w-full h-full object-cover gallery-thumbnail cursor-pointer" alt="Foto adicional" onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
+										</div>
+									{% endif %}
+								{% endfor %}
+							</div>
+						</div>
+					{% endif %}
+				</div>
+			</div>
 
-        {# Action Buttons #}
-        <div class="mt-8 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-            {% if lostPet %}
-                <a href="{{ path('app_lost_pets') }}"
-                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    {% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
-                    Volver a Mascotas Perdidas
-                </a>
-            {% elseif foundAnimal %}
-                <a href="{{ path('app_found_pets') }}"
-                   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    {% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
-                    Volver a Mascotas Encontradas
-                </a>
-            {% endif %}
+			{# Action Buttons #}
+			<div class="mt-8 flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+				{% if lostPet %}
+					<a href="{{ path('app_lost_pets') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+						{% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
+						Volver a Mascotas Perdidas
+					</a>
+				{% elseif foundAnimal %}
+					<a href="{{ path('app_found_pets') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+						{% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
+						Volver a Mascotas Encontradas
+					</a>
+				{% endif %}
 
-            <button onclick="shareAnimal()"
-                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                {% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'mr-2'} %}
-                Compartir
-            </button>
-        </div>
-    </div>
-</div>
+				<button onclick="shareAnimal()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+					{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'mr-2'} %}
+					Compartir
+				</button>
+			</div>
+		</div>
+	</div>
 
-<!-- Custom Modal para mostrar imágenes en tamaño completo -->
-<div id="imageModal" class="custom-modal">
-    <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title">Foto del animal</h5>
-            <button type="button" class="modal-close" onclick="closeImageModal()" aria-label="Close">
-                &times;
-            </button>
-        </div>
-        <div class="modal-body">
-            <img id="modalImage" src="" class="modal-image" alt="Foto del animal">
-        </div>
-    </div>
-</div>
-		
-<script src="{{ asset('page/animal/details_navigation.js') }}"></script>
+	<!-- Custom Modal para mostrar imágenes en tamaño completo -->
+	<div id="imageModal" class="custom-modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title">Foto del animal</h5>
+				<button type="button" class="modal-close" onclick="closeImageModal()" aria-label="Close">
+					&times;
+				</button>
+			</div>
+			<div class="modal-body">
+				<img id="modalImage" src="" class="modal-image" alt="Foto del animal">
+			</div>
+		</div>
+	</div>
+
+	<script src="{{ asset('page/animal/details_navigation.js') }}"></script>
 
 {% endblock %}

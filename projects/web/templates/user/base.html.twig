@@ -39,8 +39,8 @@
 				</a>
 				<a href="{{ path('app_user_found_pets') }}" class="whitespace-nowrap py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 flex items-center transition-colors {{ activeTab == 'found_pets' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
 					{% include 'components/Icon.html.twig' with {name: 'heart', size: 16, class: 'mr-2'} %}
-					<span class="hidden sm:inline">Animales Encontrados</span>
-					<span class="sm:hidden">Encontrados</span>
+					<span class="hidden sm:inline">Animales Avistados</span>
+					<span class="sm:hidden">Avistados</span>
 				</a>
 				<a href="{{ path('app_user_settings') }}" class="whitespace-nowrap py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 flex items-center transition-colors {{ activeTab == 'settings' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
 					{% include 'components/Icon.html.twig' with {name: 'settings', size: 16, class: 'mr-2'} %}
