@@ -16,11 +16,11 @@
 }
 
 .btn-success {
-   @apply bg-green-500 text-white;
+   @apply bg-green-500 text-black;
 }
 
 .btn-warning {
-   @apply bg-yellow-500 text-white;
+   @apply bg-yellow-500 text-black;
 }
 
 .btn:hover {

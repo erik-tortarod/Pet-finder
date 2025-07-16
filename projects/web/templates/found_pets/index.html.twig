@@ -4,26 +4,26 @@
 {% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
-<style>
-.cursor-pointer {
-    cursor: pointer;
-}
+	{{ parent() }}
+	<style>
+		.cursor-pointer {
+			cursor: pointer;
+		}
 
-.cursor-pointer:hover {
-    transform: translateY(-2px);
-    transition: transform 0.2s ease-in-out;
-}
+		.cursor-pointer:hover {
+			transform: translateY(-2px);
+			transition: transform 0.2s ease-in-out;
+		}
 
-.cursor-pointer:active {
-    transform: translateY(0);
-}
+		.cursor-pointer:active {
+			transform: translateY(0);
+		}
 
-/* Estilo para los botones para que no se vean afectados por el hover de la card */
-.cursor-pointer .btn:hover {
-    transform: none;
-}
-</style>
+		/* Estilo para los botones para que no se vean afectados por el hover de la card */
+		.cursor-pointer .btn:hover {
+			transform: none;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
@@ -31,7 +31,8 @@
 		<div class="d-flex justify-content-between align-items-center mb-4">
 			<h1>Mascotas Encontradas</h1>
 			<a href="{{ path('app_found_pets_create') }}" class="btn btn-primary">
-				<i class="fas fa-plus"></i> Registrar Mascota Encontrada
+				<i class="fas fa-plus"></i>
+				Registrar Mascota Encontrada
 			</a>
 		</div>
 
@@ -56,8 +57,7 @@
 			<div class="row">
 				{% for foundAnimal in foundAnimals %}
 					<div class="col-md-6 col-lg-4 mb-4">
-						<div class="card h-100 shadow-sm cursor-pointer"
-							 onclick="window.location.href='{{ path('app_animal_show_slug', {'slug': foundAnimal.animalId.generateSlug()}) }}'">
+						<div class="card h-100 shadow-sm cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'slug': foundAnimal.animalId.generateSlug()}) }}'">
 							{% set primaryPhoto = null %}
 							{% if foundAnimal.animalId.animalPhotos is not empty %}
 								{% for photo in foundAnimal.animalId.animalPhotos %}
@@ -68,13 +68,9 @@
 							{% endif %}
 
 							{% if primaryPhoto %}
-								<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}"
-									 class="card-img-top"
-									 alt="Foto de {{ foundAnimal.animalId.name }}"
-									 style="height: 200px; object-fit: cover;">
+								<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}" class="card-img-top" alt="Foto de {{ foundAnimal.animalId.name }}" style="height: 200px; object-fit: cover;">
 							{% else %}
-								<div class="card-img-top bg-light d-flex align-items-center justify-content-center"
-									 style="height: 200px;">
+								<div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
 									<i class="fas fa-paw fa-3x text-muted"></i>
 									<small class="text-muted">Sin foto</small>
 								</div>
@@ -83,47 +79,57 @@
 							<div class="card-body">
 								<h5 class="card-title">{{ foundAnimal.animalId.name }}</h5>
 								<p class="card-text">
-									<strong>Tipo:</strong> {{ foundAnimal.animalId.animalType|title }}<br>
+									<strong>Tipo:</strong>
+									{{ foundAnimal.animalId.animalType|title }}<br>
 									<strong>Género:</strong>
 									{% if foundAnimal.animalId.gender == 'male' %}Macho
-									{% elseif foundAnimal.animalId.gender == 'female' %}Hembra
-									{% else %}No especificado{% endif %}<br>
+										{% elseif foundAnimal.animalId.gender == 'female' %}Hembra
+										{% else %}No especificado
+									{% endif %}<br>
 									<strong>Tamaño:</strong>
 									{% if foundAnimal.animalId.size == 'small' %}Pequeño
-									{% elseif foundAnimal.animalId.size == 'medium' %}Mediano
-									{% elseif foundAnimal.animalId.size == 'large' %}Grande
-									{% else %}Extra Grande{% endif %}<br>
+										{% elseif foundAnimal.animalId.size == 'medium' %}Mediano
+										{% elseif foundAnimal.animalId.size == 'large' %}Grande
+										{% else %}Extra Grande
+									{% endif %}<br>
 									{% if foundAnimal.animalId.color %}
-										<strong>Color:</strong> {{ foundAnimal.animalId.color }}<br>
+										<strong>Color:</strong>
+										{{ foundAnimal.animalId.color }}<br>
 									{% endif %}
 									{% if foundAnimal.animalId.age %}
-										<strong>Edad:</strong> {{ foundAnimal.animalId.age }}<br>
+										<strong>Edad:</strong>
+										{{ foundAnimal.animalId.age }}<br>
 									{% endif %}
 								</p>
 
 								<hr>
 
 								<p class="card-text">
-									<strong>Encontrado el:</strong> {{ foundAnimal.foundDate|date('d/m/Y') }}<br>
-									<strong>Zona:</strong> {{ foundAnimal.foundZone }}<br>
+									<strong>Encontrado el:</strong>
+									{{ foundAnimal.foundDate|date('d/m/Y') }}<br>
+									<strong>Zona:</strong>
+									{{ foundAnimal.foundZone }}<br>
 									{% if foundAnimal.foundAddress %}
-										<strong>Dirección:</strong> {{ foundAnimal.foundAddress }}<br>
+										<strong>Dirección:</strong>
+										{{ foundAnimal.foundAddress }}<br>
 									{% endif %}
 								</p>
 
 								{% if foundAnimal.additionalNotes %}
 									<div class="alert alert-info py-2">
-										<strong>Notas:</strong> {{ foundAnimal.additionalNotes|length > 50 ? foundAnimal.additionalNotes|slice(0, 50) ~ '...' : foundAnimal.additionalNotes }}
+										<strong>Notas:</strong>
+										{{ foundAnimal.additionalNotes|length > 50 ? foundAnimal.additionalNotes|slice(0, 50) ~ '...' : foundAnimal.additionalNotes }}
 									</div>
 								{% endif %}
 
 								<div class="d-flex justify-content-between align-items-center">
 									<span class="badge bg-{% if foundAnimal.status == 'active' %}success{% elseif foundAnimal.status == 'claimed' %}primary{% elseif foundAnimal.status == 'under_protection' %}warning{% else %}secondary{% endif %}">
 										{% if foundAnimal.status == 'active' %}Activo
-										{% elseif foundAnimal.status == 'claimed' %}Reclamado
-										{% elseif foundAnimal.status == 'under_protection' %}Bajo Protección
-										{% elseif foundAnimal.status == 'paused' %}Pausado
-										{% else %}Completado{% endif %}
+											{% elseif foundAnimal.status == 'claimed' %}Reclamado
+											{% elseif foundAnimal.status == 'under_protection' %}Bajo Protección
+											{% elseif foundAnimal.status == 'paused' %}Pausado
+											{% else %}Completado
+										{% endif %}
 									</span>
 									<small class="text-muted">
 										{{ foundAnimal.createdAt|date('d/m/Y H:i') }}
@@ -132,14 +138,14 @@
 							</div>
 
 							<div class="card-footer">
-								<a href="{{ path('app_animal_show_slug', {'slug': foundAnimal.animalId.generateSlug()}) }}"
-								   class="btn btn-outline-primary btn-sm"
-								   onclick="event.stopPropagation()">
-									<i class="fas fa-eye"></i> Ver Detalles
+								<a href="{{ path('app_animal_show_slug', {'slug': foundAnimal.animalId.generateSlug()}) }}" class="btn btn-outline-primary btn-sm" onclick="event.stopPropagation()">
+									<i class="fas fa-eye"></i>
+									Ver Detalles
 								</a>
 								{% if app.user and foundAnimal.userId.id == app.user.id %}
 									<a href="#" class="btn btn-outline-secondary btn-sm" onclick="event.stopPropagation()">
-										<i class="fas fa-edit"></i> Editar
+										<i class="fas fa-edit"></i>
+										Editar
 									</a>
 								{% endif %}
 							</div>
