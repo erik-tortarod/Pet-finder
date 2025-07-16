@@ -7,39 +7,22 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UserRepository;
-use App\Repository\LostPetsRepository;
-use App\Repository\FoundAnimalsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
-    public function index(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function index(): Response
     {
-        // Obtener información del usuario desde la sesión
-        $session = $request->getSession();
-        $userId = $session->get('user_id');
+        // Redirect to the main user dashboard with lost pets tab active
+        return $this->redirectToRoute('app_user_lost_pets');
+    }
 
-        if (!$userId) {
-            $this->addFlash('error', 'Debes iniciar sesión para acceder a esta página');
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        // Obtener el usuario completo desde la base de datos
-        $user = $userRepository->find($userId);
-
+    #[Route('/user/lost-pets', name: 'app_user_lost_pets')]
+    public function userLostPets(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getAuthenticatedUser($request, $userRepository);
         if (!$user) {
-            $this->addFlash('error', 'Usuario no encontrado');
-            $session->clear();
-            $session->invalidate();
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        // Verificar que el usuario esté activo
-        if (!$user->isActive()) {
-            $this->addFlash('error', 'Tu cuenta está desactivada');
-            $session->clear();
-            $session->invalidate();
             return $this->redirectToRoute('app_auth_login');
         }
 
@@ -57,6 +40,25 @@ final class UserController extends AbstractController
             ->getQuery()
             ->getResult();
 
+        // Obtener estadísticas
+        $stats = $this->getUserStats($entityManager, $user);
+
+        return $this->render('user/lost_pets.html.twig', [
+            'user' => $user,
+            'lostPets' => $lostPets,
+            'stats' => $stats,
+            'activeTab' => 'lost_pets',
+        ]);
+    }
+
+    #[Route('/user/found-pets', name: 'app_user_found_pets')]
+    public function userFoundPets(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getAuthenticatedUser($request, $userRepository);
+        if (!$user) {
+            return $this->redirectToRoute('app_auth_login');
+        }
+
         // Obtener todos los animales encontrados del usuario con toda la información
         $foundAnimalsRepository = $entityManager->getRepository('App\Entity\FoundAnimals');
         $foundAnimals = $foundAnimalsRepository->createQueryBuilder('fa')
@@ -71,17 +73,84 @@ final class UserController extends AbstractController
             ->getQuery()
             ->getResult();
 
-        // Contar todas las publicaciones (el campo status no está mapeado en las entidades)
-        $totalLostPets = count($lostPets);
-        $totalFoundAnimals = count($foundAnimals);
+        // Obtener estadísticas
+        $stats = $this->getUserStats($entityManager, $user);
 
-        return $this->render('user/index.html.twig', [
+        return $this->render('user/found_pets.html.twig', [
             'user' => $user,
-            'lostPets' => $lostPets,
             'foundAnimals' => $foundAnimals,
-            'activeLostPetsCount' => $totalLostPets,
-            'activeFoundAnimalsCount' => $totalFoundAnimals,
-            'controller_name' => 'UserController',
+            'stats' => $stats,
+            'activeTab' => 'found_pets',
         ]);
+    }
+
+    #[Route('/user/settings', name: 'app_user_settings')]
+    public function userSettings(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getAuthenticatedUser($request, $userRepository);
+        if (!$user) {
+            return $this->redirectToRoute('app_auth_login');
+        }
+
+        // Obtener estadísticas
+        $stats = $this->getUserStats($entityManager, $user);
+
+        return $this->render('user/settings.html.twig', [
+            'user' => $user,
+            'stats' => $stats,
+            'activeTab' => 'settings',
+        ]);
+    }
+
+    /**
+     * Helper method to get authenticated user
+     */
+    private function getAuthenticatedUser(Request $request, UserRepository $userRepository)
+    {
+        $session = $request->getSession();
+        $userId = $session->get('user_id');
+
+        if (!$userId) {
+            $this->addFlash('error', 'Debes iniciar sesión para acceder a esta página');
+            return null;
+        }
+
+        $user = $userRepository->find($userId);
+
+        if (!$user) {
+            $this->addFlash('error', 'Usuario no encontrado');
+            $session->clear();
+            $session->invalidate();
+            return null;
+        }
+
+        if (!$user->isActive()) {
+            $this->addFlash('error', 'Tu cuenta está desactivada');
+            $session->clear();
+            $session->invalidate();
+            return null;
+        }
+
+        return $user;
+    }
+
+    /**
+     * Helper method to get user statistics
+     */
+    private function getUserStats(EntityManagerInterface $entityManager, $user): array
+    {
+        // Contar mascotas perdidas
+        $lostPetsRepository = $entityManager->getRepository('App\Entity\LostPets');
+        $totalLostPets = $lostPetsRepository->count(['userId' => $user]);
+
+        // Contar animales encontrados
+        $foundAnimalsRepository = $entityManager->getRepository('App\Entity\FoundAnimals');
+        $totalFoundAnimals = $foundAnimalsRepository->count(['userId' => $user]);
+
+        return [
+            'totalLostPets' => $totalLostPets,
+            'totalFoundAnimals' => $totalFoundAnimals,
+            'totalPublications' => $totalLostPets + $totalFoundAnimals,
+        ];
     }
 }

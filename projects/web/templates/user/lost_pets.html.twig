@@ -1,0 +1,91 @@
+{% extends 'user/base.html.twig' %}
+
+{% block title %}Mis Mascotas Perdidas
+{% endblock %}
+
+{% block content %}
+	{# Lost Pets List #}
+	<section class="bg-white rounded-lg shadow">
+		<div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+			<h3 class="text-base sm:text-lg font-medium text-gray-900">Mis Mascotas Perdidas</h3>
+		</div>
+
+		<div class="divide-y divide-gray-200">
+			{% for item in lostPets %}
+				<article class="p-4 sm:p-6">
+					<div
+						class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+						{# Animal Data #}
+						<div class="flex items-start space-x-3 sm:space-x-4">
+							{% set primaryPhoto = null %}
+							{% if item.animalId.animalPhotos is not empty %}
+								{% for photo in item.animalId.animalPhotos %}
+									{% if photo.isPrimary %}
+										{% set primaryPhoto = photo %}
+									{% endif %}
+								{% endfor %}
+							{% endif %}
+
+							<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
+
+							<div class="flex-1 min-w-0">
+								<h4 class="text-base sm:text-lg font-semibold text-gray-900">{{ item.animalId.name }}</h4>
+								<p class="text-xs sm:text-sm text-gray-600">
+									{{ item.animalId.animalType }}
+									{{ item.animalId.gender|default("") }}
+									{{ item.animalId.age|default("") }}
+								</p>
+								<p class="text-xs sm:text-sm text-gray-500">
+									Publicado
+									{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+									{% if daysAgo < 1 %}
+										Hoy
+									{% elseif daysAgo < 2 %}
+										Ayer
+									{% elseif daysAgo < 7 %}
+										hace
+										{{ daysAgo|round(0, 'floor') }}
+										días
+									{% else %}
+										Hace
+										{{ (daysAgo / 7)|round(0, 'floor') }}
+										semanas
+									{% endif %}
+								</p>
+
+								<div class="flex flex-wrap items-center mt-2 gap-2">
+									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 uppercase">
+										{% include 'components/Icon.html.twig' with {name: 'alert-triangle', size: 14, class: 'mr-1'} %}
+										{{ item.animalId.status|capitalize }}
+									</span>
+								</div>
+							</div>
+						</div>
+
+						{# Action Buttons #}
+						<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
+							<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-primary">
+								{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 16, class: 'mr-1'} %}
+								Editar
+							</a>
+							<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
+								{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
+								Encontrada
+							</a>
+							<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
+								{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
+								Archivar
+							</a>
+							<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
+								{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
+								Eliminar
+							</a>
+						</div>
+
+					</div>
+				</article>
+			{% endfor %}
+		</div>
+	</section>
+
+</div></section>{% endblock %}
