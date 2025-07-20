@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 
 #[Route('/images')]
 final class ImageController extends AbstractController
@@ -22,14 +23,21 @@ final class ImageController extends AbstractController
          throw $this->createNotFoundException('Imagen no encontrada');
       }
 
-      // Construir la ruta correcta del archivo
-      $filePath = $this->getParameter('app.uploads_dir') . '/../' . $photo->getFilePath();
+      $filePath = $photo->getFilePath();
 
-      if (!file_exists($filePath)) {
-         throw $this->createNotFoundException('Archivo de imagen no encontrado: ' . $filePath);
+      // Si es una URL externa, redirigir a ella
+      if (filter_var($filePath, FILTER_VALIDATE_URL)) {
+         return new RedirectResponse($filePath);
       }
 
-      $response = new BinaryFileResponse($filePath);
+      // Si es un archivo local, construir la ruta correcta
+      $localFilePath = $this->getParameter('app.uploads_dir') . '/../' . $filePath;
+
+      if (!file_exists($localFilePath)) {
+         throw $this->createNotFoundException('Archivo de imagen no encontrado: ' . $localFilePath);
+      }
+
+      $response = new BinaryFileResponse($localFilePath);
       $response->setContentDisposition(
          ResponseHeaderBag::DISPOSITION_INLINE,
          $photo->getOriginalFilename()
@@ -47,14 +55,21 @@ final class ImageController extends AbstractController
          throw $this->createNotFoundException('Imagen no encontrada');
       }
 
-      // Construir la ruta correcta del archivo
-      $filePath = $this->getParameter('app.uploads_dir') . '/../' . $photo->getFilePath();
+      $filePath = $photo->getFilePath();
 
-      if (!file_exists($filePath)) {
-         throw $this->createNotFoundException('Archivo de imagen no encontrado: ' . $filePath);
+      // Si es una URL externa, redirigir a ella
+      if (filter_var($filePath, FILTER_VALIDATE_URL)) {
+         return new RedirectResponse($filePath);
       }
 
-      $response = new BinaryFileResponse($filePath);
+      // Si es un archivo local, construir la ruta correcta
+      $localFilePath = $this->getParameter('app.uploads_dir') . '/../' . $filePath;
+
+      if (!file_exists($localFilePath)) {
+         throw $this->createNotFoundException('Archivo de imagen no encontrado: ' . $localFilePath);
+      }
+
+      $response = new BinaryFileResponse($localFilePath);
       $response->setContentDisposition(
          ResponseHeaderBag::DISPOSITION_ATTACHMENT,
          $photo->getOriginalFilename()
