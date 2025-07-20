@@ -61,13 +61,13 @@ class Animals
     /**
      * @var Collection<int, AnimalTags>
      */
-    #[ORM\OneToMany(targetEntity: AnimalTags::class, mappedBy: 'animalId')]
+    #[ORM\OneToMany(targetEntity: AnimalTags::class, mappedBy: 'animalId', cascade: ['remove'])]
     private Collection $animalTags;
 
     /**
      * @var Collection<int, AnimalPhotos>
      */
-    #[ORM\OneToMany(targetEntity: AnimalPhotos::class, mappedBy: 'animalId')]
+    #[ORM\OneToMany(targetEntity: AnimalPhotos::class, mappedBy: 'animalId', cascade: ['remove'])]
     private Collection $animalPhotos;
 
     public function __construct()

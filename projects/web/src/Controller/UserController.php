@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UserRepository;
+use App\Repository\LostPetsRepository;
+use App\Repository\FoundAnimalsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserController extends AbstractController
@@ -19,7 +21,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/lost-pets', name: 'app_user_lost_pets')]
-    public function userLostPets(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function userLostPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getAuthenticatedUser($request, $userRepository);
         if (!$user) {
@@ -27,7 +29,6 @@ final class UserController extends AbstractController
         }
 
         // Obtener todas las mascotas perdidas del usuario con toda la información
-        $lostPetsRepository = $entityManager->getRepository('App\Entity\LostPets');
         $lostPets = $lostPetsRepository->createQueryBuilder('lp')
             ->leftJoin('lp.animalId', 'a')
             ->leftJoin('a.animalPhotos', 'ap')
@@ -52,7 +53,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/found-pets', name: 'app_user_found_pets')]
-    public function userFoundPets(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    public function userFoundPets(Request $request, UserRepository $userRepository, FoundAnimalsRepository $foundAnimalsRepository, EntityManagerInterface $entityManager): Response
     {
         $user = $this->getAuthenticatedUser($request, $userRepository);
         if (!$user) {
@@ -60,7 +61,6 @@ final class UserController extends AbstractController
         }
 
         // Obtener todos los animales encontrados del usuario con toda la información
-        $foundAnimalsRepository = $entityManager->getRepository('App\Entity\FoundAnimals');
         $foundAnimals = $foundAnimalsRepository->createQueryBuilder('fa')
             ->leftJoin('fa.animalId', 'a')
             ->leftJoin('a.animalPhotos', 'ap')
