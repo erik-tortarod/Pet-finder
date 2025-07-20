@@ -307,7 +307,7 @@ class Animals
 
     /**
      * Genera un slug descriptivo para la URL
-     * Formato: nombre-animal-estado-lugar-id
+     * Formato: nombre-animal-estado-lugar
      */
     public function generateSlug(): string
     {
@@ -329,9 +329,6 @@ class Animals
         if ($location) {
             $parts[] = $this->slugify($location);
         }
-
-        // ID al final para garantizar unicidad
-        $parts[] = $this->id;
 
         return implode('-', $parts);
     }

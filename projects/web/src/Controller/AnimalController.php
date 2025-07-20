@@ -58,19 +58,11 @@ final class AnimalController extends AbstractController
         ]);
     }
 
-    #[Route('/animal/{slug}', name: 'app_animal_show_slug', requirements: ['slug' => '.+'])]
-    public function showBySlug(string $slug, EntityManagerInterface $entityManager): Response
+    #[Route('/animal/{id}/{slug}', name: 'app_animal_show_slug', requirements: ['id' => '\d+', 'slug' => '.+'])]
+    public function showBySlug(int $id, string $slug, EntityManagerInterface $entityManager): Response
     {
-        // Extraer el ID del final del slug
-        $parts = explode('-', $slug);
-        $id = end($parts);
-
-        if (!is_numeric($id)) {
-            throw $this->createNotFoundException('URL inválida');
-        }
-
         // Buscar el animal por ID
-        $animal = $entityManager->getRepository(Animals::class)->find((int)$id);
+        $animal = $entityManager->getRepository(Animals::class)->find($id);
 
         if (!$animal) {
             throw $this->createNotFoundException('Animal no encontrado');
@@ -80,7 +72,7 @@ final class AnimalController extends AbstractController
         $expectedSlug = $animal->generateSlug();
         if ($slug !== $expectedSlug) {
             // Redirigir a la URL correcta
-            return $this->redirectToRoute('app_animal_show_slug', ['slug' => $expectedSlug], 301);
+            return $this->redirectToRoute('app_animal_show_slug', ['id' => $id, 'slug' => $expectedSlug], 301);
         }
 
         // Buscar si es un animal perdido

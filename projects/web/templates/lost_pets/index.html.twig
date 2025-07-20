@@ -104,7 +104,7 @@
 				{# Solo mostrar animales con status LOST #}
 				{% if animal.status == 'LOST' %}
 					<article
-						class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'slug': animal.generateSlug()}) }}'">
+						class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}'">
 
 						{# Image + Tags #}
 						<div class="relative">

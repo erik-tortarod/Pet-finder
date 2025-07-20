@@ -18,7 +18,8 @@
 	{% endfor %}
 
 	{# Found Animals List #}
-		<section class="bg-white rounded-lg shadow"> <div class="px-4 sm:px-6 py-4 border-b border-gray-200">
+	<section class="bg-white rounded-lg shadow">
+		<div class="px-4 sm:px-6 py-4 border-b border-gray-200">
 			<h3 class="text-base sm:text-lg font-medium text-gray-900">Mis Animales Encontrados</h3>
 		</div>
 
@@ -28,8 +29,7 @@
 					<div
 						class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
 						{# Animal Data #}
-						<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer"
-						onclick="window.location.href='{{ path('app_animal_show_slug', {'slug': item.animalId.generateSlug()}) }}'">
+						<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
 							{% set primaryPhoto = null %}
 							{% if item.animalId.animalPhotos is not empty %}
 								{% for photo in item.animalId.animalPhotos %}
@@ -105,8 +105,8 @@
 
 	<script>
 		function confirmDelete(animalName) {
-			return confirm(`¿Estás seguro de que quieres eliminar la publicación de "${animalName}"? Esta acción no se puede deshacer.`);
-		}
+return confirm (`¿Estás seguro de que quieres eliminar la publicación de "${animalName}"? Esta acción no se puede deshacer.`);
+}
 	</script>
 
 </div></section>{% endblock %}
