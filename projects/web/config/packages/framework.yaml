@@ -1,9 +1,24 @@
 # see https://symfony.com/doc/current/reference/configuration/framework.html
 framework:
-    secret: '%env(APP_SECRET)%'
+    secret: "%env(APP_SECRET)%"
 
     # Note that the session will be started ONLY if you read or write from it.
-    session: true
+    session:
+        enabled: true
+        # Configuración de sesiones para mayor duración
+        cookie_lifetime: 0 # 0 = hasta que se cierre el navegador
+        cookie_secure: auto
+        cookie_samesite: lax
+        cookie_httponly: true
+        gc_maxlifetime: 3600 # 1 hora en segundos
+        gc_probability: 1
+        gc_divisor: 100
+        # Configuración de almacenamiento de sesiones
+        storage_factory_id: session.storage.factory.native
+        # Configuración de handler de sesiones
+        handler_id: ~
+        # Configuración de save_path
+        save_path: "%kernel.project_dir%/var/sessions/%kernel.environment%"
 
     #esi: true
     #fragments: true
