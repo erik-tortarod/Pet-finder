@@ -106,8 +106,8 @@ final class AnimalController extends AbstractController
         ]);
     }
 
-    #[Route('/animal/lost/{id}/delete', name: 'app_animal_lost_delete', methods: ['POST'])]
-    public function deleteLostPet(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    #[Route('/animal/delete/{id}', name: 'app_animal_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function deleteAnimal(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         // Verificar que el usuario esté autenticado
         $user = ControllerUtils::requireAuthentication(
@@ -125,106 +125,64 @@ final class AnimalController extends AbstractController
             );
         }
 
-        // Buscar la mascota perdida
-        $lostPet = $entityManager->getRepository(LostPets::class)->find($id);
+        // Buscar el animal
+        $animal = $entityManager->getRepository(Animals::class)->find($id);
 
-        if (!$lostPet) {
+        if (!$animal) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Mascota perdida no encontrada'),
+                new \Exception('Animal no encontrado'),
                 'Error'
             );
-            return $this->redirectToRoute('app_user_lost_pets');
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Determinar si es un animal perdido o encontrado
+        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
+        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+
+        $entityToDelete = null;
+
+        if ($lostPet) {
+            $entityToDelete = $lostPet;
+        } elseif ($foundAnimal) {
+            $entityToDelete = $foundAnimal;
         }
 
         // Verificar que el usuario sea el propietario de la publicación
         if (!ControllerUtils::checkOwnership(
             $user,
-            $lostPet->getUserId(),
+            $entityToDelete->getUserId(),
             fn($type, $message) => $this->addFlash($type, $message),
             'No tienes permisos para eliminar esta publicación'
         )) {
-            return $this->redirectToRoute('app_user_lost_pets');
+            return $this->redirectToRoute('app_home');
         }
 
         try {
-            // Eliminar la mascota perdida (esto también eliminará el animal asociado debido al cascade)
-            $entityManager->remove($lostPet);
+            // Eliminar la entidad (esto también eliminará el animal asociado debido al cascade)
+            $entityManager->remove($entityToDelete);
             $entityManager->flush();
 
             ControllerUtils::handleSuccess(
                 fn($type, $message) => $this->addFlash($type, $message),
-                'Mascota perdida eliminada correctamente'
+                'Animal eliminado correctamente'
             );
         } catch (\Exception $e) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
                 $e,
-                'Error al eliminar la mascota perdida'
+                'Error al eliminar el animal'
             );
         }
 
-        return $this->redirectToRoute('app_user_lost_pets');
-    }
-
-    #[Route('/animal/found/{id}/delete', name: 'app_animal_found_delete', methods: ['POST'])]
-    public function deleteFoundPet(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
-    {
-        // Verificar que el usuario esté autenticado
-        $user = ControllerUtils::requireAuthentication(
-            $request,
-            $userRepository,
-            fn() => $this->getUser(),
-            fn($type, $message) => $this->addFlash($type, $message),
-            'Debes iniciar sesión para eliminar una publicación'
-        );
-        if (!$user) {
-            return ControllerUtils::redirectToLogin(
-                fn($type, $message) => $this->addFlash($type, $message),
-                fn($route) => $this->redirectToRoute($route),
-                'Debes iniciar sesión para eliminar una publicación'
-            );
+        // Redirigir a la página anterior
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            return $this->redirect($referer);
         }
 
-        // Buscar el animal encontrado
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->find($id);
-
-        if (!$foundAnimal) {
-            ControllerUtils::handleError(
-                fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Animal encontrado no encontrado'),
-                'Error'
-            );
-            return $this->redirectToRoute('app_user_found_pets');
-        }
-
-        // Verificar que el usuario sea el propietario de la publicación
-        if (!ControllerUtils::checkOwnership(
-            $user,
-            $foundAnimal->getUserId(),
-            fn($type, $message) => $this->addFlash($type, $message),
-            'No tienes permisos para eliminar esta publicación'
-        )) {
-            return $this->redirectToRoute('app_user_found_pets');
-        }
-
-        try {
-            // Eliminar el animal encontrado (esto también eliminará el animal asociado debido al cascade)
-            $entityManager->remove($foundAnimal);
-            $entityManager->flush();
-
-            ControllerUtils::handleSuccess(
-                fn($type, $message) => $this->addFlash($type, $message),
-                'Animal encontrado eliminado correctamente'
-            );
-        } catch (\Exception $e) {
-            ControllerUtils::handleError(
-                fn($type, $message) => $this->addFlash($type, $message),
-                $e,
-                'Error al eliminar el animal encontrado'
-            );
-        }
-
-        return $this->redirectToRoute('app_user_found_pets');
+        // Si no hay referer, ir al home
+        return $this->redirectToRoute('app_home');
     }
 }

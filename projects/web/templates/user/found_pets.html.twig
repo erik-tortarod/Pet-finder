@@ -77,7 +77,7 @@
 								{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
 								Archivar
 							</a>
-							<form method="POST" action="{{ path('app_animal_found_delete', {'id': item.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
+							<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
 								<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
 									{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
 									Eliminar
