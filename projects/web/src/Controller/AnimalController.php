@@ -3,14 +3,15 @@
 namespace App\Controller;
 
 use App\Entity\Animals;
-use App\Entity\LostPets;
-use App\Entity\FoundAnimals;
-use App\Entity\Tags;
 use App\Entity\AnimalTags;
 use App\Form\EditLostPetType;
 use App\Form\EditFoundPetType;
 use App\Service\FileUploadService;
 use App\Repository\UserRepository;
+use App\Repository\AnimalsRepository;
+use App\Repository\LostPetsRepository;
+use App\Repository\FoundAnimalsRepository;
+use App\Repository\TagsRepository;
 use App\Utils\ControllerUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -29,20 +30,20 @@ final class AnimalController extends AbstractController
     }
 
     #[Route('/animal/{id}', name: 'app_animal_show', requirements: ['id' => '\d+'])]
-    public function show(int $id, EntityManagerInterface $entityManager): Response
+    public function show(int $id, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
         // Buscar el animal con todas sus relaciones
-        $animal = $entityManager->getRepository(Animals::class)->find($id);
+        $animal = $animalsRepository->find($id);
 
         if (!$animal) {
             throw $this->createNotFoundException('Animal no encontrado');
         }
 
         // Buscar si es un animal perdido
-        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
 
         // Buscar si es un animal encontrado
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
 
         // Obtener la foto principal
         $primaryPhoto = null;
@@ -67,10 +68,10 @@ final class AnimalController extends AbstractController
     }
 
     #[Route('/animal/{id}/{slug}', name: 'app_animal_show_slug', requirements: ['id' => '\d+', 'slug' => '.+'])]
-    public function showBySlug(int $id, string $slug, EntityManagerInterface $entityManager): Response
+    public function showBySlug(int $id, string $slug, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
         // Buscar el animal por ID
-        $animal = $entityManager->getRepository(Animals::class)->find($id);
+        $animal = $animalsRepository->find($id);
 
         if (!$animal) {
             throw $this->createNotFoundException('Animal no encontrado');
@@ -84,10 +85,10 @@ final class AnimalController extends AbstractController
         }
 
         // Buscar si es un animal perdido
-        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
 
         // Buscar si es un animal encontrado
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
 
         // Obtener la foto principal
         $primaryPhoto = null;
@@ -112,7 +113,7 @@ final class AnimalController extends AbstractController
     }
 
     #[Route('/animal/edit/{id}', name: 'app_animal_edit', methods: ['GET'], requirements: ['id' => '\d+'])]
-    public function edit(int $id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    public function edit(int $id, Request $request, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, UserRepository $userRepository): Response
     {
         // Verificar que el usuario esté autenticado
         $user = ControllerUtils::requireAuthentication(
@@ -131,15 +132,15 @@ final class AnimalController extends AbstractController
         }
 
         // Buscar el animal
-        $animal = $entityManager->getRepository(Animals::class)->find($id);
+        $animal = $animalsRepository->find($id);
 
         if (!$animal) {
             throw $this->createNotFoundException('Animal no encontrado');
         }
 
         // Buscar si es un animal perdido o encontrado
-        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
 
         if (!$lostPet && !$foundAnimal) {
             throw $this->createNotFoundException('Publicación no encontrada');
@@ -198,7 +199,7 @@ final class AnimalController extends AbstractController
     }
 
     #[Route('/animal/edit/{id}', name: 'app_animal_update', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function update(int $id, Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository): Response
+    public function update(int $id, Request $request, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, FileUploadService $fileUploadService, UserRepository $userRepository, TagsRepository $tagsRepository, EntityManagerInterface $entityManager): Response
     {
         // Verificar que el usuario esté autenticado
         $user = ControllerUtils::requireAuthentication(
@@ -217,15 +218,15 @@ final class AnimalController extends AbstractController
         }
 
         // Buscar el animal
-        $animal = $entityManager->getRepository(Animals::class)->find($id);
+        $animal = $animalsRepository->find($id);
 
         if (!$animal) {
             throw $this->createNotFoundException('Animal no encontrado');
         }
 
         // Buscar si es un animal perdido o encontrado
-        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
 
         if (!$lostPet && !$foundAnimal) {
             throw $this->createNotFoundException('Publicación no encontrada');
@@ -262,7 +263,7 @@ final class AnimalController extends AbstractController
                 $animal->setUpdatedAt(new \DateTimeImmutable());
 
                 // Actualizar etiquetas
-                $this->updateAnimalTags($animal, $form->get('animalTags')->getData(), $entityManager);
+                $this->updateAnimalTags($animal, $form->get('animalTags')->getData(), $entityManager, $tagsRepository);
 
                 // Procesar nueva imagen si se subió
                 $photoFile = $form->get('animalPhoto')->getData();
@@ -330,7 +331,7 @@ final class AnimalController extends AbstractController
     }
 
     #[Route('/animal/delete/{id}', name: 'app_animal_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
-    public function deleteAnimal(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    public function deleteAnimal(Request $request, int $id, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
     {
         // Verificar que el usuario esté autenticado
         $user = ControllerUtils::requireAuthentication(
@@ -349,7 +350,7 @@ final class AnimalController extends AbstractController
         }
 
         // Buscar el animal
-        $animal = $entityManager->getRepository(Animals::class)->find($id);
+        $animal = $animalsRepository->find($id);
 
         if (!$animal) {
             ControllerUtils::handleError(
@@ -361,8 +362,8 @@ final class AnimalController extends AbstractController
         }
 
         // Determinar si es un animal perdido o encontrado
-        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
 
         $entityToDelete = null;
 
@@ -424,7 +425,7 @@ final class AnimalController extends AbstractController
     /**
      * Actualiza las etiquetas del animal
      */
-    private function updateAnimalTags(Animals $animal, ?string $tagsInput, EntityManagerInterface $entityManager): void
+    private function updateAnimalTags(Animals $animal, ?string $tagsInput, EntityManagerInterface $entityManager, TagsRepository $tagsRepository): void
     {
         // Eliminar etiquetas existentes
         foreach ($animal->getAnimalTags() as $animalTag) {
@@ -433,7 +434,6 @@ final class AnimalController extends AbstractController
 
         // Agregar nuevas etiquetas
         if ($tagsInput) {
-            $tagsRepository = $entityManager->getRepository(Tags::class);
             $tagNames = array_map('trim', explode(',', $tagsInput));
 
             foreach ($tagNames as $tagName) {

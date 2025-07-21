@@ -2,8 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\AnimalPhotos;
-use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\AnimalPhotosRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -15,9 +14,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 final class ImageController extends AbstractController
 {
    #[Route('/animal/{id}', name: 'app_image_animal', requirements: ['id' => '\d+'])]
-   public function showAnimalImage(int $id, EntityManagerInterface $entityManager): Response
+   public function showAnimalImage(int $id, AnimalPhotosRepository $animalPhotosRepository): Response
    {
-      $photo = $entityManager->getRepository(AnimalPhotos::class)->find($id);
+      $photo = $animalPhotosRepository->find($id);
 
       if (!$photo) {
          throw $this->createNotFoundException('Imagen no encontrada');
@@ -47,9 +46,9 @@ final class ImageController extends AbstractController
    }
 
    #[Route('/animal/{id}/download', name: 'app_image_animal_download', requirements: ['id' => '\d+'])]
-   public function downloadAnimalImage(int $id, EntityManagerInterface $entityManager): Response
+   public function downloadAnimalImage(int $id, AnimalPhotosRepository $animalPhotosRepository): Response
    {
-      $photo = $entityManager->getRepository(AnimalPhotos::class)->find($id);
+      $photo = $animalPhotosRepository->find($id);
 
       if (!$photo) {
          throw $this->createNotFoundException('Imagen no encontrada');

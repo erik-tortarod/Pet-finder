@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\LostPets;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,55 @@ class LostPetsRepository extends ServiceEntityRepository
         parent::__construct($registry, LostPets::class);
     }
 
-    //    /**
-    //     * @return LostPets[] Returns an array of LostPets objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('l.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Find all lost pets with all related data (animals, photos, tags, users)
+     */
+    public function findAllWithRelations(): array
+    {
+        return $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->leftJoin('lp.userId', 'u')
+            ->addSelect('a', 'ap', 'at', 't', 'u')
+            ->orderBy('lp.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?LostPets
-    //    {
-    //        return $this->createQueryBuilder('l')
-    //            ->andWhere('l.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Find lost pets by user with all related data
+     */
+    public function findByUserWithRelations(User $user): array
+    {
+        return $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->addSelect('a', 'ap', 'at', 't')
+            ->where('lp.userId = :userId')
+            ->setParameter('userId', $user)
+            ->orderBy('lp.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find lost pet by animal
+     */
+    public function findByAnimal($animal): ?LostPets
+    {
+        return $this->findOneBy(['animalId' => $animal]);
+    }
+
+    /**
+     * Count lost pets by user
+     */
+    public function countByUser(User $user): int
+    {
+        return $this->count(['userId' => $user]);
+    }
+
 }

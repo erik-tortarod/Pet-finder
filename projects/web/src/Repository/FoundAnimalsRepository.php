@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\FoundAnimals;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -16,28 +17,54 @@ class FoundAnimalsRepository extends ServiceEntityRepository
         parent::__construct($registry, FoundAnimals::class);
     }
 
-    //    /**
-    //     * @return FoundAnimals[] Returns an array of FoundAnimals objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Find all found animals with all related data (animals, photos, users)
+     */
+    public function findAllWithRelations(): array
+    {
+        return $this->createQueryBuilder('fa')
+            ->leftJoin('fa.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('fa.userId', 'u')
+            ->addSelect('a', 'ap', 'u')
+            ->orderBy('fa.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 
-    //    public function findOneBySomeField($value): ?FoundAnimals
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Find found animals by user with all related data
+     */
+    public function findByUserWithRelations(User $user): array
+    {
+        return $this->createQueryBuilder('fa')
+            ->leftJoin('fa.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->addSelect('a', 'ap', 'at', 't')
+            ->where('fa.userId = :userId')
+            ->setParameter('userId', $user)
+            ->orderBy('fa.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
+     * Find found animal by animal
+     */
+    public function findByAnimal($animal): ?FoundAnimals
+    {
+        return $this->findOneBy(['animalId' => $animal]);
+    }
+
+    /**
+     * Count found animals by user
+     */
+    public function countByUser(User $user): int
+    {
+        return $this->count(['userId' => $user]);
+    }
+
+
 }

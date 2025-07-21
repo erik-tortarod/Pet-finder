@@ -4,12 +4,12 @@ namespace App\Controller;
 
 use App\Entity\Animals;
 use App\Entity\FoundAnimals;
-use App\Entity\Tags;
 use App\Entity\AnimalTags;
-use App\Entity\AnimalPhotos;
 use App\Form\FoundPetType;
 use App\Service\FileUploadService;
 use App\Utils\ControllerUtils;
+use App\Repository\FoundAnimalsRepository;
+use App\Repository\TagsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,17 +20,9 @@ use App\Repository\UserRepository;
 final class FoundPetsController extends AbstractController
 {
     #[Route('/found/pets', name: 'app_found_pets')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(FoundAnimalsRepository $foundAnimalsRepository): Response
     {
-        $foundAnimalsRepository = $entityManager->getRepository(FoundAnimals::class);
-        $foundAnimals = $foundAnimalsRepository->createQueryBuilder('fa')
-            ->leftJoin('fa.animalId', 'a')
-            ->leftJoin('a.animalPhotos', 'ap')
-            ->leftJoin('fa.userId', 'u')
-            ->addSelect('a', 'ap', 'u')
-            ->orderBy('fa.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+        $foundAnimals = $foundAnimalsRepository->findAllWithRelations();
 
         return $this->render('found_pets/index.html.twig', [
             'foundAnimals' => $foundAnimals,
@@ -38,7 +30,7 @@ final class FoundPetsController extends AbstractController
     }
 
     #[Route('/found/pets/create', name: 'app_found_pets_create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository, TagsRepository $tagsRepository): Response
     {
         // Verificar que el usuario esté autenticado usando sesión manual
         $user = ControllerUtils::requireAuthentication(
@@ -79,7 +71,6 @@ final class FoundPetsController extends AbstractController
                 // Procesar etiquetas
                 $tagsInput = $form->get('animalTags')->getData();
                 if ($tagsInput) {
-                    $tagsRepository = $entityManager->getRepository(Tags::class);
                     $tagNames = array_map('trim', explode(',', $tagsInput));
 
                     foreach ($tagNames as $tagName) {

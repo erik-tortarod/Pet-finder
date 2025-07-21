@@ -9,6 +9,8 @@ use App\Entity\AnimalTags;
 use App\Form\LostPetType;
 use App\Service\FileUploadService;
 use App\Utils\ControllerUtils;
+use App\Repository\LostPetsRepository;
+use App\Repository\TagsRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,19 +21,9 @@ use App\Repository\UserRepository;
 final class LostPetsController extends AbstractController
 {
     #[Route('/lost/pets', name: 'app_lost_pets')]
-    public function index(EntityManagerInterface $entityManager): Response
+    public function index(LostPetsRepository $lostPetsRepository): Response
     {
-        $lostPetsRepository = $entityManager->getRepository(LostPets::class);
-        $lostPets = $lostPetsRepository->createQueryBuilder('lp')
-            ->leftJoin('lp.animalId', 'a')
-            ->leftJoin('a.animalPhotos', 'ap')
-            ->leftJoin('a.animalTags', 'at')
-            ->leftJoin('at.tagId', 't')
-            ->leftJoin('lp.userId', 'u')
-            ->addSelect('a', 'ap', 'at', 't', 'u')
-            ->orderBy('lp.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+        $lostPets = $lostPetsRepository->findAllWithRelations();
 
         return $this->render('lost_pets/index.html.twig', [
             'lostPets' => $lostPets,
@@ -39,7 +31,7 @@ final class LostPetsController extends AbstractController
     }
 
     #[Route('/lost/pets/create', name: 'app_lost_pets_create')]
-    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository): Response
+    public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository, TagsRepository $tagsRepository): Response
     {
         // Verificar que el usuario esté autenticado usando sesión manual
         $user = ControllerUtils::requireAuthentication(
@@ -80,7 +72,6 @@ final class LostPetsController extends AbstractController
                 // Procesar etiquetas
                 $tagsInput = $form->get('animalTags')->getData();
                 if ($tagsInput) {
-                    $tagsRepository = $entityManager->getRepository(Tags::class);
                     $tagNames = array_map('trim', explode(',', $tagsInput));
 
                     foreach ($tagNames as $tagName) {
