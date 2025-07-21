@@ -130,43 +130,6 @@ final class FoundPetsController extends AbstractController
         ]);
     }
 
-    #[Route('/found/pets/{id}/delete', name: 'app_found_pets_delete', methods: ['POST'])]
-    public function delete(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
-    {
-        // Verificar que el usuario esté autenticado
-        $user = $this->getUserFromSession($request, $userRepository);
-        if (!$user) {
-            $this->addFlash('error', 'Debes iniciar sesión para eliminar una publicación');
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        // Buscar el animal encontrado
-        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->find($id);
-
-        if (!$foundAnimal) {
-            $this->addFlash('error', 'Animal encontrado no encontrado');
-            return $this->redirectToRoute('app_user_found_pets');
-        }
-
-        // Verificar que el usuario sea el propietario de la publicación
-        if ($foundAnimal->getUserId() !== $user) {
-            $this->addFlash('error', 'No tienes permisos para eliminar esta publicación');
-            return $this->redirectToRoute('app_user_found_pets');
-        }
-
-        try {
-            // Eliminar el animal encontrado (esto también eliminará el animal asociado debido al cascade)
-            $entityManager->remove($foundAnimal);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Animal encontrado eliminado correctamente');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Error al eliminar el animal encontrado');
-        }
-
-        return $this->redirectToRoute('app_user_found_pets');
-    }
-
     /**
      * Obtiene el usuario desde la sesión manual
      */

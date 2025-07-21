@@ -132,43 +132,6 @@ final class LostPetsController extends AbstractController
         ]);
     }
 
-    #[Route('/lost/pets/{id}/delete', name: 'app_lost_pets_delete', methods: ['POST'])]
-    public function delete(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
-    {
-        // Verificar que el usuario esté autenticado
-        $user = $this->getUserFromSession($request, $userRepository);
-        if (!$user) {
-            $this->addFlash('error', 'Debes iniciar sesión para eliminar una publicación');
-            return $this->redirectToRoute('app_auth_login');
-        }
-
-        // Buscar la mascota perdida
-        $lostPet = $entityManager->getRepository(LostPets::class)->find($id);
-
-        if (!$lostPet) {
-            $this->addFlash('error', 'Mascota perdida no encontrada');
-            return $this->redirectToRoute('app_user_lost_pets');
-        }
-
-        // Verificar que el usuario sea el propietario de la publicación
-        if ($lostPet->getUserId() !== $user) {
-            $this->addFlash('error', 'No tienes permisos para eliminar esta publicación');
-            return $this->redirectToRoute('app_user_lost_pets');
-        }
-
-        try {
-            // Eliminar la mascota perdida (esto también eliminará el animal asociado debido al cascade)
-            $entityManager->remove($lostPet);
-            $entityManager->flush();
-
-            $this->addFlash('success', 'Mascota perdida eliminada correctamente');
-        } catch (\Exception $e) {
-            $this->addFlash('error', 'Error al eliminar la mascota perdida');
-        }
-
-        return $this->redirectToRoute('app_user_lost_pets');
-    }
-
     /**
      * Obtiene el usuario desde la sesión manual
      */
