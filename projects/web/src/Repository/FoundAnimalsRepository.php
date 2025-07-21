@@ -66,5 +66,23 @@ class FoundAnimalsRepository extends ServiceEntityRepository
         return $this->count(['userId' => $user]);
     }
 
-
+    /**
+     * Find archived found animals by user with all related data
+     */
+    public function findArchivedByUserWithRelations(User $user): array
+    {
+        return $this->createQueryBuilder('fa')
+            ->leftJoin('fa.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->addSelect('a', 'ap', 'at', 't')
+            ->where('fa.userId = :userId')
+            ->andWhere('a.status = :archivedStatus')
+            ->setParameter('userId', $user)
+            ->setParameter('archivedStatus', 'ARCHIVED')
+            ->orderBy('fa.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

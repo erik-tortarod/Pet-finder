@@ -410,6 +410,188 @@ final class AnimalController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
+    #[Route('/animal/archive/{id}', name: 'app_animal_archive', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function archiveAnimal(Request $request, int $id, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        // Verificar que el usuario esté autenticado
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para archivar una publicación'
+        );
+        if (!$user) {
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para archivar una publicación'
+            );
+        }
+
+        // Buscar el animal
+        $animal = $animalsRepository->find($id);
+
+        if (!$animal) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('Animal no encontrado'),
+                'Error'
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Determinar si es un animal perdido o encontrado
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
+
+        if (!$lostPet && !$foundAnimal) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('Publicación no encontrada'),
+                'Error'
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Verificar que el usuario sea el propietario de la publicación
+        $entityToCheck = $lostPet ?: $foundAnimal;
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $entityToCheck->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'No tienes permisos para archivar esta publicación'
+        )) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        try {
+            // Cambiar el estado del animal a ARCHIVED
+            $oldStatus = $animal->getStatus();
+            $animal->setStatus('ARCHIVED');
+            $animal->setUpdatedAt(new \DateTimeImmutable());
+
+            // Asegurarse de que el animal esté siendo persistido
+            $entityManager->persist($animal);
+            $entityManager->flush();
+
+            ControllerUtils::handleSuccess(
+                fn($type, $message) => $this->addFlash($type, $message),
+                'Animal archivado correctamente'
+            );
+        } catch (\Exception $e) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                $e,
+                'Error al archivar el animal: ' . $e->getMessage()
+            );
+        }
+
+        // Redirigir a la página anterior
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            return $this->redirect($referer);
+        }
+
+        // Si no hay referer, ir al home
+        return $this->redirectToRoute('app_home');
+    }
+
+    #[Route('/animal/restore/{id}', name: 'app_animal_restore', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function restoreAnimal(Request $request, int $id, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        // Verificar que el usuario esté autenticado
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para restaurar una publicación'
+        );
+        if (!$user) {
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para restaurar una publicación'
+            );
+        }
+
+        // Buscar el animal
+        $animal = $animalsRepository->find($id);
+
+        if (!$animal) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('Animal no encontrado'),
+                'Error'
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Verificar que el animal esté archivado
+        if ($animal->getStatus() !== 'ARCHIVED') {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('El animal no está archivado'),
+                'Error'
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Determinar si es un animal perdido o encontrado
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
+
+        if (!$lostPet && !$foundAnimal) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('Publicación no encontrada'),
+                'Error'
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Verificar que el usuario sea el propietario de la publicación
+        $entityToCheck = $lostPet ?: $foundAnimal;
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $entityToCheck->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'No tienes permisos para restaurar esta publicación'
+        )) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        try {
+            // Restaurar el estado del animal según su tipo original
+            $originalStatus = $lostPet ? 'LOST' : 'FOUND';
+            $animal->setStatus($originalStatus);
+            $animal->setUpdatedAt(new \DateTimeImmutable());
+
+            $entityManager->flush();
+
+            ControllerUtils::handleSuccess(
+                fn($type, $message) => $this->addFlash($type, $message),
+                'Animal restaurado correctamente'
+            );
+        } catch (\Exception $e) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                $e,
+                'Error al restaurar el animal'
+            );
+        }
+
+        // Redirigir a la página anterior
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            return $this->redirect($referer);
+        }
+
+        // Si no hay referer, ir al home
+        return $this->redirectToRoute('app_home');
+    }
+
     /**
      * Obtiene las etiquetas del animal como string separado por comas
      */

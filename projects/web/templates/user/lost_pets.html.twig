@@ -13,7 +13,7 @@
 
 		<div class="divide-y divide-gray-200">
 			{% for item in lostPets %}
-				<article class="p-4 sm:p-6">
+				<article class="p-4 sm:p-6 {% if item.animalId.status == 'ARCHIVED' %}bg-gray-50 opacity-75{% endif %}">
 					<div
 						class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
 						{# Animal Data #}
@@ -55,28 +55,46 @@
 								</p>
 
 								<div class="flex flex-wrap items-center mt-2 gap-2">
-									<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 uppercase">
-										{% include 'components/Icon.html.twig' with {name: 'alert-triangle', size: 14, class: 'mr-1'} %}
-										{{ item.animalId.status|capitalize }}
-									</span>
+									{% if item.animalId.status == 'ARCHIVED' %}
+										<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 uppercase">
+											{% include 'components/Icon.html.twig' with {name: 'archive', size: 14, class: 'mr-1'} %}
+											{{ item.animalId.status|capitalize }}
+										</span>
+									{% else %}
+										<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 uppercase">
+											{% include 'components/Icon.html.twig' with {name: 'alert-triangle', size: 14, class: 'mr-1'} %}
+											{{ item.animalId.status|capitalize }}
+										</span>
+									{% endif %}
 								</div>
 							</div>
 						</div>
 
 						{# Action Buttons #}
 						<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
-							<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="flex items-center text-xs sm:text-sm rounded-md btn btn-primary">
-								{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 16, class: 'mr-1'} %}
-								Editar
-							</a>
-							<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
-								{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
-								Encontrada
-							</a>
-							<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
-								{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
-								Archivar
-							</a>
+							{% if item.animalId.status != 'ARCHIVED' %}
+								<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="flex items-center text-xs sm:text-sm rounded-md btn btn-primary">
+									{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 16, class: 'mr-1'} %}
+									Editar
+								</a>
+								<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
+									{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
+									Encontrada
+								</a>
+								<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmArchive('{{ item.animalId.name }}')">
+									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
+										{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
+										Archivar
+									</button>
+								</form>
+							{% else %}
+								<form method="POST" action="{{ path('app_animal_restore', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmRestore('{{ item.animalId.name }}')">
+									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
+										{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
+										Restaurar
+									</button>
+								</form>
+							{% endif %}
 							<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
 								<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
 									{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
@@ -94,6 +112,12 @@
 	<script>
 		function confirmDelete(animalName) {
 return confirm (`¿Estás seguro de que quieres eliminar la publicación de "${animalName}"? Esta acción no se puede deshacer.`);
+}
+function confirmArchive(animalName) {
+return confirm (`¿Estás seguro de que quieres archivar la publicación de "${animalName}"? La publicación se ocultará pero podrás restaurarla más tarde.`);
+}
+function confirmRestore(animalName) {
+return confirm (`¿Estás seguro de que quieres restaurar la publicación de "${animalName}"? La publicación volverá a estar activa.`);
 }
 	</script>
 

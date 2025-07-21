@@ -68,4 +68,23 @@ class LostPetsRepository extends ServiceEntityRepository
         return $this->count(['userId' => $user]);
     }
 
+    /**
+     * Find archived lost pets by user with all related data
+     */
+    public function findArchivedByUserWithRelations(User $user): array
+    {
+        return $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->addSelect('a', 'ap', 'at', 't')
+            ->where('lp.userId = :userId')
+            ->andWhere('a.status = :archivedStatus')
+            ->setParameter('userId', $user)
+            ->setParameter('archivedStatus', 'ARCHIVED')
+            ->orderBy('lp.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }
