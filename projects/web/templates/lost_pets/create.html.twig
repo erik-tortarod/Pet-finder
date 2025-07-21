@@ -7,14 +7,6 @@
 	<div class="container mt-4">
 		<h1>Registrar Animal Perdido</h1>
 
-		{% for message in app.flashes('success') %}
-			<div class="alert alert-success">{{ message }}</div>
-		{% endfor %}
-
-		{% for message in app.flashes('error') %}
-			<div class="alert alert-danger">{{ message }}</div>
-		{% endfor %}
-
 		{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
 		<div class="row">
 			<div class="col-md-6">
