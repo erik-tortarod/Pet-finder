@@ -5,6 +5,11 @@ namespace App\Controller;
 use App\Entity\Animals;
 use App\Entity\LostPets;
 use App\Entity\FoundAnimals;
+use App\Entity\Tags;
+use App\Entity\AnimalTags;
+use App\Form\EditLostPetType;
+use App\Form\EditFoundPetType;
+use App\Service\FileUploadService;
 use App\Repository\UserRepository;
 use App\Utils\ControllerUtils;
 use Doctrine\ORM\EntityManagerInterface;
@@ -106,6 +111,224 @@ final class AnimalController extends AbstractController
         ]);
     }
 
+    #[Route('/animal/edit/{id}', name: 'app_animal_edit', methods: ['GET'], requirements: ['id' => '\d+'])]
+    public function edit(int $id, Request $request, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
+    {
+        // Verificar que el usuario esté autenticado
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para editar una publicación'
+        );
+        if (!$user) {
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para editar una publicación'
+            );
+        }
+
+        // Buscar el animal
+        $animal = $entityManager->getRepository(Animals::class)->find($id);
+
+        if (!$animal) {
+            throw $this->createNotFoundException('Animal no encontrado');
+        }
+
+        // Buscar si es un animal perdido o encontrado
+        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
+        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+
+        if (!$lostPet && !$foundAnimal) {
+            throw $this->createNotFoundException('Publicación no encontrada');
+        }
+
+        // Verificar que el usuario sea el propietario de la publicación
+        $entityToCheck = $lostPet ?: $foundAnimal;
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $entityToCheck->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'No tienes permisos para editar esta publicación'
+        )) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Crear el formulario apropiado con datos pre-llenados
+        if ($lostPet) {
+            $form = $this->createForm(EditLostPetType::class, $animal, [
+                'lostPet' => $lostPet
+            ]);
+
+            // Establecer datos específicos de LostPets
+            $form->get('animalType')->setData($animal->getAnimalType());
+            $form->get('animalTags')->setData($this->getAnimalTagsAsString($animal));
+            $form->get('lostDate')->setData($lostPet->getLostDate());
+            $form->get('lostTime')->setData($lostPet->getLostTime());
+            $form->get('lostZone')->setData($lostPet->getLostZone());
+            $form->get('lostAddress')->setData($lostPet->getLostAddress());
+            $form->get('lostCircumstances')->setData($lostPet->getLostCircumstances());
+            $form->get('rewardAmount')->setData($lostPet->getRewardAmount());
+            $form->get('rewardDescription')->setData($lostPet->getRewardDescription());
+        } else {
+            $form = $this->createForm(EditFoundPetType::class, $animal, [
+                'foundAnimal' => $foundAnimal
+            ]);
+
+            // Establecer datos específicos de FoundAnimals
+            $form->get('animalType')->setData($animal->getAnimalType());
+            $form->get('animalTags')->setData($this->getAnimalTagsAsString($animal));
+            $form->get('foundDate')->setData($foundAnimal->getFoundDate());
+            $form->get('foundTime')->setData($foundAnimal->getFoundTime());
+            $form->get('foundZone')->setData($foundAnimal->getFoundZone());
+            $form->get('foundAddress')->setData($foundAnimal->getFoundAddress());
+            $form->get('foundCircumstances')->setData($foundAnimal->getFoundCircumstances());
+            $form->get('additionalNotes')->setData($foundAnimal->getAdditionalNotes());
+        }
+
+        return $this->render('animal/edit.html.twig', [
+            'animal' => $animal,
+            'lostPet' => $lostPet,
+            'foundAnimal' => $foundAnimal,
+            'form' => $form->createView(),
+            'isLostPet' => $lostPet !== null,
+        ]);
+    }
+
+    #[Route('/animal/edit/{id}', name: 'app_animal_update', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function update(int $id, Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository): Response
+    {
+        // Verificar que el usuario esté autenticado
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para editar una publicación'
+        );
+        if (!$user) {
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para editar una publicación'
+            );
+        }
+
+        // Buscar el animal
+        $animal = $entityManager->getRepository(Animals::class)->find($id);
+
+        if (!$animal) {
+            throw $this->createNotFoundException('Animal no encontrado');
+        }
+
+        // Buscar si es un animal perdido o encontrado
+        $lostPet = $entityManager->getRepository(LostPets::class)->findOneBy(['animalId' => $animal]);
+        $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->findOneBy(['animalId' => $animal]);
+
+        if (!$lostPet && !$foundAnimal) {
+            throw $this->createNotFoundException('Publicación no encontrada');
+        }
+
+        // Verificar que el usuario sea el propietario de la publicación
+        $entityToCheck = $lostPet ?: $foundAnimal;
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $entityToCheck->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'No tienes permisos para editar esta publicación'
+        )) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Crear el formulario apropiado
+        if ($lostPet) {
+            $form = $this->createForm(EditLostPetType::class, $animal, [
+                'lostPet' => $lostPet
+            ]);
+        } else {
+            $form = $this->createForm(EditFoundPetType::class, $animal, [
+                'foundAnimal' => $foundAnimal
+            ]);
+        }
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                // Actualizar datos del animal (mapeados automáticamente)
+                $animal->setAnimalType($form->get('animalType')->getData());
+                $animal->setUpdatedAt(new \DateTimeImmutable());
+
+                // Actualizar etiquetas
+                $this->updateAnimalTags($animal, $form->get('animalTags')->getData(), $entityManager);
+
+                // Procesar nueva imagen si se subió
+                $photoFile = $form->get('animalPhoto')->getData();
+                if ($photoFile) {
+                    try {
+                        $animalPhoto = $fileUploadService->uploadAnimalPhoto($photoFile, $animal, $user->getEmail());
+                        $entityManager->persist($animalPhoto);
+                    } catch (\Exception $e) {
+                        ControllerUtils::handleError(
+                            fn($type, $message) => $this->addFlash($type, $message),
+                            $e,
+                            'Error al procesar la imagen'
+                        );
+                        throw $e;
+                    }
+                }
+
+                // Actualizar datos específicos según el tipo
+                if ($lostPet) {
+                    $lostPet->setLostDate($form->get('lostDate')->getData());
+                    $lostPet->setLostTime($form->get('lostTime')->getData());
+                    $lostPet->setLostZone($form->get('lostZone')->getData());
+                    $lostPet->setLostAddress($form->get('lostAddress')->getData());
+                    $lostPet->setLostCircumstances($form->get('lostCircumstances')->getData());
+                    $lostPet->setRewardAmount($form->get('rewardAmount')->getData());
+                    $lostPet->setRewardDescription($form->get('rewardDescription')->getData());
+                    $lostPet->setUpdatedAt(new \DateTimeImmutable());
+                } else {
+                    $foundAnimal->setFoundDate($form->get('foundDate')->getData());
+                    $foundAnimal->setFoundTime($form->get('foundTime')->getData());
+                    $foundAnimal->setFoundZone($form->get('foundZone')->getData());
+                    $foundAnimal->setFoundAddress($form->get('foundAddress')->getData());
+                    $foundAnimal->setFoundCircumstances($form->get('foundCircumstances')->getData());
+                    $foundAnimal->setAdditionalNotes($form->get('additionalNotes')->getData());
+                    $foundAnimal->setUpdatedAt(new \DateTimeImmutable());
+                }
+
+                $entityManager->flush();
+
+                ControllerUtils::handleSuccess(
+                    fn($type, $message) => $this->addFlash($type, $message),
+                    'Animal actualizado correctamente'
+                );
+
+                return $this->redirectToRoute('app_animal_show_slug', [
+                    'id' => $animal->getId(),
+                    'slug' => $animal->generateSlug()
+                ]);
+            } catch (\Exception $e) {
+                ControllerUtils::handleError(
+                    fn($type, $message) => $this->addFlash($type, $message),
+                    $e,
+                    'Error al actualizar el animal'
+                );
+            }
+        }
+
+        return $this->render('animal/edit.html.twig', [
+            'animal' => $animal,
+            'lostPet' => $lostPet,
+            'foundAnimal' => $foundAnimal,
+            'form' => $form->createView(),
+            'isLostPet' => $lostPet !== null,
+        ]);
+    }
+
     #[Route('/animal/delete/{id}', name: 'app_animal_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
     public function deleteAnimal(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
@@ -184,5 +407,48 @@ final class AnimalController extends AbstractController
 
         // Si no hay referer, ir al home
         return $this->redirectToRoute('app_home');
+    }
+
+    /**
+     * Obtiene las etiquetas del animal como string separado por comas
+     */
+    private function getAnimalTagsAsString(Animals $animal): string
+    {
+        $tags = [];
+        foreach ($animal->getAnimalTags() as $animalTag) {
+            $tags[] = $animalTag->getTagId()->getName();
+        }
+        return implode(', ', $tags);
+    }
+
+    /**
+     * Actualiza las etiquetas del animal
+     */
+    private function updateAnimalTags(Animals $animal, ?string $tagsInput, EntityManagerInterface $entityManager): void
+    {
+        // Eliminar etiquetas existentes
+        foreach ($animal->getAnimalTags() as $animalTag) {
+            $entityManager->remove($animalTag);
+        }
+
+        // Agregar nuevas etiquetas
+        if ($tagsInput) {
+            $tagsRepository = $entityManager->getRepository(Tags::class);
+            $tagNames = array_map('trim', explode(',', $tagsInput));
+
+            foreach ($tagNames as $tagName) {
+                if (!empty($tagName)) {
+                    $tag = $tagsRepository->findOrCreateByName($tagName);
+                    $entityManager->persist($tag);
+
+                    $animalTag = new AnimalTags();
+                    $animalTag->setAnimalId($animal);
+                    $animalTag->setTagId($tag);
+                    $animalTag->setCreatedAt(new \DateTimeImmutable());
+
+                    $entityManager->persist($animalTag);
+                }
+            }
+        }
     }
 }
