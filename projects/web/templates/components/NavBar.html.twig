@@ -1,66 +1,64 @@
 <header class="bg-white shadow-lg">
 	<nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div class="flex justify-between h-16">
-            <div class="flex items-center">
-               <div class="flex-shrink-0">
-                  <h1 class="text-xl sm:text-2xl font-bold text-blue-600">
-                     {% include 'components/Icon.html.twig' with {name: 'paw', size: 24, class: 'inline mr-2'} %}PetFinder
-                  </h1>
-               </div>
-            </div>
+		<div class="flex justify-between h-16">
+			<div class="flex items-center">
+				<div class="flex-shrink-0">
+					<h1 class="text-xl sm:text-2xl font-bold text-blue-600">
+						{% include 'components/Icon.html.twig' with {name: 'paw', size: 24, class: 'inline mr-2'} %}PetFinder
+					</h1>
+				</div>
+			</div>
 
-            <!-- Desktop Navigation -->
-            <div class="hidden md:flex items-center space-x-2 lg:space-x-4">
-               <a href="{{path('app_home')}}"
-                  class="text-blue-600 px-2 lg:px-3 py-2 rounded-md text-sm font-medium border-b-2 border-blue-600 transition-colors">Inicio</a>
-               <a href="{{path('app_lost_pets')}}"
-                  class="text-gray-700 hover:text-blue-600 px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors">Buscados</a>
-               <a href="{{path('app_found_pets')}}"
-                  class="text-gray-700 hover:text-blue-600 px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors">Avistados</a>
-               <a href="{{path('app_lost_pets_create')}}"
-                  class="bg-blue-600 text-white px-3 lg:px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors">Publicar</a>
-               <div class="relative">
-                  <a href="{{path('app_user')}}"
-                     class="flex items-center text-gray-700 hover:text-blue-600 px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors">
-                     {% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-1 lg:mr-2'} %}<span class="hidden lg:inline">Mi Cuenta</span>
-                     {% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 12, class: 'ml-1'} %}
-                  </a>
-               </div>
-            </div>
+			<!-- Desktop Navigation -->
+			<div class="hidden md:flex items-center space-x-2 lg:space-x-4">
+				<a href="{{path('app_home')}}" class="nav-link {% if app.request.get('_route') == 'app_home' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
+					Inicio
+				</a>
+				<a href="{{path('app_lost_pets')}}" class="nav-link {% if app.request.get('_route') == 'app_lost_pets' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
+					Buscados
+				</a>
+				<a href="{{path('app_found_pets')}}" class="nav-link {% if app.request.get('_route') == 'app_found_pets' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
+					Avistados
+				</a>
+				<a href="{{path('app_lost_pets_create')}}" class="nav-publish-btn">
+					Publicar
+				</a>
+				<div class="relative">
+					<a href="{{path('app_user')}}" class="nav-user-link {% if app.request.get('_route') starts with 'app_user' %}nav-user-link-desktop active{% else %}nav-user-link-desktop{% endif %}">
+						{% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-1 lg:mr-2'} %}
+						<span class="hidden lg:inline">Mi Cuenta</span>
+						{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 12, class: 'ml-1'} %}
+					</a>
+				</div>
+			</div>
 
-            <!-- Mobile menu button -->
-            <div class="md:hidden flex items-center">
-               <button id="mobile-menu-button"
-                  class="text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  {% include 'components/Icon.html.twig' with {name: 'menu', size: 20} %}
-               </button>
-            </div>
-         </div>
+			<!-- Mobile menu button -->
+			<div class="md:hidden flex items-center">
+				<button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
+					{% include 'components/Icon.html.twig' with {name: 'menu', size: 20} %}
+				</button>
+			</div>
+		</div>
 
-         <!-- Mobile Navigation Menu -->
-         <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg">
-            <div class="px-2 pt-2 pb-3 space-y-1">
-               <a href="{{path('app_home')}}"
-                  class="block text-blue-600 bg-blue-50 px-3 py-3 rounded-md text-base font-medium border-l-4 border-blue-600">
-                  {% include 'components/Icon.html.twig' with {name: 'home', size: 20, class: 'inline mr-3'} %}Inicio
-               </a>
-               <a href="{{path('app_lost_pets')}}"
-                  class="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-3 rounded-md text-base font-medium transition-colors">
-                  {% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'inline mr-3'} %}Buscados
-               </a>
-               <a href="{{path('app_found_pets')}}"
-                  class="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-3 rounded-md text-base font-medium transition-colors">
-                  {% include 'components/Icon.html.twig' with {name: 'heart', size: 20, class: 'inline mr-3'} %}Avistados
-               </a>
-               <a href="{{path('app_lost_pets_create')}}"
-                  class="block bg-blue-600 text-white hover:bg-blue-700 px-3 py-3 rounded-md text-base font-medium transition-colors">
-                  {% include 'components/Icon.html.twig' with {name: 'plus', size: 20, class: 'inline mr-3'} %}Publicar
-               </a>
-               <a href="{{path('app_user')}}"
-                  class="block text-gray-700 hover:text-blue-600 hover:bg-blue-50 px-3 py-3 rounded-md text-base font-medium transition-colors">
-                  {% include 'components/Icon.html.twig' with {name: 'user', size: 20, class: 'inline mr-3'} %}Mi Cuenta
-               </a>
-            </div>
-         </div>
+		<!-- Mobile Navigation Menu -->
+		<div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg">
+			<div class="px-2 pt-2 pb-3 space-y-1">
+				<a href="{{path('app_home')}}" class="{% if app.request.get('_route') == 'app_home' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
+					{% include 'components/Icon.html.twig' with {name: 'home', size: 20, class: 'inline mr-3'} %}Inicio
+				</a>
+				<a href="{{path('app_lost_pets')}}" class="{% if app.request.get('_route') == 'app_lost_pets' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
+					{% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'inline mr-3'} %}Buscados
+				</a>
+				<a href="{{path('app_found_pets')}}" class="{% if app.request.get('_route') == 'app_found_pets' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
+					{% include 'components/Icon.html.twig' with {name: 'heart', size: 20, class: 'inline mr-3'} %}Avistados
+				</a>
+				<a href="{{path('app_lost_pets_create')}}" class="nav-publish-btn-mobile">
+					{% include 'components/Icon.html.twig' with {name: 'plus', size: 20, class: 'inline mr-3'} %}Publicar
+				</a>
+				<a href="{{path('app_user')}}" class="{% if app.request.get('_route') starts with 'app_user' %}nav-user-link-mobile active{% else %}nav-user-link-mobile{% endif %}">
+					{% include 'components/Icon.html.twig' with {name: 'user', size: 20, class: 'inline mr-3'} %}Mi Cuenta
+				</a>
+			</div>
+		</div>
 	</nav>
 </header>

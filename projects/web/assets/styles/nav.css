@@ -1,0 +1,50 @@
+/* Navbar Base Styles */
+.nav-link {
+    @apply px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors;
+}
+
+.nav-link-desktop {
+    @apply text-gray-700 hover:text-blue-600;
+}
+
+.nav-link-desktop.active {
+    @apply text-blue-600 border-b-2 border-blue-600;
+}
+
+.nav-link-mobile {
+    @apply block px-3 py-3 rounded-md text-base font-medium transition-colors text-gray-700 hover:text-blue-600 hover:bg-blue-50;
+}
+
+.nav-link-mobile.active {
+    @apply text-blue-600 bg-blue-50 border-l-4 border-blue-600;
+}
+
+/* User Account Link */
+.nav-user-link {
+    @apply flex items-center px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors;
+}
+
+.nav-user-link-desktop {
+    @apply text-gray-700 hover:text-blue-600;
+}
+
+.nav-user-link-desktop.active {
+    @apply text-blue-600;
+}
+
+.nav-user-link-mobile {
+    @apply block px-3 py-3 rounded-md text-base font-medium transition-colors text-gray-700 hover:text-blue-600 hover:bg-blue-50;
+}
+
+.nav-user-link-mobile.active {
+    @apply text-blue-600 bg-blue-50 border-l-4 border-blue-600;
+}
+
+/* Publish Button */
+.nav-publish-btn {
+    @apply bg-blue-600 text-white px-3 lg:px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 transition-colors;
+}
+
+.nav-publish-btn-mobile {
+    @apply block bg-blue-600 text-white hover:bg-blue-700 px-3 py-3 rounded-md text-base font-medium transition-colors;
+}
