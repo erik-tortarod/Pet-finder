@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Repository\LostPetsRepository;
 use App\Repository\FoundAnimalsRepository;
 use App\Utils\ControllerUtils;
+use App\Form\UserProfileUpdateType;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserController extends AbstractController
@@ -40,7 +41,7 @@ final class UserController extends AbstractController
         $lostPets = $lostPetsRepository->findByUserWithRelations($user);
 
         // Obtener estadísticas
-        $stats = $this->getUserStats($lostPetsRepository, $user);
+        $stats = $this->getUserStats($lostPetsRepository, null, $user);
 
         return $this->render('user/lost_pets.html.twig', [
             'user' => $user,
@@ -69,7 +70,7 @@ final class UserController extends AbstractController
         $foundAnimals = $foundAnimalsRepository->findByUserWithRelations($user);
 
         // Obtener estadísticas
-        $stats = $this->getUserStats($foundAnimalsRepository, $user);
+        $stats = $this->getUserStats(null, $foundAnimalsRepository, $user);
 
         return $this->render('user/found_pets.html.twig', [
             'user' => $user,
@@ -80,7 +81,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/settings', name: 'app_user_settings')]
-    public function userSettings(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
+    public function userSettings(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, EntityManagerInterface $entityManager): Response
     {
         $user = ControllerUtils::requireValidatedAuthentication(
             $request,
@@ -94,6 +95,26 @@ final class UserController extends AbstractController
             );
         }
 
+        // Crear el formulario de edición de perfil
+        $form = $this->createForm(UserProfileUpdateType::class, $user);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                // Actualizar la fecha de modificación
+                $user->setUpdatedAt(new \DateTimeImmutable());
+
+                // Persistir los cambios
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Perfil actualizado correctamente');
+                return $this->redirectToRoute('app_user_settings');
+            } catch (\Exception $e) {
+                $this->addFlash('error', 'Error al actualizar el perfil: ' . $e->getMessage());
+            }
+        }
+
         // Obtener estadísticas
         $stats = $this->getUserStats($lostPetsRepository, $foundAnimalsRepository, $user);
 
@@ -101,6 +122,7 @@ final class UserController extends AbstractController
             'user' => $user,
             'stats' => $stats,
             'activeTab' => 'settings',
+            'form' => $form->createView(),
         ]);
     }
 

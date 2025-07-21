@@ -1,48 +1,90 @@
 {% extends 'user/base.html.twig' %}
 
-{% block title %}Mis Animales Avistados
+{% block title %}Configuración del Perfil
 {% endblock %}
 
 {% block content %}
 	<div
 		class="space-y-6">
-
 		{# Profile Information #}
 		<div class="bg-white rounded-lg shadow">
-			<h3 class="text-lg font-medium text-gray-900 flex items-center">
+			<h3 class="text-lg font-medium text-gray-900 flex items-center p-6 border-b border-gray-200">
 				{% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-2'} %}
 				Información del Perfil
 			</h3>
 		</div>
 
 		<div class="p-6">
-			<form class="space-y-4">
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-					<div>
-						<label for="first-name" class="block text-sm font-medium text-gray-700 mb-2">Nombre</label>
-						<input type="text" id="first-name" name="first-name" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" value="{{ user.firstName }}">
-					</div>
-					<div>
-						<label for="last-name" class="block text-sm font-medium text-gray-700 mb-2">Apellido</label>
-						<input type="text" id="last-name" name="last-name" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" value="{{ user.lastName }}">
-					</div>
-					<div>
-						<label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
-						<input type="text" id="email" name="email" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" value="{{ user.email }}">
-					</div>
-					<div>
-						<label for="phone" class="block text-sm font-medium text-gray-700 mb-2">Teléfono</label>
-						<input type="text" id="phone" name="phone" class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500" value="{{ user.phone }}">
-					</div>
+			{{ form_start(form, {'attr': {'class': 'space-y-4', 'id': 'profile-update-form'}}) }}
+			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+				<div>
+					{{ form_label(form.firstName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+					{{ form_widget(form.firstName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+					{% if form.firstName.vars.errors|length > 0 %}
+						<div class="mt-1 text-red-600 text-sm">
+							{% for error in form.firstName.vars.errors %}
+								<div class="flex items-center">
+									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+									{{ error.message }}
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
 				</div>
-				<div class="flex" style="justify-content: end;">
-					<button class="btn btn-primary flex items-center">
-                  {# TODO poner un boton de SAVE #}
-						{% include 'components/Icon.html.twig' with {name: 'save', size: 16, class: 'mr-2'} %}
-						Guardar Cambios
-					</button>
+				<div>
+					{{ form_label(form.lastName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+					{{ form_widget(form.lastName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+					{% if form.lastName.vars.errors|length > 0 %}
+						<div class="mt-1 text-red-600 text-sm">
+							{% for error in form.lastName.vars.errors %}
+								<div class="flex items-center">
+									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+									{{ error.message }}
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
 				</div>
-			</form>
+				<div>
+					{{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+					{{ form_widget(form.email, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+					{% if form.email.vars.errors|length > 0 %}
+						<div class="mt-1 text-red-600 text-sm">
+							{% for error in form.email.vars.errors %}
+								<div class="flex items-center">
+									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+									{{ error.message }}
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+				</div>
+				<div>
+					{{ form_label(form.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+					{{ form_widget(form.phone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+					{% if form.phone.vars.errors|length > 0 %}
+						<div class="mt-1 text-red-600 text-sm">
+							{% for error in form.phone.vars.errors %}
+								<div class="flex items-center">
+									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+									{{ error.message }}
+								</div>
+							{% endfor %}
+						</div>
+					{% endif %}
+				</div>
+			</div>
+			<div class="flex justify-end">
+				<button type="submit" class="btn btn-primary flex items-center" id="save-button">
+					{% include 'components/Icon.html.twig' with {name: 'save', size: 16, class: 'mr-2'} %}
+					<span class="save-text">Guardar Cambios</span>
+					<span class="saving-text hidden">Guardando...</span>
+				</button>
+			</div>
+			{{ form_end(form) }}
 		</div>
 	</div>
+
+
+	<script src="{{ asset('page/user/settings.js') }}"></script>
 {% endblock %}
