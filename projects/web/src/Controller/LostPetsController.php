@@ -6,15 +6,14 @@ use App\Entity\Animals;
 use App\Entity\LostPets;
 use App\Entity\Tags;
 use App\Entity\AnimalTags;
-use App\Entity\AnimalPhotos;
 use App\Form\LostPetType;
 use App\Service\FileUploadService;
+use App\Utils\ControllerUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Component\String\Slugger\SluggerInterface;
 use App\Repository\UserRepository;
 
 final class LostPetsController extends AbstractController
@@ -43,10 +42,19 @@ final class LostPetsController extends AbstractController
     public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository): Response
     {
         // Verificar que el usuario esté autenticado usando sesión manual
-        $user = $this->getUserFromSession($request, $userRepository);
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para crear una publicación'
+        );
         if (!$user) {
-            $this->addFlash('error', 'Debes iniciar sesión para crear una publicación');
-            return $this->redirectToRoute('app_auth_login');
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para crear una publicación'
+            );
         }
 
         $form = $this->createForm(LostPetType::class);
@@ -97,7 +105,11 @@ final class LostPetsController extends AbstractController
                         $animalPhoto = $fileUploadService->uploadAnimalPhoto($photoFile, $animal, $user->getEmail());
                         $entityManager->persist($animalPhoto);
                     } catch (\Exception $e) {
-                        $this->addFlash('error', 'Error al procesar la imagen: ' . $e->getMessage());
+                        ControllerUtils::handleError(
+                            fn($type, $message) => $this->addFlash($type, $message),
+                            $e,
+                            'Error al procesar la imagen'
+                        );
                         throw $e; // Re-lanzar para que se maneje en el catch principal
                     }
                 }
@@ -119,10 +131,17 @@ final class LostPetsController extends AbstractController
                 $entityManager->persist($lostPet);
                 $entityManager->flush();
 
-                $this->addFlash('success', 'Animal perdido registrado exitosamente.');
+                ControllerUtils::handleSuccess(
+                    fn($type, $message) => $this->addFlash($type, $message),
+                    'Animal perdido registrado exitosamente.'
+                );
                 return $this->redirectToRoute('app_lost_pets');
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Error al registrar el animal perdido: ' . $e->getMessage());
+                ControllerUtils::handleError(
+                    fn($type, $message) => $this->addFlash($type, $message),
+                    $e,
+                    'Error al registrar el animal perdido'
+                );
             }
         }
 
@@ -130,27 +149,5 @@ final class LostPetsController extends AbstractController
             'controller_name' => 'LostPetsController',
             'form' => $form->createView(),
         ]);
-    }
-
-    /**
-     * Obtiene el usuario desde la sesión manual
-     */
-    private function getUserFromSession(Request $request, UserRepository $userRepository)
-    {
-        // Primero intentar con el sistema de seguridad de Symfony
-        $user = $this->getUser();
-        if ($user) {
-            return $user;
-        }
-
-        // Si no funciona, usar la sesión manual
-        $session = $request->getSession();
-        $userId = $session->get('user_id');
-
-        if (!$userId) {
-            return null;
-        }
-
-        return $userRepository->find($userId);
     }
 }

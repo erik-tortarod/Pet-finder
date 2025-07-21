@@ -6,6 +6,7 @@ use App\Entity\Animals;
 use App\Entity\LostPets;
 use App\Entity\FoundAnimals;
 use App\Repository\UserRepository;
+use App\Utils\ControllerUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,23 +110,40 @@ final class AnimalController extends AbstractController
     public function deleteLostPet(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         // Verificar que el usuario esté autenticado
-        $user = $this->getUserFromSession($request, $userRepository);
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para eliminar una publicación'
+        );
         if (!$user) {
-            $this->addFlash('error', 'Debes iniciar sesión para eliminar una publicación');
-            return $this->redirectToRoute('app_auth_login');
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para eliminar una publicación'
+            );
         }
 
         // Buscar la mascota perdida
         $lostPet = $entityManager->getRepository(LostPets::class)->find($id);
 
         if (!$lostPet) {
-            $this->addFlash('error', 'Mascota perdida no encontrada');
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('Mascota perdida no encontrada'),
+                'Error'
+            );
             return $this->redirectToRoute('app_user_lost_pets');
         }
 
         // Verificar que el usuario sea el propietario de la publicación
-        if ($lostPet->getUserId() !== $user) {
-            $this->addFlash('error', 'No tienes permisos para eliminar esta publicación');
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $lostPet->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'No tienes permisos para eliminar esta publicación'
+        )) {
             return $this->redirectToRoute('app_user_lost_pets');
         }
 
@@ -134,9 +152,16 @@ final class AnimalController extends AbstractController
             $entityManager->remove($lostPet);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Mascota perdida eliminada correctamente');
+            ControllerUtils::handleSuccess(
+                fn($type, $message) => $this->addFlash($type, $message),
+                'Mascota perdida eliminada correctamente'
+            );
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Error al eliminar la mascota perdida');
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                $e,
+                'Error al eliminar la mascota perdida'
+            );
         }
 
         return $this->redirectToRoute('app_user_lost_pets');
@@ -146,23 +171,40 @@ final class AnimalController extends AbstractController
     public function deleteFoundPet(Request $request, int $id, EntityManagerInterface $entityManager, UserRepository $userRepository): Response
     {
         // Verificar que el usuario esté autenticado
-        $user = $this->getUserFromSession($request, $userRepository);
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'Debes iniciar sesión para eliminar una publicación'
+        );
         if (!$user) {
-            $this->addFlash('error', 'Debes iniciar sesión para eliminar una publicación');
-            return $this->redirectToRoute('app_auth_login');
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                'Debes iniciar sesión para eliminar una publicación'
+            );
         }
 
         // Buscar el animal encontrado
         $foundAnimal = $entityManager->getRepository(FoundAnimals::class)->find($id);
 
         if (!$foundAnimal) {
-            $this->addFlash('error', 'Animal encontrado no encontrado');
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception('Animal encontrado no encontrado'),
+                'Error'
+            );
             return $this->redirectToRoute('app_user_found_pets');
         }
 
         // Verificar que el usuario sea el propietario de la publicación
-        if ($foundAnimal->getUserId() !== $user) {
-            $this->addFlash('error', 'No tienes permisos para eliminar esta publicación');
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $foundAnimal->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            'No tienes permisos para eliminar esta publicación'
+        )) {
             return $this->redirectToRoute('app_user_found_pets');
         }
 
@@ -171,33 +213,18 @@ final class AnimalController extends AbstractController
             $entityManager->remove($foundAnimal);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Animal encontrado eliminado correctamente');
+            ControllerUtils::handleSuccess(
+                fn($type, $message) => $this->addFlash($type, $message),
+                'Animal encontrado eliminado correctamente'
+            );
         } catch (\Exception $e) {
-            $this->addFlash('error', 'Error al eliminar el animal encontrado');
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                $e,
+                'Error al eliminar el animal encontrado'
+            );
         }
 
         return $this->redirectToRoute('app_user_found_pets');
-    }
-
-    /**
-     * Obtiene el usuario desde la sesión manual
-     */
-    private function getUserFromSession(Request $request, UserRepository $userRepository)
-    {
-        // Primero intentar con el sistema de seguridad de Symfony
-        $user = $this->getUser();
-        if ($user) {
-            return $user;
-        }
-
-        // Si no funciona, usar la sesión manual
-        $session = $request->getSession();
-        $userId = $session->get('user_id');
-
-        if (!$userId) {
-            return null;
-        }
-
-        return $userRepository->find($userId);
     }
 }

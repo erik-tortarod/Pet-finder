@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Request;
 use App\Repository\UserRepository;
 use App\Repository\LostPetsRepository;
 use App\Repository\FoundAnimalsRepository;
+use App\Utils\ControllerUtils;
 use Doctrine\ORM\EntityManagerInterface;
 
 final class UserController extends AbstractController
@@ -23,9 +24,16 @@ final class UserController extends AbstractController
     #[Route('/user/lost-pets', name: 'app_user_lost_pets')]
     public function userLostPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, EntityManagerInterface $entityManager): Response
     {
-        $user = $this->getAuthenticatedUser($request, $userRepository);
+        $user = ControllerUtils::requireValidatedAuthentication(
+            $request,
+            $userRepository,
+            fn($type, $message) => $this->addFlash($type, $message)
+        );
         if (!$user) {
-            return $this->redirectToRoute('app_auth_login');
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route)
+            );
         }
 
         // Obtener todas las mascotas perdidas del usuario con toda la información
@@ -55,9 +63,16 @@ final class UserController extends AbstractController
     #[Route('/user/found-pets', name: 'app_user_found_pets')]
     public function userFoundPets(Request $request, UserRepository $userRepository, FoundAnimalsRepository $foundAnimalsRepository, EntityManagerInterface $entityManager): Response
     {
-        $user = $this->getAuthenticatedUser($request, $userRepository);
+        $user = ControllerUtils::requireValidatedAuthentication(
+            $request,
+            $userRepository,
+            fn($type, $message) => $this->addFlash($type, $message)
+        );
         if (!$user) {
-            return $this->redirectToRoute('app_auth_login');
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route)
+            );
         }
 
         // Obtener todos los animales encontrados del usuario con toda la información
@@ -87,9 +102,16 @@ final class UserController extends AbstractController
     #[Route('/user/settings', name: 'app_user_settings')]
     public function userSettings(Request $request, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
     {
-        $user = $this->getAuthenticatedUser($request, $userRepository);
+        $user = ControllerUtils::requireValidatedAuthentication(
+            $request,
+            $userRepository,
+            fn($type, $message) => $this->addFlash($type, $message)
+        );
         if (!$user) {
-            return $this->redirectToRoute('app_auth_login');
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route)
+            );
         }
 
         // Obtener estadísticas
@@ -100,38 +122,6 @@ final class UserController extends AbstractController
             'stats' => $stats,
             'activeTab' => 'settings',
         ]);
-    }
-
-    /**
-     * Helper method to get authenticated user
-     */
-    private function getAuthenticatedUser(Request $request, UserRepository $userRepository)
-    {
-        $session = $request->getSession();
-        $userId = $session->get('user_id');
-
-        if (!$userId) {
-            $this->addFlash('error', 'Debes iniciar sesión para acceder a esta página');
-            return null;
-        }
-
-        $user = $userRepository->find($userId);
-
-        if (!$user) {
-            $this->addFlash('error', 'Usuario no encontrado');
-            $session->clear();
-            $session->invalidate();
-            return null;
-        }
-
-        if (!$user->isActive()) {
-            $this->addFlash('error', 'Tu cuenta está desactivada');
-            $session->clear();
-            $session->invalidate();
-            return null;
-        }
-
-        return $user;
     }
 
     /**
