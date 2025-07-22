@@ -56,7 +56,7 @@ class AppFixtures extends Fixture
       $user1->setLastLogin(new \DateTime());
       $user1->setIsActive(true);
       $user1->setIsShelter(false);
-      $user1->setRoles(['ROLE_USER']);
+      $user1->setRoles(['ROLE_USER', 'ROLE_ADMIN']);
 
       $manager->persist($user1);
       $users[] = $user1;
