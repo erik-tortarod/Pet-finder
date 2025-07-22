@@ -23,7 +23,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/lost-pets', name: 'app_user_lost_pets')]
-    public function userLostPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository): Response
+    public function userLostPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
         $user = ControllerUtils::requireValidatedAuthentication(
             $request,
@@ -41,7 +41,7 @@ final class UserController extends AbstractController
         $lostPets = $lostPetsRepository->findByUserWithRelations($user);
 
         // Obtener estadísticas
-        $stats = $this->getUserStats($lostPetsRepository, null, $user);
+        $stats = $this->getUserStats($lostPetsRepository, $foundAnimalsRepository, $user);
 
         return $this->render('user/lost_pets.html.twig', [
             'user' => $user,
@@ -52,7 +52,7 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/found-pets', name: 'app_user_found_pets')]
-    public function userFoundPets(Request $request, UserRepository $userRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
+    public function userFoundPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
         $user = ControllerUtils::requireValidatedAuthentication(
             $request,
@@ -70,7 +70,7 @@ final class UserController extends AbstractController
         $foundAnimals = $foundAnimalsRepository->findByUserWithRelations($user);
 
         // Obtener estadísticas
-        $stats = $this->getUserStats(null, $foundAnimalsRepository, $user);
+        $stats = $this->getUserStats($lostPetsRepository, $foundAnimalsRepository, $user);
 
         return $this->render('user/found_pets.html.twig', [
             'user' => $user,
@@ -133,8 +133,8 @@ final class UserController extends AbstractController
     {
         // If we have both repositories and user, use them directly
         if ($lostPetsRepository && $foundAnimalsRepository && $user) {
-            $totalLostPets = $lostPetsRepository->countByUser($user);
-            $totalFoundAnimals = $foundAnimalsRepository->countByUser($user);
+            $totalLostPets = $lostPetsRepository->countActiveByUser($user);
+            $totalFoundAnimals = $foundAnimalsRepository->countActiveByUser($user);
         } else {
             // Fallback for backward compatibility
             $totalLostPets = 0;

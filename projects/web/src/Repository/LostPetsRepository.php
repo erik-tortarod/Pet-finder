@@ -69,6 +69,30 @@ class LostPetsRepository extends ServiceEntityRepository
     }
 
     /**
+     * Count active (non-archived) lost pets by user
+     */
+    public function countActiveByUser(User $user): int
+    {
+        return $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->select('COUNT(lp.id)')
+            ->where('lp.userId = :userId')
+            ->andWhere('a.status != :archivedStatus')
+            ->setParameter('userId', $user)
+            ->setParameter('archivedStatus', 'ARCHIVED')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Count all lost pets by user (including archived)
+     */
+    public function countAllByUser(User $user): int
+    {
+        return $this->count(['userId' => $user]);
+    }
+
+    /**
      * Find archived lost pets by user with all related data
      */
     public function findArchivedByUserWithRelations(User $user): array

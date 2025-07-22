@@ -67,6 +67,30 @@ class FoundAnimalsRepository extends ServiceEntityRepository
     }
 
     /**
+     * Count active (non-archived) found animals by user
+     */
+    public function countActiveByUser(User $user): int
+    {
+        return $this->createQueryBuilder('fa')
+            ->leftJoin('fa.animalId', 'a')
+            ->select('COUNT(fa.id)')
+            ->where('fa.userId = :userId')
+            ->andWhere('a.status != :archivedStatus')
+            ->setParameter('userId', $user)
+            ->setParameter('archivedStatus', 'ARCHIVED')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    /**
+     * Count all found animals by user (including archived)
+     */
+    public function countAllByUser(User $user): int
+    {
+        return $this->count(['userId' => $user]);
+    }
+
+    /**
      * Find archived found animals by user with all related data
      */
     public function findArchivedByUserWithRelations(User $user): array
