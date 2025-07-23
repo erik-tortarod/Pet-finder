@@ -1,0 +1,30 @@
+{# Flash Messages Component #}
+
+{# Include external CSS and JS files #}
+<link rel="stylesheet" href="{{ asset('page/base/flash_messages.css') }}">
+<script src="{{ asset('page/base/flash_messages.js') }}"></script>
+
+{# HTML Structure #}
+<div id="flash-container" class="flash-container">
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="flash-message flash-{{ label }}" data-type="{{ label }}">
+                <div class="flash-content">
+                    <span class="flash-icon">
+                        {% if label == 'success' %}
+                            ✓
+                        {% elseif label == 'error' %}
+                            ✕
+                        {% elseif label == 'warning' %}
+                            ⚠
+                        {% elseif label == 'info' %}
+                            ℹ
+                        {% endif %}
+                    </span>
+                    <span class="flash-text">{{ message }}</span>
+                </div>
+                <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+</div>
