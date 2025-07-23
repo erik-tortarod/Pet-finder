@@ -329,7 +329,7 @@ class AppFixtures extends Fixture
             ]
          ],
          [
-            'name' => 'Thor',
+            'name' => null,
             'animalType' => 'Perro',
             'gender' => 'male',
             'size' => 'large',
