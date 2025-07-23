@@ -1,7 +1,11 @@
 {% extends 'base.html.twig' %}
 
 {% block title %}
-	{{ animal.name }}
+	{% if animal.name %}
+		{{ animal.name }}
+	{% else %}
+		{{ animal.description }}
+	{% endif %}
 	- Detalles
 {% endblock %}
 
@@ -39,7 +43,13 @@
 						<li aria-current="page">
 							<div class="flex items-center">
 								{% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 24, class: 'text-gray-400'} %}
-								<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">{{ animal.name }}</span>
+								<span class="ml-1 text-sm font-medium text-gray-500 md:ml-2">
+									{% if animal.name %}
+										{{ animal.name }}
+									{% else %}
+										{{ animal.description }}
+									{% endif %}
+								</span>
 							</div>
 						</li>
 					</ol>
@@ -48,7 +58,13 @@
 				{# Status Badge #}
 				<div class="flex items-center justify-between">
 					<div>
-						<h1 class="text-3xl font-bold text-gray-900">{{ animal.name }}</h1>
+						<h1 class="text-3xl font-bold text-gray-900">
+							{% if animal.name %}
+								{{ animal.name }}
+							{% else %}
+								{{ animal.description }}
+							{% endif %}
+						</h1>
 						<p class="mt-1 text-lg text-gray-600">{{ animal.animalType|title }}
 							•
 							{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
@@ -61,11 +77,11 @@
 					</div>
 					<div class="flex items-center space-x-3">
 						<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-																															{% if animal.status == 'LOST' %}bg-red-100 text-red-800
-																															{% elseif animal.status == 'FOUND' %}bg-yellow-100 text-yellow-800
-																															{% elseif animal.status == 'CLAIMED' %}bg-green-100 text-green-800
-																															{% elseif animal.status == 'FILLED' %}bg-gray-100 text-gray-800
-																															{% else %}bg-gray-100 text-gray-800{% endif %}">
+																																																																							{% if animal.status == 'LOST' %}bg-red-100 text-red-800
+																																																																							{% elseif animal.status == 'FOUND' %}bg-yellow-100 text-yellow-800
+																																																																							{% elseif animal.status == 'CLAIMED' %}bg-green-100 text-green-800
+																																																																							{% elseif animal.status == 'FILLED' %}bg-gray-100 text-gray-800
+																																																																							{% else %}bg-gray-100 text-gray-800{% endif %}">
 							{% include 'components/Icon.html.twig' with {
                             name: animal.status == 'LOST' ? 'search' :
                                   (animal.status == 'FOUND' ? 'alert-triangle' :
@@ -91,7 +107,7 @@
 					{# Main Image #}
 					<div class="bg-white rounded-lg shadow-sm overflow-hidden">
 						{% if primaryPhoto %}
-							<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}" class="w-full h-80 object-cover" alt="Foto de {{ animal.name }}">
+							<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}" class="w-full h-80 object-cover" alt="Foto de {% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}">
 						{% else %}
 							<div class="w-full h-80 bg-gray-200 flex items-center justify-center">
 								<div class="text-center">

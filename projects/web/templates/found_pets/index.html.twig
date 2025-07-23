@@ -109,7 +109,7 @@
 						{# Image + Tags #}
 						<div class="relative">
 							{% if primaryPhoto %}
-								<img src="{{ asset(primaryPhoto.filePath) }}" alt="{{ animal.name }}" class="w-full h-48 object-cover"/>
+								<img src="{{ asset(primaryPhoto.filePath) }}" alt="{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}" class="w-full h-48 object-cover"/>
 							{% else %}
 								<div class="w-full h-48 bg-gray-200 flex items-center justify-center">
 									{% include 'components/Icon.html.twig' with {name: 'paw', size: 48, class: 'text-gray-400'} %}
@@ -120,8 +120,12 @@
 
 						{# Information #}
 						<div class="p-4">
-							<h3 class="text-lg font-semibold text-gray-900">{{ animal.name }}</h3>
+							<h3 class="text-lg font-semibold text-gray-900 mb-4">{{ animal.description }}</h3>
 							<p class="text-sm text-gray-600 mb-2">
+								{% if animal.name %}
+									<span class="font-bold">{{ animal.name }}</span>
+									•
+								{% endif %}
 								{{ animal.animalType|capitalize }}
 								•
 								{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
@@ -133,7 +137,6 @@
 									{% else %}
 								{% endif %}
 							</p>
-							<p class="text-sm text-gray-700 mb-3">{{ animal.description }}</p>
 
 							{# Tags #}
 							{% if tags %}
@@ -164,7 +167,7 @@
 
 							{# Contact and Share Buttons - Prevent event bubbling #}
 							<div class="mt-3 flex gap-2">
-								<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" onclick="event.stopPropagation(); openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
+								<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" onclick="event.stopPropagation(); openContactModal('{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
 									{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
 								</button>
 								<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="event.stopPropagation(); copyToClipboard('{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}')">
