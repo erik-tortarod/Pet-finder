@@ -1,0 +1,19 @@
+/* Lost Pets Page Styles */
+
+.cursor-pointer {
+   cursor: pointer;
+}
+
+.cursor-pointer:hover {
+   transform: translateY(-2px);
+   transition: transform 0.2s ease-in-out;
+}
+
+.cursor-pointer:active {
+   transform: translateY(0);
+}
+
+/* Estilo para el botón de contacto para que no se vea afectado por el hover de la card */
+.cursor-pointer .btn:hover {
+   transform: none;
+}

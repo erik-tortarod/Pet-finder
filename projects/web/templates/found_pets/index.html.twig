@@ -5,25 +5,7 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<style>
-		.cursor-pointer {
-			cursor: pointer;
-		}
-
-		.cursor-pointer:hover {
-			transform: translateY(-2px);
-			transition: transform 0.2s ease-in-out;
-		}
-
-		.cursor-pointer:active {
-			transform: translateY(0);
-		}
-
-		/* Estilo para el botón de contacto para que no se vea afectado por el hover de la card */
-		.cursor-pointer .btn:hover {
-			transform: none;
-		}
-	</style>
+	<link rel="stylesheet" href="{{ asset('page/found_pets/styles.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -168,7 +150,7 @@
 							{# Contact and Share Buttons - Prevent event bubbling #}
 							<div class="mt-3 flex gap-2">
 								<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" onclick="event.stopPropagation(); openContactModal('{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
-									{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
+									{% include 'components/Icon.html.twig' with {name: 'whatsapp', size: 16, class: 'inline mr-2'} %}Contactar
 								</button>
 								<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="event.stopPropagation(); copyToClipboard('{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}')">
 									{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}Compartir
@@ -188,4 +170,71 @@
 			{% endfor %}
 		</div>
 	</section>
+
+	<!-- Contact Modal -->
+	<div id="contactModal" class="hidden fixed inset-0 bg-gray-900/40 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
+		<div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+			<div
+				class="mt-3">
+				<!-- Modal Header -->
+				<div class="flex items-center justify-between mb-4">
+					<h3 class="text-lg font-semibold text-gray-900">Información de Contacto</h3>
+					<button onclick="closeContactModal()" class="text-gray-400 hover:text-gray-600">
+						{% include 'components/Icon.html.twig' with {name: 'x', size: 20, class: 'text-xl'} %}
+					</button>
+				</div>
+
+				<!-- Pet Name -->
+				<div class="text-center mb-6">
+					<h4 id="modalPetName" class="text-xl font-bold text-blue-600"></h4>
+					<p class="text-sm text-gray-600 mt-1">Mascota encontrada</p>
+				</div>
+
+				<!-- Contact Information -->
+				<div class="space-y-4 mb-6">
+					<div class="flex items-center p-3 bg-gray-50 rounded-lg">
+						<div class="flex-shrink-0">
+							{% include 'components/Icon.html.twig' with {name: 'phone', size: 20, class: 'text-blue-600'} %}
+						</div>
+						<div class="ml-3">
+							<p class="text-sm font-medium text-gray-900">Teléfono</p>
+							<p id="modalPhone" class="text-sm text-gray-600"></p>
+						</div>
+					</div>
+
+					<div class="flex items-center p-3 bg-gray-50 rounded-lg">
+						<div class="flex-shrink-0">
+							{% include 'components/Icon.html.twig' with {name: 'mail', size: 20, class: 'text-blue-600'} %}
+						</div>
+						<div class="ml-3">
+							<p class="text-sm font-medium text-gray-900">Email</p>
+							<p id="modalEmail" class="text-sm text-gray-600"></p>
+						</div>
+					</div>
+				</div>
+
+				<!-- Action Buttons -->
+				<div class="flex space-x-3">
+					<button onclick="sendWhatsApp()" class="flex-1 bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition-colors flex items-center justify-center">
+						{% include 'components/Icon.html.twig' with {name: 'whatsapp', size: 16, class: 'mr-2'} %}WhatsApp
+					</button>
+					<button onclick="sendEmail()" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
+						{% include 'components/Icon.html.twig' with {name: 'mail', size: 16, class: 'mr-2'} %}Email
+					</button>
+				</div>
+
+				<!-- Info Text -->
+				<div class="mt-4 text-center">
+					<p class="text-xs text-gray-500">
+						Haz clic en WhatsApp o Email para contactar directamente
+					</p>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script src="{{ asset('page/found_pets/contact_modal.js') }}"></script>
 {% endblock %}
