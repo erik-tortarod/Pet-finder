@@ -61,11 +61,11 @@
 					</div>
 					<div class="flex items-center space-x-3">
 						<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium
-															{% if animal.status == 'LOST' %}bg-red-100 text-red-800
-															{% elseif animal.status == 'FOUND' %}bg-yellow-100 text-yellow-800
-															{% elseif animal.status == 'CLAIMED' %}bg-green-100 text-green-800
-															{% elseif animal.status == 'FILLED' %}bg-gray-100 text-gray-800
-															{% else %}bg-gray-100 text-gray-800{% endif %}">
+																															{% if animal.status == 'LOST' %}bg-red-100 text-red-800
+																															{% elseif animal.status == 'FOUND' %}bg-yellow-100 text-yellow-800
+																															{% elseif animal.status == 'CLAIMED' %}bg-green-100 text-green-800
+																															{% elseif animal.status == 'FILLED' %}bg-gray-100 text-gray-800
+																															{% else %}bg-gray-100 text-gray-800{% endif %}">
 							{% include 'components/Icon.html.twig' with {
                             name: animal.status == 'LOST' ? 'search' :
                                   (animal.status == 'FOUND' ? 'alert-triangle' :
@@ -200,7 +200,7 @@
 
 					{# Tab Content #}
 					<div
-						class="space-y-6">
+						class="tab-container">
 						{# General Information Tab #}
 						<div id="tab-general" class="tab-content active">
 							<div class="bg-white rounded-lg shadow-sm p-6">
@@ -461,5 +461,50 @@
 	</div>
 
 	<script src="{{ asset('page/animal/details_navigation.js') }}"></script>
+
+	<style>
+		/* Estilos inline para asegurar que se apliquen después de Tailwind */
+		.tab-button {
+			transition: all 0.2s ease-in-out !important;
+			border-bottom-width: 2px !important;
+			border-bottom-style: solid !important;
+		}
+
+		.tab-button.active {
+			background-color: #3b82f6 !important;
+			color: white !important;
+			border-bottom-color: #3b82f6 !important;
+			border-color: #3b82f6 !important;
+		}
+
+		.tab-button:not(.active) {
+			background-color: transparent !important;
+			color: #6b7280 !important;
+			border-bottom-color: transparent !important;
+			border-color: transparent !important;
+		}
+
+		.tab-button:not(.active):hover {
+			background-color: #f9fafb !important;
+			color: #374151 !important;
+			border-bottom-color: #d1d5db !important;
+			border-color: #d1d5db !important;
+		}
+
+		.tab-button.active:hover {
+			background-color: #2563eb !important;
+			color: white !important;
+			border-bottom-color: #2563eb !important;
+			border-color: #2563eb !important;
+		}
+
+		.tab-content {
+			display: none !important;
+		}
+
+		.tab-content.active {
+			display: block !important;
+		}
+	</style>
 
 {% endblock %}
