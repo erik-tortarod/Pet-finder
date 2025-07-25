@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use App\Entity\User;
 use App\Entity\Animals;
 use App\Entity\FoundAnimals;
+use App\Entity\LostPets;
 use App\Entity\Tags;
 use App\Entity\AnimalTags;
 use App\Entity\AnimalPhotos;
@@ -14,191 +15,172 @@ use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 
 class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterface
 {
-   public function load(ObjectManager $manager): void
-   {
-      // Get existing users and tags
-      $users = $manager->getRepository(User::class)->findAll();
-      $tags = $manager->getRepository(Tags::class)->findAll();
+    public function load(ObjectManager $manager): void
+    {
+        // Get existing users and tags
+        $users = $manager->getRepository(User::class)->findAll();
+        $tags = $manager->getRepository(Tags::class)->findAll();
 
-      if (empty($users) || empty($tags)) {
-         throw new \Exception('Users and Tags must be loaded first. Run AppFixtures first.');
-      }
+        if (empty($users) || empty($tags)) {
+            throw new \Exception('Users and Tags must be loaded first. Run AppFixtures first.');
+        }
 
-      // Create 50 more found animals for testing infinite scroll
-      $this->createManyFoundAnimals($manager, $users, $tags);
+        // Create 20 more found animals for testing infinite scroll
+        $this->createFoundAnimals($manager, $users, $tags);
 
-      $manager->flush();
-   }
+        // Create 15 lost animals for testing infinite scroll
+        $this->createLostAnimals($manager, $users, $tags);
 
-   public function getDependencies(): array
-   {
-      return [
-         AppFixtures::class,
-      ];
-   }
+        $manager->flush();
+    }
 
-   private function createManyFoundAnimals(ObjectManager $manager, array $users, array $tags): void
-   {
-      $animalTypes = ['perro', 'gato', 'ave', 'conejo', 'hurón', 'tortuga'];
-      $genders = ['male', 'female'];
-      $sizes = ['small', 'medium', 'large', 'extra_large'];
-      $colors = ['negro', 'blanco', 'marrón', 'gris', 'dorado', 'manchado', 'atigrado', 'tricolor'];
-      $zones = ['centro', 'norte', 'sur', 'este', 'oeste'];
+    public function getDependencies(): array
+    {
+        return [
+            AppFixtures::class,
+        ];
+    }
 
-      $dogNames = ['Max', 'Luna', 'Buddy', 'Bella', 'Charlie', 'Lucy', 'Cooper', 'Daisy', 'Rocky', 'Molly', 'Jack', 'Sadie', 'Toby', 'Maggie', 'Duke', 'Sophie', 'Bear', 'Chloe', 'Zeus', 'Zoe'];
-      $catNames = ['Whiskers', 'Mittens', 'Shadow', 'Princess', 'Tiger', 'Angel', 'Smokey', 'Patches', 'Oreo', 'Coco', 'Simba', 'Nala', 'Felix', 'Misty', 'Pepper', 'Snowball', 'Ginger', 'Boots', 'Midnight', 'Pumpkin'];
-      $birdNames = ['Polly', 'Kiwi', 'Rio', 'Sunny', 'Blue', 'Charlie', 'Mango', 'Coco', 'Peanut', 'Ruby'];
+    private function createFoundAnimals(ObjectManager $manager, array $users, array $tags): void
+    {
+        $animalTypes = ['perro', 'gato', 'ave', 'conejo'];
+        $genders = ['male', 'female'];
+        $sizes = ['small', 'medium', 'large', 'extra_large'];
+        $colors = ['negro', 'blanco', 'marrón', 'gris', 'dorado'];
+        $zones = ['centro', 'norte', 'sur', 'este', 'oeste'];
 
-      $descriptions = [
-         'Encontrado vagando por el parque, parece estar bien cuidado',
-         'Se acercó a nosotros pidiendo comida, muy amigable',
-         'Encontrado cerca de la estación, llevaba collar pero sin identificación',
-         'Visto varias veces en la zona, parece perdido',
-         'Encontrado refugiándose de la lluvia, necesita un hogar',
-         'Muy cariñoso, se ve que está acostumbrado a estar con personas',
-         'Encontrado herido leve, ya está recuperado y listo para encontrar a su familia',
-         'Aparentemente abandonado, busca una segunda oportunidad',
-         'Encontrado asustado pero sano, necesita amor y cuidados',
-         'Se perdió durante los fuegos artificiales de las fiestas',
-      ];
+        $names = ['Max', 'Luna', 'Buddy', 'Bella', 'Charlie', 'Lucy', 'Cooper', 'Daisy', 'Rocky', 'Molly'];
 
-      $addresses = [
-         'Cerca del Parque del Retiro',
-         'Avenida de la Castellana, altura del 150',
-         'Plaza Mayor',
-         'Cerca de la estación de Atocha',
-         'Barrio de Malasaña',
-         'Parque de El Capricho',
-         'Cerca del Rastro',
-         'Barrio de Chueca',
-         'Paseo de la Chopera',
-         'Cerca del Mercado de San Miguel',
-         'Barrio de La Latina',
-         'Parque del Oeste',
-         'Cerca de Gran Vía',
-         'Barrio de Salamanca',
-         'Parque Juan Carlos I',
-      ];
+        $descriptions = [
+            'Encontrado vagando por el parque',
+            'Se acercó pidiendo comida, muy amigable',
+            'Encontrado cerca de la estación',
+            'Parece perdido, necesita un hogar',
+            'Muy cariñoso con las personas',
+        ];
 
-      for ($i = 1; $i <= 50; $i++) {
-         // Create Animal
-         $animal = new Animals();
-         $animalType = $animalTypes[array_rand($animalTypes)];
+        $addresses = [
+            'Cerca del Parque del Retiro',
+            'Avenida de la Castellana',
+            'Plaza Mayor',
+            'Cerca de la estación de Atocha',
+            'Barrio de Malasaña',
+        ];
 
-         // Choose name based on type
-         if ($animalType === 'perro') {
-            $name = $dogNames[array_rand($dogNames)] . ' ' . $i;
-         } elseif ($animalType === 'gato') {
-            $name = $catNames[array_rand($catNames)] . ' ' . $i;
-         } elseif ($animalType === 'ave') {
-            $name = $birdNames[array_rand($birdNames)] . ' ' . $i;
-         } else {
-            $name = 'Mascota ' . $i;
-         }
+        for ($i = 1; $i <= 20; $i++) {
+            // Create Animal
+            $animal = new Animals();
+            $animal->setName($names[array_rand($names)] . ' F' . $i);
+            $animal->setAnimalType($animalTypes[array_rand($animalTypes)]);
+            $animal->setGender($genders[array_rand($genders)]);
+            $animal->setSize($sizes[array_rand($sizes)]);
+            $animal->setColor($colors[array_rand($colors)]);
+            $animal->setAge(rand(1, 10) . ' años');
+            $animal->setDescription($descriptions[array_rand($descriptions)]);
+            $animal->setStatus('FOUND');
 
-         $animal->setName($name);
-         $animal->setAnimalType($animalType);
-         $animal->setGender($genders[array_rand($genders)]);
-         $animal->setSize($sizes[array_rand($sizes)]);
-         $animal->setColor($colors[array_rand($colors)]);
-         $animal->setAge(rand(1, 15) . ' años');
-         $animal->setDescription($descriptions[array_rand($descriptions)]);
-         $animal->setStatus('FOUND');
+            $daysAgo = rand(0, 30);
+            $createdAt = new \DateTimeImmutable("-{$daysAgo} days");
+            $animal->setCreatedAt($createdAt);
+            $animal->setUpdatedAt($createdAt);
 
-         // Random creation date within last 30 days
-         $daysAgo = rand(0, 30);
-         $createdAt = new \DateTimeImmutable("-{$daysAgo} days");
-         $animal->setCreatedAt($createdAt);
-         $animal->setUpdatedAt($createdAt);
+            $manager->persist($animal);
 
-         $manager->persist($animal);
-
-         // Add random tags (1-4 tags per animal)
-         $numTags = rand(1, 4);
-         $shuffledTags = $tags;
-         shuffle($shuffledTags);
-         $selectedTags = array_slice($shuffledTags, 0, $numTags);
-
-         foreach ($selectedTags as $tag) {
+            // Add one random tag
+            $randomTag = $tags[array_rand($tags)];
             $animalTag = new AnimalTags();
             $animalTag->setAnimalId($animal);
-            $animalTag->setTagId($tag);
+            $animalTag->setTagId($randomTag);
             $animalTag->setCreatedAt($createdAt);
             $manager->persist($animalTag);
-         }
 
-         // Create FoundAnimals entry
-         $foundAnimal = new FoundAnimals();
-         $foundAnimal->setAnimalId($animal);
-         $foundAnimal->setUserId($users[array_rand($users)]);
+            // Create FoundAnimals entry
+            $foundAnimal = new FoundAnimals();
+            $foundAnimal->setAnimalId($animal);
+            $foundAnimal->setUserId($users[array_rand($users)]);
 
-         // Random found date within the creation date
-         $foundDaysAgo = rand($daysAgo, $daysAgo + 5);
-         $foundDate = new \DateTime("-{$foundDaysAgo} days");
-         $foundAnimal->setFoundDate($foundDate);
+            $foundDate = new \DateTime("-{$daysAgo} days");
+            $foundAnimal->setFoundDate($foundDate);
+            $foundAnimal->setFoundTime(new \DateTime("10:00"));
+            $foundAnimal->setFoundZone($zones[array_rand($zones)]);
+            $foundAnimal->setFoundAddress($addresses[array_rand($addresses)]);
+            $foundAnimal->setFoundCircumstances('Vagando solo por la calle');
+            $foundAnimal->setCreatedAt($createdAt);
+            $foundAnimal->setUpdatedAt($createdAt);
 
-         // Random time
-         $hour = str_pad(rand(6, 22), 2, '0', STR_PAD_LEFT);
-         $minute = str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT);
-         $foundAnimal->setFoundTime(new \DateTime("{$hour}:{$minute}"));
+            $manager->persist($foundAnimal);
+        }
+    }
 
-         $foundAnimal->setFoundZone($zones[array_rand($zones)]);
-         $foundAnimal->setFoundAddress($addresses[array_rand($addresses)]);
+    private function createLostAnimals(ObjectManager $manager, array $users, array $tags): void
+    {
+        $animalTypes = ['perro', 'gato', 'ave', 'conejo'];
+        $genders = ['male', 'female'];
+        $sizes = ['small', 'medium', 'large', 'extra_large'];
+        $colors = ['negro', 'blanco', 'marrón', 'gris', 'dorado'];
+        $zones = ['centro', 'norte', 'sur', 'este', 'oeste'];
 
-         $circumstances = [
-            'Vagando solo por la calle',
-            'Refugiándose del mal tiempo',
-            'Buscando comida en los contenedores',
-            'Siguiendo a personas por la calle',
-            'Asustado en un parque',
-            'Cerca de una parada de autobús',
-            'En un portal de un edificio',
-            'Junto a coches aparcados',
-         ];
+        $names = ['Rex', 'Lola', 'Bruno', 'Nina', 'Thor', 'Mia', 'Leo', 'Emma'];
 
-         $foundAnimal->setFoundCircumstances($circumstances[array_rand($circumstances)]);
+        $descriptions = [
+            'Se escapó del jardín',
+            'Perdido después de los fuegos artificiales',
+            'No ha regresado a casa',
+            'Se asustó y huyó en el parque',
+            'Muy cariñoso, responde a su nombre',
+        ];
 
-         $notes = [
-            'Parece estar bien cuidado, probablemente tiene dueño',
-            'Necesita revisión veterinaria',
-            'Muy sociable con las personas',
-            'Un poco tímido al principio',
-            'Se ve que está acostumbrado a estar en casa',
-            'Necesita cuidados especiales',
-            'Muy activo y juguetón',
-            'Tranquilo y obediente',
-         ];
+        $addresses = [
+            'Última vez visto en el Parque del Retiro',
+            'Desapareció en la Avenida de la Castellana',
+            'Perdido cerca de Plaza Mayor',
+            'Última vez visto en Atocha',
+            'Desapareció en Malasaña',
+        ];
 
-         $foundAnimal->setAdditionalNotes($notes[array_rand($notes)]);
-         $foundAnimal->setCreatedAt(new \DateTimeImmutable("-{$daysAgo} days"));
-         $foundAnimal->setUpdatedAt(new \DateTimeImmutable("-{$daysAgo} days"));
+        for ($i = 1; $i <= 15; $i++) {
+            // Create Animal
+            $animal = new Animals();
+            $animal->setName($names[array_rand($names)] . ' L' . $i);
+            $animal->setAnimalType($animalTypes[array_rand($animalTypes)]);
+            $animal->setGender($genders[array_rand($genders)]);
+            $animal->setSize($sizes[array_rand($sizes)]);
+            $animal->setColor($colors[array_rand($colors)]);
+            $animal->setAge(rand(1, 10) . ' años');
+            $animal->setDescription($descriptions[array_rand($descriptions)]);
+            $animal->setStatus('LOST');
 
-         $manager->persist($foundAnimal);
+            $daysAgo = rand(0, 20);
+            $createdAt = new \DateTimeImmutable("-{$daysAgo} days");
+            $animal->setCreatedAt($createdAt);
+            $animal->setUpdatedAt($createdAt);
 
-         // Occasionally add a photo (30% chance)
-         if (rand(1, 100) <= 30) {
-            $animalPhoto = new AnimalPhotos();
-            $animalPhoto->setAnimalId($animal);
-            $animalPhoto->setFilePath('placeholder_images/animal_' . ($i % 10 + 1) . '.jpg');
-            $animalPhoto->setFilename('found_animal_' . $i . '.jpg');
-            $animalPhoto->setOriginalFilename('found_animal_' . $i . '.jpg');
-            $animalPhoto->setFileSize(rand(100000, 500000));
-            $animalPhoto->setMimeType('image/jpeg');
-            $animalPhoto->setIsPrimary(true);
-            $animalPhoto->setCreatedAt($createdAt);
+            $manager->persist($animal);
 
-            $manager->persist($animalPhoto);
-         }
+            // Add one random tag
+            $randomTag = $tags[array_rand($tags)];
+            $animalTag = new AnimalTags();
+            $animalTag->setAnimalId($animal);
+            $animalTag->setTagId($randomTag);
+            $animalTag->setCreatedAt($createdAt);
+            $manager->persist($animalTag);
 
-         // Flush every 10 animals to avoid memory issues
-         if ($i % 10 === 0) {
-            $manager->flush();
-            $manager->clear();
+            // Create LostPets entry
+            $lostPet = new LostPets();
+            $lostPet->setAnimalId($animal);
+            $lostPet->setUserId($users[array_rand($users)]);
 
-            // Re-fetch users and tags after clearing
-            $users = $manager->getRepository(User::class)->findAll();
-            $tags = $manager->getRepository(Tags::class)->findAll();
-         }
-      }
-   }
+            $lostDate = new \DateTime("-{$daysAgo} days");
+            $lostPet->setLostDate($lostDate);
+            $lostPet->setLostTime(new \DateTime("15:00"));
+            $lostPet->setLostZone($zones[array_rand($zones)]);
+            $lostPet->setLostAddress($addresses[array_rand($addresses)]);
+            $lostPet->setLostCircumstances('Se escapó del jardín');
+            $lostPet->setRewardDescription('Recompensa disponible');
+            $lostPet->setCreatedAt($createdAt);
+            $lostPet->setUpdatedAt($createdAt);
+
+            $manager->persist($lostPet);
+        }
+    }
 }

@@ -75,88 +75,10 @@
 	</section>
 
 	{# Results #}
-	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{% for lostPet in lostPets %}
-				{% set animal = lostPet.animalId %}
-				{% set user = lostPet.userId %}
-				{% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
-				{% set tags = animal.animalTags|map(tag => tag.tagId.name)|join(', ') %}
-
-				{# Solo mostrar animales con status LOST #}
-				{% if animal.status == 'LOST' %}
-					<article
-						class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}'">
-
-						{# Image + Tags #}
-						<div class="relative">
-							{% if primaryPhoto %}
-								<img src="{{ asset(primaryPhoto.filePath) }}" alt="{{ animal.name }}" class="w-full h-48 object-cover"/>
-							{% else %}
-								<div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-									{% include 'components/Icon.html.twig' with {name: 'paw', size: 48, class: 'text-gray-400'} %}
-								</div>
-							{% endif %}
-							<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
-						</div>
-
-						{# Information #}
-						<div class="p-4">
-							<h3 class="text-lg font-semibold text-gray-900">{{ animal.name }}</h3>
-							<p class="text-sm text-gray-600 mb-2">
-								{{ animal.animalType|capitalize }}
-								•
-								{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
-								{% endif %}
-
-								{% if animal.age %}
-									•
-									{{ animal.age }}
-									{% else %}
-								{% endif %}
-							</p>
-							<p class="text-sm text-gray-700 mb-3">{{ animal.description }}</p>
-
-							{# Tags #}
-							{% if tags %}
-								<div class="flex flex-wrap gap-1 mb-3">
-									{% for tag in animal.animalTags %}
-										<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">{{ tag.tagId.name }}</span>
-									{% endfor %}
-								</div>
-							{% endif %}
-
-							<div class="flex items-center justify-between">
-								<span class="text-sm text-gray-500">
-									{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ lostPet.lostZone|capitalize }}
-								</span>
-								<span class="text-sm text-gray-500">
-									{% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}
-									{% if daysAgo < 1 %}Hoy
-										{% elseif daysAgo < 2 %}Ayer
-										{% elseif daysAgo < 7 %}Hace
-										{{ daysAgo|round(0, 'floor') }}
-										días
-										{% else %}Hace
-										{{ (daysAgo / 7)|round(0, 'floor') }}
-										semanas
-									{% endif %}
-								</span>
-							</div>
-
-							{# Contact and Share Buttons - Prevent event bubbling #}
-							<div class="mt-3 flex gap-2">
-								<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" onclick="event.stopPropagation(); openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
-									{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
-								</button>
-								<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="event.stopPropagation(); copyToClipboard('{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}')">
-									{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}Compartir
-								</button>
-							</div>
-						</div>
-
-					</article>
-				{% endif %}
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-lost-pets-url="{{ path('app_lost_pets') }}">
+		<div id="lost-animals-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			{% if lostPets is not empty %}
+				{% include 'lost_pets/_lost_animals_list.html.twig' with {'lostPets': lostPets} %}
 			{% else %}
 				{# No pets found message #}
 				<div class="col-span-full text-center py-12">
@@ -164,7 +86,12 @@
 					<h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas perdidas</h3>
 					<p class="text-gray-500">No se encontraron mascotas perdidas en este momento.</p>
 				</div>
-			{% endfor %}
+			{% endif %}
+		</div>
+		<div id="loading" class="text-center py-6 hidden">
+			<div class="flex justify-center">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+			</div>
 		</div>
 	</section>
 
@@ -234,4 +161,5 @@
 {% block javascripts %}
 	{{ parent() }}
 	<script src="{{ asset('page/lost_pets/contact_modal.js') }}"></script>
+	<script src="{{ asset('page/lost_pets/infinite_scroll.js') }}"></script>
 {% endblock %}

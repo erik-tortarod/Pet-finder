@@ -21,9 +21,18 @@ use App\Repository\UserRepository;
 final class LostPetsController extends AbstractController
 {
     #[Route('/lost/pets', name: 'app_lost_pets')]
-    public function index(LostPetsRepository $lostPetsRepository): Response
+    public function index(Request $request, LostPetsRepository $lostPetsRepository): Response
     {
-        $lostPets = $lostPetsRepository->findAllWithRelations();
+        $page = $request->query->getInt('page', 1);
+        $limit = 3; // Changed to 3 for testing infinite scroll
+
+        $lostPets = $lostPetsRepository->findAllWithRelationsPaginated($page, $limit);
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('lost_pets/_lost_animals_list.html.twig', [
+                'lostPets' => $lostPets,
+            ]);
+        }
 
         return $this->render('lost_pets/index.html.twig', [
             'lostPets' => $lostPets,

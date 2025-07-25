@@ -18,6 +18,41 @@ class LostPetsRepository extends ServiceEntityRepository
     }
 
     /**
+     * Find all lost pets with all related data (animals, photos, tags, users) - paginated for infinite scroll
+     */
+    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10): array
+    {
+        // First, get the lost pets IDs
+        $lostPetIds = $this->createQueryBuilder('lp')
+            ->select('lp.id')
+            ->orderBy('lp.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        if (empty($lostPetIds)) {
+            return [];
+        }
+
+        $ids = array_column($lostPetIds, 'id');
+
+        // Then, get the complete data for those IDs
+        return $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->leftJoin('lp.userId', 'u')
+            ->addSelect('a', 'ap', 'at', 't', 'u')
+            ->where('lp.id IN (:ids)')
+            ->setParameter('ids', $ids)
+            ->orderBy('lp.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    /**
      * Find all lost pets with all related data (animals, photos, tags, users)
      */
     public function findAllWithRelations(): array
@@ -29,6 +64,7 @@ class LostPetsRepository extends ServiceEntityRepository
             ->leftJoin('at.tagId', 't')
             ->leftJoin('lp.userId', 'u')
             ->addSelect('a', 'ap', 'at', 't', 'u')
+            ->groupBy('lp.id')
             ->orderBy('lp.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
