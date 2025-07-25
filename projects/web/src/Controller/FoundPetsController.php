@@ -20,14 +20,24 @@ use App\Repository\UserRepository;
 final class FoundPetsController extends AbstractController
 {
     #[Route('/found/pets', name: 'app_found_pets')]
-    public function index(FoundAnimalsRepository $foundAnimalsRepository): Response
+    public function index(Request $request, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
-        $foundAnimals = $foundAnimalsRepository->findAllWithRelations();
+        $page = $request->query->getInt('page', 1);
+        $limit = 3;
+
+        $foundAnimals = $foundAnimalsRepository->findAllWithRelationsPaginated($page, $limit);
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->render('found_pets/_found_animals_list.html.twig', [
+                'foundAnimals' => $foundAnimals,
+            ]);
+        }
 
         return $this->render('found_pets/index.html.twig', [
             'foundAnimals' => $foundAnimals,
         ]);
     }
+
 
     #[Route('/found/pets/create', name: 'app_found_pets_create')]
     public function create(Request $request, EntityManagerInterface $entityManager, FileUploadService $fileUploadService, UserRepository $userRepository, TagsRepository $tagsRepository): Response

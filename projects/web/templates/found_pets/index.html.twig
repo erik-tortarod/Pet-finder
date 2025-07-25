@@ -9,8 +9,6 @@
 {% endblock %}
 
 {% block body %}
-
-	{# Header #}
 	<section class="bg-white shadow">
 		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 			<h1 class="text-3xl font-bold text-gray-900">Mascotas Buscadas</h1>
@@ -18,13 +16,9 @@
 		</div>
 	</section>
 
-	{# Search and Filters #}
 	<section class="bg-white border-b">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-			<div
-				class="grid grid-cols-1 md:grid-cols-4 gap-4">
-
-				{# Search Input #}
+			<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 				<div class="md:col-span-2">
 					<div class="relative">
 						<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -34,7 +28,6 @@
 					</div>
 				</div>
 
-				{# Type of Animal #}
 				<div>
 					<select class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
 						<option value="">Tipo de animal</option>
@@ -45,7 +38,6 @@
 					</select>
 				</div>
 
-				{# Location Filter #}
 				<div>
 					<select class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
 						<option value="">Zona</option>
@@ -56,9 +48,8 @@
 						<option value="oeste">Oeste</option>
 					</select>
 				</div>
-
 			</div>
-			{# Tag Filters #}
+
 			<div class="mt-4">
 				<h3 class="text-sm font-medium text-gray-700 mb-2">Filtros rápidos:</h3>
 				<div class="flex flex-wrap gap-2">
@@ -74,123 +65,38 @@
 		</div>
 	</section>
 
-	{# Results #}
-	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-			{% for lostPet in foundAnimals %}
-				{% set animal = lostPet.animalId %}
-				{% set user = lostPet.userId %}
-				{% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
-				{% set tags = animal.animalTags|map(tag => tag.tagId.name)|join(', ') %}
-
-				{# Solo mostrar animales con status FOUND #}
-				{% if animal.status == 'FOUND' %}
-					<article
-						class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}'">
-
-						{# Image + Tags #}
-						<div class="relative">
-							{% if primaryPhoto %}
-								<img src="{{ asset(primaryPhoto.filePath) }}" alt="{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}" class="w-full h-48 object-cover"/>
-							{% else %}
-								<div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-									{% include 'components/Icon.html.twig' with {name: 'paw', size: 48, class: 'text-gray-400'} %}
-								</div>
-							{% endif %}
-							<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
-						</div>
-
-						{# Information #}
-						<div class="p-4">
-							<h3 class="text-lg font-semibold text-gray-900 mb-4">{{ animal.description }}</h3>
-							<p class="text-sm text-gray-600 mb-2">
-								{% if animal.name %}
-									<span class="font-bold">{{ animal.name }}</span>
-									•
-								{% endif %}
-								{{ animal.animalType|capitalize }}
-								•
-								{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
-								{% endif %}
-
-								{% if animal.age %}
-									•
-									{{ animal.age }}
-									{% else %}
-								{% endif %}
-							</p>
-
-							{# Tags #}
-							{% if tags %}
-								<div class="flex flex-wrap gap-1 mb-3">
-									{% for tag in animal.animalTags %}
-										<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">{{ tag.tagId.name }}</span>
-									{% endfor %}
-								</div>
-							{% endif %}
-
-							<div class="flex items-center justify-between">
-								<span class="text-sm text-gray-500">
-									{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ lostPet.foundZone|capitalize }}
-								</span>
-								<span class="text-sm text-gray-500">
-									{% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}
-									{% if daysAgo < 1 %}Hoy
-										{% elseif daysAgo < 2 %}Ayer
-										{% elseif daysAgo < 7 %}Hace
-										{{ daysAgo|round(0, 'floor') }}
-										días
-										{% else %}Hace
-										{{ (daysAgo / 7)|round(0, 'floor') }}
-										semanas
-									{% endif %}
-								</span>
-							</div>
-
-							{# Contact and Share Buttons - Prevent event bubbling #}
-							<div class="mt-3 flex gap-2">
-								<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" onclick="event.stopPropagation(); openContactModal('{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
-									{% include 'components/Icon.html.twig' with {name: 'whatsapp', size: 16, class: 'inline mr-2'} %}Contactar
-								</button>
-								<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="event.stopPropagation(); copyToClipboard('{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}')">
-									{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}Compartir
-								</button>
-							</div>
-						</div>
-
-					</article>
-				{% endif %}
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" data-found-pets-url="{{ path('app_found_pets') }}">
+		<div id="found-animals-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			{% if foundAnimals is not empty %}
+				{% include 'found_pets/_found_animals_list.html.twig' with {'foundAnimals': foundAnimals} %}
 			{% else %}
-				{# No pets found message #}
 				<div class="col-span-full text-center py-12">
 					{% include 'components/Icon.html.twig' with {name: 'paw', size: 64, class: 'mx-auto text-gray-300 mb-4'} %}
 					<h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas perdidas</h3>
 					<p class="text-gray-500">No se encontraron mascotas perdidas en este momento.</p>
 				</div>
-			{% endfor %}
+			{% endif %}
+		</div>
+		<div id="loading" class="text-center py-6 hidden">
+			<div class="flex justify-center">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+			</div>
 		</div>
 	</section>
 
-	<!-- Contact Modal -->
 	<div id="contactModal" class="hidden fixed inset-0 bg-gray-900/40 overflow-y-auto h-full w-full z-50 flex items-center justify-center">
 		<div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
-			<div
-				class="mt-3">
-				<!-- Modal Header -->
+			<div class="mt-3">
 				<div class="flex items-center justify-between mb-4">
 					<h3 class="text-lg font-semibold text-gray-900">Información de Contacto</h3>
 					<button onclick="closeContactModal()" class="text-gray-400 hover:text-gray-600">
 						{% include 'components/Icon.html.twig' with {name: 'x', size: 20, class: 'text-xl'} %}
 					</button>
 				</div>
-
-				<!-- Pet Name -->
 				<div class="text-center mb-6">
 					<h4 id="modalPetName" class="text-xl font-bold text-blue-600"></h4>
 					<p class="text-sm text-gray-600 mt-1">Mascota encontrada</p>
 				</div>
-
-				<!-- Contact Information -->
 				<div class="space-y-4 mb-6">
 					<div class="flex items-center p-3 bg-gray-50 rounded-lg">
 						<div class="flex-shrink-0">
@@ -201,7 +107,6 @@
 							<p id="modalPhone" class="text-sm text-gray-600"></p>
 						</div>
 					</div>
-
 					<div class="flex items-center p-3 bg-gray-50 rounded-lg">
 						<div class="flex-shrink-0">
 							{% include 'components/Icon.html.twig' with {name: 'mail', size: 20, class: 'text-blue-600'} %}
@@ -212,8 +117,6 @@
 						</div>
 					</div>
 				</div>
-
-				<!-- Action Buttons -->
 				<div class="flex space-x-3">
 					<button onclick="sendWhatsApp()" class="flex-1 bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition-colors flex items-center justify-center">
 						{% include 'components/Icon.html.twig' with {name: 'whatsapp', size: 16, class: 'mr-2'} %}WhatsApp
@@ -222,12 +125,8 @@
 						{% include 'components/Icon.html.twig' with {name: 'mail', size: 16, class: 'mr-2'} %}Email
 					</button>
 				</div>
-
-				<!-- Info Text -->
 				<div class="mt-4 text-center">
-					<p class="text-xs text-gray-500">
-						Haz clic en WhatsApp o Email para contactar directamente
-					</p>
+					<p class="text-xs text-gray-500">Haz clic en WhatsApp o Email para contactar directamente</p>
 				</div>
 			</div>
 		</div>
@@ -237,4 +136,5 @@
 {% block javascripts %}
 	{{ parent() }}
 	<script src="{{ asset('page/found_pets/contact_modal.js') }}"></script>
+	<script src="{{ asset('page/found_pets/infinite_scroll.js') }}"></script>
 {% endblock %}

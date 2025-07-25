@@ -20,13 +20,33 @@ class FoundAnimalsRepository extends ServiceEntityRepository
     /**
      * Find all found animals with all related data (animals, photos, users)
      */
-    public function findAllWithRelations(): array
+    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10): array
     {
+        // First, get the found animals IDs
+        $foundAnimalIds = $this->createQueryBuilder('fa')
+            ->select('fa.id')
+            ->orderBy('fa.createdAt', 'DESC')
+            ->setFirstResult(($page - 1) * $limit)
+            ->setMaxResults($limit)
+            ->getQuery()
+            ->getArrayResult();
+
+        if (empty($foundAnimalIds)) {
+            return [];
+        }
+
+        $ids = array_column($foundAnimalIds, 'id');
+
+        // Then, get the complete data for those IDs
         return $this->createQueryBuilder('fa')
             ->leftJoin('fa.animalId', 'a')
             ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
             ->leftJoin('fa.userId', 'u')
-            ->addSelect('a', 'ap', 'u')
+            ->addSelect('a', 'ap', 'at', 't', 'u')
+            ->where('fa.id IN (:ids)')
+            ->setParameter('ids', $ids)
             ->orderBy('fa.createdAt', 'DESC')
             ->getQuery()
             ->getResult();
