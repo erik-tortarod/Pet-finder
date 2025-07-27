@@ -63,10 +63,18 @@
 
 				{# Contact and Share Buttons - Prevent event bubbling #}
 				<div class="mt-3 flex gap-2">
-					<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors" onclick="event.stopPropagation(); openContactModal('{{ animal.name }}', '{{ user.phone ?? 'No disponible' }}', '{{ user.email }}')">
+					<button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+							data-action="click->contact-modal#open"
+							data-pet-name="{{ animal.name }}"
+							data-phone="{{ user.phone ?? 'No disponible' }}"
+							data-email="{{ user.email }}"
+							onclick="event.stopPropagation();">
 						{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
 					</button>
-					<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors" onclick="event.stopPropagation(); copyToClipboard('{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}')">
+					<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+							data-action="click->contact-modal#copyLink"
+							data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}"
+							onclick="event.stopPropagation();">
 						{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}Compartir
 					</button>
 				</div>
