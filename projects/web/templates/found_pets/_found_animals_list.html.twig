@@ -1,6 +1,6 @@
-{% for lostPet in foundAnimals %}
-	{% set animal = lostPet.animalId %}
-	{% set user = lostPet.userId %}
+{% for foundAnimal in foundAnimals %}
+	{% set animal = foundAnimal.animalId %}
+	{% set user = foundAnimal.userId %}
 	{% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
 	{% set tags = animal.animalTags|map(tag => tag.tagId.name)|join(', ') %}
 
@@ -10,8 +10,9 @@
 				{% if primaryPhoto %}
 					<img src="{{ asset(primaryPhoto.filePath) }}" alt="{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}" class="w-full h-48 object-cover"/>
 				{% else %}
-					<div class="w-full h-48 bg-gray-200 flex items-center justify-center">
-						{% include 'components/Icon.html.twig' with {name: 'paw', size: 48, class: 'text-gray-400'} %}
+					<div class="w-full h-48 bg-gradient-to-r from-green-100 to-green-200 flex items-center justify-center">
+						{% set iconClass = animal.animalType|lower == 'perro' ? 'fa-dog' : (animal.animalType|lower == 'gato' ? 'fa-cat' : (animal.animalType|lower == 'ave' ? 'fa-dove' : (animal.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+						<i class="fas {{ iconClass }} text-4xl text-green-600"></i>
 					</div>
 				{% endif %}
 				<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
@@ -44,10 +45,10 @@
 
 				<div class="flex items-center justify-between">
 					<span class="text-sm text-gray-500">
-						{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ lostPet.foundZone|capitalize }}
+						{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ foundAnimal.foundZone|capitalize }}
 					</span>
 					<span class="text-sm text-gray-500">
-						{% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}
+						{% set daysAgo = (date()|date('U') - foundAnimal.createdAt|date('U')) / 86400 %}
 						{% if daysAgo < 1 %}Hoy{% elseif daysAgo < 2 %}Ayer{% elseif daysAgo < 7 %}Hace
 							{{ daysAgo|round(0, 'floor') }}
 							días{% else %}Hace

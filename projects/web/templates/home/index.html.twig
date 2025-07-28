@@ -5,18 +5,456 @@
 
 {% block body %}
 
-	<div class="example-wrapper">
-		<h1 class="text-3xl font-bold">Hello
-			{{ controller_name }}! ✅</h1>
+	 <!-- Hero Section Redesigned -->
+   <div class="relative bg-white overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50"></div>
 
-		This friendly message is coming from:
-		<ul>
-			<li>Your controller at
-				<code>/home/usuario/Escritorio/Aircury/SummerOfCode/Pet-finder/projects/web/src/Controller/HomeController.php</code>
-			</li>
-			<li>Your template at
-				<code>/home/usuario/Escritorio/Aircury/SummerOfCode/Pet-finder/projects/web/templates/home/index.html.twig</code>
-			</li>
-		</ul>
-	</div>
+      <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+         <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <!-- Left Content -->
+            <div class="text-center lg:text-left">
+               <div class="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
+                  <i class="fas fa-rocket mr-2"></i>Proyecto en desarrollo
+               </div>
+
+               <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
+                  Reúne a las
+                  <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
+                     familias
+                  </span>
+                  con sus mascotas
+               </h1>
+
+               <p class="text-lg text-gray-600 mb-8 leading-relaxed">
+                  Una plataforma diseñada para conectar personas que han perdido mascotas con quienes pueden ayudarles a
+                  encontrarlas.
+                  Cada segundo cuenta cuando una mascota se pierde.
+               </p>
+
+               <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                  <a href="{{path('app_lost_pets_create')}}"
+                     class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-200 shadow-lg">
+                     <i class="fas fa-plus mr-2"></i>Reportar mascota perdida
+                  </a>
+                  <a href="{{path('app_lost_pets')}}"
+                     class="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-600 hover:text-white transform hover:scale-105 transition-all duration-200 shadow-lg">
+                     <i class="fas fa-search mr-2"></i>Explorar casos
+                  </a>
+               </div>
+            </div>
+
+            <!-- Right Content - Interactive Cards -->
+            <div class="relative">
+               <div class="grid grid-cols-1 gap-6">
+                  <!-- Card 1 -->
+                  <div class="bg-white rounded-2xl shadow-xl p-6 transform hover:scale-105 transition-all duration-300">
+                     <div class="flex items-start space-x-4">
+                        <div class="bg-blue-100 p-3 rounded-full">
+                           <i class="fas fa-camera text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                           <h3 class="text-lg font-semibold text-gray-900 mb-2">Publica fácilmente</h3>
+                           <p class="text-gray-600 text-sm">Sube fotos, añade la ubicación y descripción de tu mascota
+                              perdida para que otros usuarios puedan ayudarte.</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Card 2 -->
+                  <div
+                     class="bg-white rounded-2xl shadow-xl p-6 transform hover:scale-105 transition-all duration-300 ml-8">
+                     <div class="flex items-start space-x-4">
+                        <div class="bg-purple-100 p-3 rounded-full">
+                           <i class="fas fa-map-marker-alt text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                           <h3 class="text-lg font-semibold text-gray-900 mb-2">Busca y filtra</h3>
+                           <p class="text-gray-600 text-sm">Explora publicaciones por zona, tipo de animal,
+                              características físicas y otros filtros útiles.</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Card 3 -->
+                  <div class="bg-white rounded-2xl shadow-xl p-6 transform hover:scale-105 transition-all duration-300">
+                     <div class="flex items-start space-x-4">
+                        <div class="bg-green-100 p-3 rounded-full">
+                           <i class="fas fa-users text-green-600 text-xl"></i>
+                        </div>
+                        <div class="flex-1">
+                           <h3 class="text-lg font-semibold text-gray-900 mb-2">Conecta directamente</h3>
+                           <p class="text-gray-600 text-sm">Contacta directamente con los dueños de mascotas perdidas o
+                              con personas que han encontrado animales.</p>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- How it works Section -->
+   <div class="py-20 bg-gray-50">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
+               ¿Cómo funciona?
+            </h2>
+            <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+               Un proceso simple y efectivo diseñado para maximizar las posibilidades de reunión
+            </p>
+         </div>
+
+         <div class="relative">
+            <!-- Connection line -->
+            <div
+               class="hidden lg:block absolute top-24 left-0 right-0 h-0.5 bg-gradient-to-r from-blue-200 via-purple-200 to-green-200">
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+               <!-- Step 1 -->
+               <div class="relative text-center group">
+                  <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
+                     <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl">
+                           <i class="fas fa-upload"></i>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                           1
+                        </div>
+                     </div>
+                     <div class="flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Publica</h3>
+                        <p class="text-gray-600 flex-1">Sube fotos claras, describe características únicas y marca la última ubicación conocida</p>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Step 2 -->
+               <div class="relative text-center group">
+                  <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
+                     <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl">
+                           <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                           2
+                        </div>
+                     </div>
+                     <div class="flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Notificamos</h3>
+                        <p class="text-gray-600 flex-1">Alertamos automáticamente a la comunidad local y activamos la red de búsqueda</p>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Step 3 -->
+               <div class="relative text-center group">
+                  <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
+                     <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl">
+                           <i class="fas fa-search-location"></i>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                           3
+                        </div>
+                     </div>
+                     <div class="flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Buscamos</h3>
+                        <p class="text-gray-600 flex-1">Voluntarios y nuestra comunidad trabajan juntos para generar avistamientos y pistas valiosas</p>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Step 4 -->
+               <div class="relative text-center group">
+                  <div class="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 h-full flex flex-col">
+                     <div class="relative">
+                        <div class="w-16 h-16 bg-gradient-to-r from-green-500 to-green-600 rounded-full flex items-center justify-center mx-auto mb-6 text-white text-2xl">
+                           <i class="fas fa-heart"></i>
+                        </div>
+                        <div class="absolute -top-2 -right-2 w-8 h-8 bg-green-600 rounded-full flex items-center justify-center text-white text-sm font-bold">
+                           4
+                        </div>
+                     </div>
+                     <div class="flex-1 flex flex-col">
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">Reunimos</h3>
+                        <p class="text-gray-600 flex-1">Facilitamos el contacto seguro y coordinamos el feliz reencuentro</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
+   <!-- Recent Animals Section -->
+   <div class="py-20 bg-white">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+         <div class="text-center mb-16">
+            <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
+               Animales recientes
+            </h2>
+            <p class="text-xl text-gray-600">
+               Últimas publicaciones de mascotas perdidas y encontradas
+            </p>
+         </div>
+
+         <!-- Tabs with Stimulus Controller -->
+         <div data-controller="tabs"
+              data-tabs-lost-route-value="{{ path('app_lost_pets') }}"
+              data-tabs-found-route-value="{{ path('app_found_pets') }}">
+
+            <!-- Tabs -->
+            <div class="flex justify-center mb-8">
+               <div class="bg-gray-100 p-1 rounded-lg">
+                  <button data-tabs-target="lostTab"
+                          data-action="click->tabs#showLostPets"
+                          class="px-6 py-2 rounded-md text-sm font-medium bg-blue-600 text-white transition-colors">
+                     Perdidas
+                  </button>
+                  <button data-tabs-target="foundTab"
+                          data-action="click->tabs#showFoundPets"
+                          class="px-6 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
+                     Encontradas
+                  </button>
+               </div>
+            </div>
+
+            <!-- Lost Pets Content -->
+            <div data-tabs-target="lostContent" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {% if recentLostPets is not empty %}
+                  {% for lostPet in recentLostPets %}
+                     {% set animal = lostPet.animalId %}
+                     {% set user = lostPet.userId %}
+                     {% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                          onclick="window.location.href='{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}'">
+                        <div class="h-48 bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center">
+                           {% if primaryPhoto %}
+                              <img src="{{ asset(primaryPhoto.filePath) }}"
+                                   alt="{{ animal.name ?: 'Mascota sin nombre' }}"
+                                   class="w-full h-full object-cover">
+                           {% else %}
+                              {% set iconClass = animal.animalType|lower == 'perro' ? 'fa-dog' : (animal.animalType|lower == 'gato' ? 'fa-cat' : (animal.animalType|lower == 'ave' ? 'fa-dove' : (animal.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+                              <i class="fas {{ iconClass }} text-4xl text-blue-600"></i>
+                           {% endif %}
+                        </div>
+                        <div class="p-6">
+                           <div class="flex items-center justify-between mb-3">
+                              <h3 class="text-lg font-semibold text-gray-900">{{ animal.name ?: 'Sin nombre' }}</h3>
+                              <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">Perdida</span>
+                           </div>
+                           <p class="text-sm text-gray-600 mb-3">
+                              {{ animal.animalType|title }}
+                              {% if animal.gender %} • {{ animal.gender|title }}{% endif %}
+                              {% if animal.size %} • {{ animal.size|title }}{% endif %}
+                           </p>
+                           <p class="text-gray-600 text-sm mb-4">
+                              {{ animal.description|length > 60 ? animal.description|slice(0, 60) ~ '...' : animal.description }}
+                           </p>
+                           <div class="flex items-center text-xs text-gray-500 mb-4">
+                              <i class="fas fa-map-marker-alt mr-1"></i>
+                              <span>
+                                 {{ lostPet.lostZone ?: 'Zona no especificada' }} •
+                                 {% set daysDiff = 'now'|date('U') - lostPet.createdAt.timestamp %}
+                                 {% set days = (daysDiff / 86400)|round %}
+                                 {% if days == 0 %}
+                                    Hoy
+                                 {% elseif days == 1 %}
+                                    Hace 1 día
+                                 {% else %}
+                                    Hace {{ days }} días
+                                 {% endif %}
+                              </span>
+                           </div>
+
+                           <!-- Contact and Share Buttons -->
+                           <div class="flex gap-2">
+                              <button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                                      data-action="click->contact-modal#open"
+                                      data-pet-name="{{ animal.name ?: 'Mascota sin nombre' }}"
+                                      data-phone="{{ user.phone ?? 'No disponible' }}"
+                                      data-email="{{ user.email }}"
+                                      onclick="event.stopPropagation();">
+                                 <i class="fas fa-phone text-sm mr-2"></i>Contactar
+                              </button>
+                              <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                                      data-action="click->contact-modal#copyLink"
+                                      data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}"
+                                      onclick="event.stopPropagation();">
+                                 <i class="fas fa-share text-sm mr-2"></i>Compartir
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  {% endfor %}
+               {% else %}
+                  <div class="col-span-full text-center py-12">
+                     <i class="fas fa-paw text-6xl text-gray-300 mb-4"></i>
+                     <h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas perdidas recientes</h3>
+                     <p class="text-gray-500">No se han reportado mascotas perdidas recientemente.</p>
+                  </div>
+               {% endif %}
+            </div>
+
+            <!-- Found Pets Content (Hidden by default) -->
+            <div data-tabs-target="foundContent" class="hidden grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+               {% if recentFoundAnimals is not empty %}
+                  {% for foundAnimal in recentFoundAnimals %}
+                     {% set animal = foundAnimal.animalId %}
+                     {% set user = foundAnimal.userId %}
+                     {% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
+                     <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200 hover:shadow-xl transition-all duration-300 cursor-pointer"
+                          onclick="window.location.href='{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}'">
+                        <div class="h-48 bg-gradient-to-r from-green-100 to-green-200 flex items-center justify-center">
+                           {% if primaryPhoto %}
+                              <img src="{{ asset(primaryPhoto.filePath) }}"
+                                   alt="{{ animal.name ?: 'Animal encontrado' }}"
+                                   class="w-full h-full object-cover">
+                           {% else %}
+                              {% set iconClass = animal.animalType|lower == 'perro' ? 'fa-dog' : (animal.animalType|lower == 'gato' ? 'fa-cat' : (animal.animalType|lower == 'ave' ? 'fa-dove' : (animal.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+                              <i class="fas {{ iconClass }} text-4xl text-green-600"></i>
+                           {% endif %}
+                        </div>
+                        <div class="p-6">
+                           <div class="flex items-center justify-between mb-3">
+                              <h3 class="text-lg font-semibold text-gray-900">
+                                 {{ animal.name ?: (animal.animalType|title ~ ' encontrado') }}
+                              </h3>
+                              <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Encontrada</span>
+                           </div>
+                           <p class="text-sm text-gray-600 mb-3">
+                              {{ animal.animalType|title }}
+                              {% if animal.gender %} • {{ animal.gender|title }}{% endif %}
+                              {% if animal.size %} • {{ animal.size|title }}{% endif %}
+                           </p>
+                           <p class="text-gray-600 text-sm mb-4">
+                              {{ animal.description|length > 60 ? animal.description|slice(0, 60) ~ '...' : animal.description }}
+                           </p>
+                           <div class="flex items-center text-xs text-gray-500 mb-4">
+                              <i class="fas fa-map-marker-alt mr-1"></i>
+                              <span>
+                                 {{ foundAnimal.foundZone ?: 'Zona no especificada' }} •
+                                 {% set daysDiff = 'now'|date('U') - foundAnimal.createdAt.timestamp %}
+                                 {% set days = (daysDiff / 86400)|round %}
+                                 {% if days == 0 %}
+                                    Hoy
+                                 {% elseif days == 1 %}
+                                    Hace 1 día
+                                 {% else %}
+                                    Hace {{ days }} días
+                                 {% endif %}
+                              </span>
+                           </div>
+
+                           <!-- Contact and Share Buttons -->
+                           <div class="flex gap-2">
+                              <button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                                      data-action="click->contact-modal#open"
+                                      data-pet-name="{{ animal.name ?: (animal.animalType|title ~ ' encontrado') }}"
+                                      data-phone="{{ user.phone ?? 'No disponible' }}"
+                                      data-email="{{ user.email }}"
+                                      onclick="event.stopPropagation();">
+                                 <i class="fas fa-whatsapp text-sm mr-2"></i>Contactar
+                              </button>
+                              <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                                      data-action="click->contact-modal#copyLink"
+                                      data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}"
+                                      onclick="event.stopPropagation();">
+                                 <i class="fas fa-share text-sm mr-2"></i>Compartir
+                              </button>
+                           </div>
+                        </div>
+                     </div>
+                  {% endfor %}
+               {% else %}
+                  <div class="col-span-full text-center py-12">
+                     <i class="fas fa-paw text-6xl text-gray-300 mb-4"></i>
+                     <h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas encontradas recientes</h3>
+                     <p class="text-gray-500">No se han reportado mascotas encontradas recientemente.</p>
+                  </div>
+               {% endif %}
+            </div>
+
+            <!-- View More Button -->
+            <div class="text-center mt-8">
+               <a data-tabs-target="viewAllBtn" href="{{ path('app_lost_pets') }}"
+                  class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
+                  <span data-tabs-target="viewAllText">Ver todas las perdidas</span>
+                  <i class="fas fa-arrow-right ml-2"></i>
+               </a>
+            </div>
+
+         </div>
+      </div>
+   </div>
+
+   <!-- Contact Modal -->
+   <div data-controller="contact-modal">
+      <div id="contactModal"
+           class="hidden fixed inset-0 bg-gray-900/40 overflow-y-auto h-full w-full z-50 flex items-center justify-center"
+           data-contact-modal-target="modal">
+         <div class="relative mx-auto p-5 border w-96 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+               <!-- Modal Header -->
+               <div class="flex items-center justify-between mb-4">
+                  <h3 class="text-lg font-semibold text-gray-900">Información de Contacto</h3>
+                  <button data-action="click->contact-modal#close" class="text-gray-400 hover:text-gray-600">
+                     <i class="fas fa-x text-xl"></i>
+                  </button>
+               </div>
+
+               <!-- Pet Name -->
+               <div class="text-center mb-6">
+                  <h4 data-contact-modal-target="petName" class="text-xl font-bold text-blue-600"></h4>
+                  <p class="text-sm text-gray-600 mt-1">Mascota</p>
+               </div>
+
+               <!-- Contact Information -->
+               <div class="space-y-4 mb-6">
+                  <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                     <div class="flex-shrink-0">
+                        <i class="fas fa-phone text-blue-600 text-lg"></i>
+                     </div>
+                     <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">Teléfono</p>
+                        <p data-contact-modal-target="phone" class="text-sm text-gray-600"></p>
+                     </div>
+                  </div>
+
+                  <div class="flex items-center p-3 bg-gray-50 rounded-lg">
+                     <div class="flex-shrink-0">
+                        <i class="fas fa-envelope text-blue-600 text-lg"></i>
+                     </div>
+                     <div class="ml-3">
+                        <p class="text-sm font-medium text-gray-900">Email</p>
+                        <p data-contact-modal-target="email" class="text-sm text-gray-600"></p>
+                     </div>
+                  </div>
+               </div>
+
+               <!-- Action Buttons -->
+               <div class="flex space-x-3">
+                  <button data-action="click->contact-modal#sendWhatsApp" class="flex-1 bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition-colors flex items-center justify-center">
+                     <i class="fas fa-whatsapp text-lg mr-2"></i>WhatsApp
+                  </button>
+                  <button data-action="click->contact-modal#sendEmail" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
+                     <i class="fas fa-envelope text-lg mr-2"></i>Email
+                  </button>
+               </div>
+
+               <!-- Info Text -->
+               <div class="mt-4 text-center">
+                  <p class="text-xs text-gray-500">
+                     Haz clic en WhatsApp o Email para contactar directamente
+                  </p>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+
 {% endblock %}
