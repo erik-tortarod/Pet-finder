@@ -11,82 +11,155 @@
 {% block body %}
 	<section class="bg-white shadow">
 		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-			<h1 class="text-3xl font-bold text-gray-900">Mascotas Buscadas</h1>
-			<p class="mt-2 text-gray-600">Encuentra mascotas perdidas en tu zona</p>
+			<h1 class="text-3xl font-bold text-gray-900">Mascotas Encontradas</h1>
+			<p class="mt-2 text-gray-600">Encuentra mascotas encontradas en tu zona</p>
 		</div>
 	</section>
 
 	<section class="bg-white border-b">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-			<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-				<div class="md:col-span-2">
-					<div class="relative">
-						<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-							{% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'text-gray-400'} %}
+
+			<!-- Simple form for filters -->
+			<form method="GET" action="{{ path('app_found_pets') }}" id="filtersForm">
+				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+					<div class="md:col-span-2">
+						<div class="relative">
+							<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+								{% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'text-gray-400'} %}
+							</div>
+							<input type="text"
+							       name="search"
+							       value="{{ filters.search ?? '' }}"
+							       placeholder="Buscar por nombre, descripción ..."
+							       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
 						</div>
-						<input type="text" placeholder="Buscar por nombre, descripción ..." class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
+					</div>
+
+					<div>
+						<select name="animalType"
+						        class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+							<option value="">Tipo de animal</option>
+							<option value="perro" {{ filters.animalType ?? '' == 'perro' ? 'selected' : '' }}>Perro</option>
+							<option value="gato" {{ filters.animalType ?? '' == 'gato' ? 'selected' : '' }}>Gato</option>
+							<option value="ave" {{ filters.animalType ?? '' == 'ave' ? 'selected' : '' }}>Ave</option>
+							<option value="conejo" {{ filters.animalType ?? '' == 'conejo' ? 'selected' : '' }}>Conejo</option>
+							<option value="otro" {{ filters.animalType ?? '' == 'otro' ? 'selected' : '' }}>Otro</option>
+						</select>
+					</div>
+
+					<div>
+						<select name="zone"
+						        class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
+							<option value="">Zona</option>
+							<option value="centro" {{ filters.zone ?? '' == 'centro' ? 'selected' : '' }}>Centro</option>
+							<option value="norte" {{ filters.zone ?? '' == 'norte' ? 'selected' : '' }}>Norte</option>
+							<option value="sur" {{ filters.zone ?? '' == 'sur' ? 'selected' : '' }}>Sur</option>
+							<option value="este" {{ filters.zone ?? '' == 'este' ? 'selected' : '' }}>Este</option>
+							<option value="oeste" {{ filters.zone ?? '' == 'oeste' ? 'selected' : '' }}>Oeste</option>
+						</select>
 					</div>
 				</div>
 
-				<div>
-					<select class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-						<option value="">Tipo de animal</option>
-						<option value="perro">Perro</option>
-						<option value="gato">Gato</option>
-						<option value="ave">Ave</option>
-						<option value="otro">Otro</option>
-					</select>
-				</div>
+				{# Tag Filters and buttons #}
+				<div class="mt-4">
+					<div class="flex items-center justify-between mb-2">
+						<h3 class="text-sm font-medium text-gray-700">Filtros rápidos:</h3>
+						<div class="flex gap-2">
+							<button type="submit" class="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
+								Buscar
+							</button>
+							<a href="{{ path('app_found_pets') }}" class="text-sm text-blue-600 hover:text-blue-800 px-4 py-2">
+								Limpiar filtros
+							</a>
+						</div>
+					</div>
 
-				<div>
-					<select class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-						<option value="">Zona</option>
-						<option value="centro">Centro</option>
-						<option value="norte">Norte</option>
-						<option value="sur">Sur</option>
-						<option value="este">Este</option>
-						<option value="oeste">Oeste</option>
-					</select>
-				</div>
-			</div>
+					<input type="hidden" name="tags" id="tagsInput" value="{{ (filters.tags ?? [])|join(',') }}">
 
-			<div class="mt-4">
-				<h3 class="text-sm font-medium text-gray-700 mb-2">Filtros rápidos:</h3>
-				<div class="flex flex-wrap gap-2">
-					<button class="tag tag-active">Pequeño</button>
-					<button class="tag tag-innactive">Grande</button>
-					<button class="tag tag-innactive">Blanco</button>
-					<button class="tag tag-innactive">Negro</button>
-					<button class="tag tag-innactive">Marrón</button>
-					<button class="tag tag-innactive">Con collar</button>
-					<button class="tag tag-innactive">Sin collar</button>
+					<div class="flex flex-wrap gap-2" id="quickFilters">
+						{% set currentTags = filters.tags ?? [] %}
+
+						<button type="button" class="tag {{ 'Pequeño' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Pequeño">Pequeño</button>
+						<button type="button" class="tag {{ 'Mediano' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Mediano">Mediano</button>
+						<button type="button" class="tag {{ 'Grande' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Grande">Grande</button>
+						<button type="button" class="tag {{ 'Blanco' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Blanco">Blanco</button>
+						<button type="button" class="tag {{ 'Negro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Negro">Negro</button>
+						<button type="button" class="tag {{ 'Marrón' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Marrón">Marrón</button>
+						<button type="button" class="tag {{ 'Gris' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Gris">Gris</button>
+						<button type="button" class="tag {{ 'Con collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Con collar">Con collar</button>
+						<button type="button" class="tag {{ 'Sin collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Sin collar">Sin collar</button>
+						<button type="button" class="tag {{ 'Cachorro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Cachorro">Cachorro</button>
+						<button type="button" class="tag {{ 'Adulto' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Adulto">Adulto</button>
+						<button type="button" class="tag {{ 'Senior' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Senior">Senior</button>
+					</div>
 				</div>
-			</div>
+			</form>
+
 		</div>
 	</section>
 
-	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
-			 data-controller="infinite-scroll"
-			 data-infinite-scroll-url-value="{{ path('app_found_pets') }}">
+	<script>
+		// Simple JavaScript for quick filters
+		document.addEventListener('DOMContentLoaded', function() {
+			const quickFilters = document.getElementById('quickFilters');
+			const tagsInput = document.getElementById('tagsInput');
+			const form = document.getElementById('filtersForm');
+
+			if (quickFilters && tagsInput) {
+				quickFilters.addEventListener('click', function(e) {
+					if (e.target.hasAttribute('data-tag')) {
+						e.preventDefault();
+
+						const button = e.target;
+						const tag = button.getAttribute('data-tag');
+						const isActive = button.classList.contains('tag-active');
+
+						// Get current tags
+						let currentTags = tagsInput.value ? tagsInput.value.split(',') : [];
+
+						if (isActive) {
+							// Remove tag
+							button.classList.remove('tag-active');
+							button.classList.add('tag-innactive');
+							currentTags = currentTags.filter(t => t !== tag);
+						} else {
+							// Add tag
+							button.classList.remove('tag-innactive');
+							button.classList.add('tag-active');
+							currentTags.push(tag);
+						}
+
+						// Update hidden input
+						tagsInput.value = currentTags.join(',');
+
+						// Auto-submit form
+						form.submit();
+					}
+				});
+			}
+
+			// Auto-submit on select change
+			const selects = form.querySelectorAll('select');
+			selects.forEach(select => {
+				select.addEventListener('change', function() {
+					form.submit();
+				});
+			});
+		});
+	</script>
+
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 		<div id="found-animals-container"
-			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-			 data-infinite-scroll-target="container">
+			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 			{% if foundAnimals is not empty %}
 				{% include 'found_pets/_found_animals_list.html.twig' with {'foundAnimals': foundAnimals} %}
 			{% else %}
 				<div class="col-span-full text-center py-12">
 					{% include 'components/Icon.html.twig' with {name: 'paw', size: 64, class: 'mx-auto text-gray-300 mb-4'} %}
-					<h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas perdidas</h3>
-					<p class="text-gray-500">No se encontraron mascotas perdidas en este momento.</p>
+					<h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas encontradas</h3>
+					<p class="text-gray-500">No se encontraron mascotas encontradas con los filtros aplicados.</p>
 				</div>
 			{% endif %}
-		</div>
-		<div id="loading"
-			 class="text-center py-6 hidden"
-			 data-infinite-scroll-target="loading">
-			<div class="flex justify-center">
-				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-			</div>
 		</div>
 	</section>
 

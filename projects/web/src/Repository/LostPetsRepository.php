@@ -20,11 +20,46 @@ class LostPetsRepository extends ServiceEntityRepository
     /**
      * Find all lost pets with all related data (animals, photos, tags, users) - paginated for infinite scroll
      */
-    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10): array
+    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10, array $filters = []): array
     {
-        // First, get the lost pets IDs
-        $lostPetIds = $this->createQueryBuilder('lp')
+        // Build the base query with filters
+        $qb = $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->leftJoin('lp.userId', 'u')
+            ->where('a.status = :status')
+            ->setParameter('status', 'LOST');
+
+        // Apply search filter
+        if (!empty($filters['search'])) {
+            $qb->andWhere('(a.name LIKE :search OR a.description LIKE :search OR lp.lostCircumstances LIKE :search)')
+                ->setParameter('search', '%' . $filters['search'] . '%');
+        }
+
+        // Apply animal type filter
+        if (!empty($filters['animalType'])) {
+            $qb->andWhere('a.animalType = :animalType')
+                ->setParameter('animalType', $filters['animalType']);
+        }
+
+        // Apply zone filter
+        if (!empty($filters['zone'])) {
+            $qb->andWhere('lp.lostZone LIKE :zone')
+                ->setParameter('zone', '%' . $filters['zone'] . '%');
+        }
+
+        // Apply tags filter
+        if (!empty($filters['tags'])) {
+            $qb->andWhere('t.name IN (:tags)')
+                ->setParameter('tags', $filters['tags']);
+        }
+
+        // First, get the lost pets IDs with pagination
+        $lostPetIds = (clone $qb)
             ->select('lp.id')
+            ->groupBy('lp.id')
             ->orderBy('lp.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)

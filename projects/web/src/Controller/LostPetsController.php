@@ -24,9 +24,23 @@ final class LostPetsController extends AbstractController
     public function index(Request $request, LostPetsRepository $lostPetsRepository): Response
     {
         $page = $request->query->getInt('page', 1);
-        $limit = 3; // Changed to 3 for testing infinite scroll
+        $limit = 9; // Show more results per page
 
-        $lostPets = $lostPetsRepository->findAllWithRelationsPaginated($page, $limit);
+        // Get filter parameters - don't filter empty values here
+        $filters = [
+            'search' => $request->query->get('search', ''),
+            'animalType' => $request->query->get('animalType', ''),
+            'zone' => $request->query->get('zone', ''),
+            'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : []
+        ];
+
+        // Debug: log the filters
+        error_log('Lost Pets Filters: ' . json_encode($filters));
+
+        $lostPets = $lostPetsRepository->findAllWithRelationsPaginated($page, $limit, $filters);
+
+        // Debug: log the count
+        error_log('Lost Pets Found: ' . count($lostPets));
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('lost_pets/_lost_animals_list.html.twig', [
@@ -36,6 +50,7 @@ final class LostPetsController extends AbstractController
 
         return $this->render('lost_pets/index.html.twig', [
             'lostPets' => $lostPets,
+            'filters' => $filters
         ]);
     }
 

@@ -23,9 +23,23 @@ final class FoundPetsController extends AbstractController
     public function index(Request $request, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
         $page = $request->query->getInt('page', 1);
-        $limit = 3;
+        $limit = 9; // Show more results per page
 
-        $foundAnimals = $foundAnimalsRepository->findAllWithRelationsPaginated($page, $limit);
+        // Get filter parameters - don't filter empty values here
+        $filters = [
+            'search' => $request->query->get('search', ''),
+            'animalType' => $request->query->get('animalType', ''),
+            'zone' => $request->query->get('zone', ''),
+            'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : []
+        ];
+
+        // Debug: log the filters
+        error_log('Found Pets Filters: ' . json_encode($filters));
+
+        $foundAnimals = $foundAnimalsRepository->findAllWithRelationsPaginated($page, $limit, $filters);
+
+        // Debug: log the count
+        error_log('Found Pets Found: ' . count($foundAnimals));
 
         if ($request->isXmlHttpRequest()) {
             return $this->render('found_pets/_found_animals_list.html.twig', [
@@ -35,6 +49,7 @@ final class FoundPetsController extends AbstractController
 
         return $this->render('found_pets/index.html.twig', [
             'foundAnimals' => $foundAnimals,
+            'filters' => $filters
         ]);
     }
 

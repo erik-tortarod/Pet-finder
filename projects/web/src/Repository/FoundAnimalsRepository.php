@@ -20,11 +20,46 @@ class FoundAnimalsRepository extends ServiceEntityRepository
     /**
      * Find all found animals with all related data (animals, photos, users)
      */
-    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10): array
+    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10, array $filters = []): array
     {
-        // First, get the found animals IDs
-        $foundAnimalIds = $this->createQueryBuilder('fa')
+        // Build the base query with filters
+        $qb = $this->createQueryBuilder('fa')
+            ->leftJoin('fa.animalId', 'a')
+            ->leftJoin('a.animalPhotos', 'ap')
+            ->leftJoin('a.animalTags', 'at')
+            ->leftJoin('at.tagId', 't')
+            ->leftJoin('fa.userId', 'u')
+            ->where('a.status = :status')
+            ->setParameter('status', 'FOUND');
+
+        // Apply search filter
+        if (!empty($filters['search'])) {
+            $qb->andWhere('(a.name LIKE :search OR a.description LIKE :search OR fa.foundCircumstances LIKE :search)')
+                ->setParameter('search', '%' . $filters['search'] . '%');
+        }
+
+        // Apply animal type filter
+        if (!empty($filters['animalType'])) {
+            $qb->andWhere('a.animalType = :animalType')
+                ->setParameter('animalType', $filters['animalType']);
+        }
+
+        // Apply zone filter
+        if (!empty($filters['zone'])) {
+            $qb->andWhere('fa.foundZone LIKE :zone')
+                ->setParameter('zone', '%' . $filters['zone'] . '%');
+        }
+
+        // Apply tags filter
+        if (!empty($filters['tags'])) {
+            $qb->andWhere('t.name IN (:tags)')
+                ->setParameter('tags', $filters['tags']);
+        }
+
+        // First, get the found animals IDs with pagination
+        $foundAnimalIds = (clone $qb)
             ->select('fa.id')
+            ->groupBy('fa.id')
             ->orderBy('fa.createdAt', 'DESC')
             ->setFirstResult(($page - 1) * $limit)
             ->setMaxResults($limit)
