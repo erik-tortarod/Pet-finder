@@ -114,19 +114,38 @@ final class LostPetsController extends AbstractController
                 }
 
                 // Procesar imagen del animal
-                $photoFile = $form->get('animalPhoto')->getData();
-                if ($photoFile) {
+                $photoFiles = $form->get('animalPhoto')->getData();
+
+                // Debug: Log what we're receiving
+                error_log('Photo files received: ' . (is_array($photoFiles) ? count($photoFiles) : 'not an array'));
+                if (is_array($photoFiles)) {
+                    foreach ($photoFiles as $index => $file) {
+                        if ($file instanceof \Symfony\Component\HttpFoundation\File\UploadedFile) {
+                            error_log("File $index: " . $file->getClientOriginalName() . " - Size: " . $file->getSize() . " - Valid: " . ($file->isValid() ? 'yes' : 'no'));
+                        } else {
+                            error_log("File $index: not an UploadedFile - " . gettype($file));
+                        }
+                    }
+                }
+
+                if ($photoFiles && !empty($photoFiles)) {
                     try {
-                        $animalPhoto = $fileUploadService->uploadAnimalPhoto($photoFile, $animal, $user->getEmail());
-                        $entityManager->persist($animalPhoto);
+                        $animalPhotos = $fileUploadService->uploadAnimalPhotos($photoFiles, $animal, $user->getEmail());
+                        error_log('Photos uploaded: ' . count($animalPhotos));
+                        foreach ($animalPhotos as $animalPhoto) {
+                            $entityManager->persist($animalPhoto);
+                        }
                     } catch (\Exception $e) {
+                        error_log('Photo upload error: ' . $e->getMessage());
                         ControllerUtils::handleError(
                             fn($type, $message) => $this->addFlash($type, $message),
                             $e,
-                            'Error al procesar la imagen'
+                            'Error al procesar las imágenes'
                         );
                         throw $e; // Re-lanzar para que se maneje en el catch principal
                     }
+                } else {
+                    error_log('No photo files to process');
                 }
 
                 // Crear el registro de animal perdido

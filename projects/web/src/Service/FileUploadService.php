@@ -14,7 +14,42 @@ class FileUploadService
       private SluggerInterface $slugger
    ) {}
 
-   public function uploadAnimalPhoto(UploadedFile $file, Animals $animal, string $userEmail): AnimalPhotos
+   public function uploadAnimalPhotos(array $files, Animals $animal, string $userEmail): array
+   {
+      error_log('uploadAnimalPhotos called with ' . count($files) . ' files');
+
+      if (empty($files)) {
+         error_log('No files provided to uploadAnimalPhotos');
+         return [];
+      }
+
+      $uploadedPhotos = [];
+      $isFirstPhoto = true;
+
+      foreach ($files as $index => $file) {
+         error_log("Processing file $index: " . gettype($file));
+
+         if ($file instanceof UploadedFile && $file->isValid()) {
+            error_log("File $index is valid UploadedFile: " . $file->getClientOriginalName());
+            try {
+               $animalPhoto = $this->uploadSingleAnimalPhoto($file, $animal, $userEmail, $isFirstPhoto);
+               $uploadedPhotos[] = $animalPhoto;
+               $isFirstPhoto = false; // Solo la primera foto será principal
+               error_log("Successfully uploaded file $index as " . ($animalPhoto->isPrimary() ? 'primary' : 'secondary'));
+            } catch (\Exception $e) {
+               // Log error pero continúa con las demás fotos
+               error_log("Error uploading photo $index: " . $e->getMessage());
+            }
+         } else {
+            error_log("File $index is not valid: " . ($file instanceof UploadedFile ? 'UploadedFile but invalid' : 'not UploadedFile'));
+         }
+      }
+
+      error_log('uploadAnimalPhotos completed. Uploaded: ' . count($uploadedPhotos));
+      return $uploadedPhotos;
+   }
+
+   private function uploadSingleAnimalPhoto(UploadedFile $file, Animals $animal, string $userEmail, bool $isPrimary = false): AnimalPhotos
    {
       // Validar que el archivo sea válido
       if (!$file->isValid()) {
@@ -76,9 +111,14 @@ class FileUploadService
       $animalPhoto->setFileSize($fileSize);
       $animalPhoto->setMimeType($mimeType);
       $animalPhoto->setCreatedAt(new \DateTimeImmutable());
-      $animalPhoto->setIsPrimary(true);
+      $animalPhoto->setIsPrimary($isPrimary);
 
       return $animalPhoto;
+   }
+
+   public function uploadAnimalPhoto(UploadedFile $file, Animals $animal, string $userEmail): AnimalPhotos
+   {
+      return $this->uploadSingleAnimalPhoto($file, $animal, $userEmail, true);
    }
 
    public function getUploadsDir(): string

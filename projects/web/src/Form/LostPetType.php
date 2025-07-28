@@ -14,6 +14,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\All;
 
 class LostPetType extends AbstractType
 {
@@ -82,26 +83,29 @@ class LostPetType extends AbstractType
                 ],
             ])
             ->add('animalPhoto', FileType::class, [
-                'label' => 'Foto del animal',
+                'label' => 'Fotos del animal',
                 'mapped' => false,
                 'required' => false,
+                'multiple' => true,
                 'constraints' => [
-                    new File([
-                        'maxSize' => '2M',
-                        'mimeTypes' => [
-                            'image/jpeg',
-                            'image/png',
-                            'image/gif',
-                            'image/webp',
-                            'image/avif'
-                        ],
-                        'mimeTypesMessage' => 'Por favor sube una imagen válida (JPG, PNG, GIF, WebP, AVIF)',
-                        'maxSizeMessage' => 'La imagen no puede ser mayor a 2MB'
+                    new All([
+                        new File([
+                            'maxSize' => '2M',
+                            'mimeTypes' => [
+                                'image/jpeg',
+                                'image/png',
+                                'image/gif',
+                                'image/webp',
+                                'image/avif'
+                            ],
+                            'mimeTypesMessage' => 'Por favor sube una imagen válida (JPG, PNG, GIF, WebP, AVIF)',
+                            'maxSizeMessage' => 'La imagen no puede ser mayor a 2MB'
+                        ])
                     ])
                 ],
                 'attr' => [
                     'accept' => 'image/*',
-                    'class' => 'form-control'
+                    'data-max-files' => '5'
                 ]
             ])
 
