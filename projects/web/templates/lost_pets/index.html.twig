@@ -147,20 +147,28 @@
 			}
 
 			// Auto-submit on select change
+			// Commented out to not interfere with infinite scroll
+			// Users will need to click the search button to apply filters
+			/*
 			const selects = form.querySelectorAll('select');
 			selects.forEach(select => {
 				select.addEventListener('change', function() {
 					form.submit();
 				});
 			});
+			*/
 		});
 	</script>
 
 	{# Results #}
-	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+			 data-controller="infinite-scroll"
+			 data-infinite-scroll-url-value="{{ path('app_lost_pets') }}"
+			 data-infinite-scroll-page-value="{{ currentPage ?? 1 }}"
+			 data-infinite-scroll-has-more-value="{{ hasMore ?? false ? 'true' : 'false' }}">
 		<div id="lost-animals-container"
 			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-			 data-filters-target="container">
+			 data-infinite-scroll-target="container">
 			{% if lostPets is not empty %}
 				{% include 'lost_pets/_lost_animals_list.html.twig' with {'lostPets': lostPets} %}
 			{% else %}
@@ -174,7 +182,7 @@
 		</div>
 		<div id="loading"
 			 class="text-center py-6 hidden"
-			 data-filters-target="loading">
+			 data-infinite-scroll-target="loading">
 			<div class="flex justify-center">
 				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
 			</div>

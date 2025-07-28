@@ -16,13 +16,8 @@
         <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-        {{ encore_entry_link_tags('app') }}
-
-		{% block javascripts %}
-			{% block importmap %}
-				{{ importmap('app') }}
-			{% endblock %}
-			{{ encore_entry_script_tags('app') }}
+		{% block stylesheets %}
+			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
 	</head>
 	<body>
@@ -31,7 +26,12 @@
 		{% block body %}{% endblock %}
 		{% include 'components/Footer.html.twig' %}
 
+		{# Load utility scripts first #}
 		<script src="{{ asset('page/base/menu_navigation.js') }}"></script>
 		<script src="{{ asset('page/base/utils.js') }}"></script>
+
+		{% block javascripts %}
+			{{ encore_entry_script_tags('app') }}
+		{% endblock %}
 	</body>
 </html>

@@ -139,18 +139,27 @@
 			}
 
 			// Auto-submit on select change
+			// Commented out to not interfere with infinite scroll
+			// Users will need to click the search button to apply filters
+			/*
 			const selects = form.querySelectorAll('select');
 			selects.forEach(select => {
 				select.addEventListener('change', function() {
 					form.submit();
 				});
 			});
+			*/
 		});
 	</script>
 
-	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
+			 data-controller="infinite-scroll"
+			 data-infinite-scroll-url-value="{{ path('app_found_pets') }}"
+			 data-infinite-scroll-page-value="{{ currentPage ?? 1 }}"
+			 data-infinite-scroll-has-more-value="{{ hasMore ?? false ? 'true' : 'false' }}">
 		<div id="found-animals-container"
-			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+			 data-infinite-scroll-target="container">
 			{% if foundAnimals is not empty %}
 				{% include 'found_pets/_found_animals_list.html.twig' with {'foundAnimals': foundAnimals} %}
 			{% else %}
@@ -160,6 +169,13 @@
 					<p class="text-gray-500">No se encontraron mascotas encontradas con los filtros aplicados.</p>
 				</div>
 			{% endif %}
+		</div>
+		<div id="loading"
+			 class="text-center py-6 hidden"
+			 data-infinite-scroll-target="loading">
+			<div class="flex justify-center">
+				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+			</div>
 		</div>
 	</section>
 

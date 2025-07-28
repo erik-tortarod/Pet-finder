@@ -42,6 +42,9 @@ final class LostPetsController extends AbstractController
         // Debug: log the count
         error_log('Lost Pets Found: ' . count($lostPets));
 
+        // Check if there are more items to load
+        $hasMore = count($lostPets) === $limit;
+
         if ($request->isXmlHttpRequest()) {
             return $this->render('lost_pets/_lost_animals_list.html.twig', [
                 'lostPets' => $lostPets,
@@ -50,7 +53,9 @@ final class LostPetsController extends AbstractController
 
         return $this->render('lost_pets/index.html.twig', [
             'lostPets' => $lostPets,
-            'filters' => $filters
+            'filters' => $filters,
+            'hasMore' => $hasMore,
+            'currentPage' => $page
         ]);
     }
 

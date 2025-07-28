@@ -83,14 +83,25 @@ export default class extends Controller {
         }
 
         try {
-            const response = await fetch(
-                `${this.urlValue}?page=${this.pageValue}`,
-                {
-                    headers: {
-                        "X-Requested-With": "XMLHttpRequest",
-                    },
+            // Preserve current URL parameters (filters)
+            const url = new URL(this.urlValue, window.location.origin);
+            const currentParams = new URLSearchParams(window.location.search);
+
+            // Add current filters to the request
+            for (const [key, value] of currentParams.entries()) {
+                if (key !== "page") {
+                    url.searchParams.set(key, value);
                 }
-            );
+            }
+
+            // Add the new page number
+            url.searchParams.set("page", this.pageValue);
+
+            const response = await fetch(url.toString(), {
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                },
+            });
 
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
