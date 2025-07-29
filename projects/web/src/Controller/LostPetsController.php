@@ -30,7 +30,9 @@ final class LostPetsController extends AbstractController
         $filters = [
             'search' => $request->query->get('search', ''),
             'animalType' => $request->query->get('animalType', ''),
-            'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : []
+            'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : [],
+            'latitude' => $request->query->get('latitude', ''),
+            'longitude' => $request->query->get('longitude', '')
         ];
 
         // Debug: log the filters
@@ -38,8 +40,11 @@ final class LostPetsController extends AbstractController
 
         $lostPets = $lostPetsRepository->findAllWithRelationsPaginated($page, $limit, $filters);
 
-        // Debug: log the count
+        // Debug: log the count and some details
         error_log('Lost Pets Found: ' . count($lostPets));
+        if (!empty($lostPets)) {
+            error_log('First pet: ' . $lostPets[0]->getAnimalId()->getName());
+        }
 
         // Check if there are more items to load
         $hasMore = count($lostPets) === $limit;

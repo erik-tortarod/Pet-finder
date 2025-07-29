@@ -20,54 +20,139 @@ class LostPetsRepository extends ServiceEntityRepository
     /**
      * Find all lost pets with all related data (animals, photos, tags, users) - paginated for infinite scroll
      */
-    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10, array $filters = []): array
+    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 9, array $filters = []): array
     {
-        // Build the base query with filters
+        $offset = ($page - 1) * $limit;
+
+        // If location filters are present, use location-based search
+        if (!empty($filters['latitude']) && !empty($filters['longitude'])) {
+            return $this->findAllWithRelationsPaginatedWithLocation($page, $limit, $filters);
+        }
+
+        // Regular search without location - simplified to avoid JOIN issues
         $qb = $this->createQueryBuilder('lp')
             ->leftJoin('lp.animalId', 'a')
-            ->leftJoin('a.animalPhotos', 'ap')
-            ->leftJoin('a.animalTags', 'at')
-            ->leftJoin('at.tagId', 't')
-            ->leftJoin('lp.userId', 'u')
+            ->addSelect('a')
             ->where('a.status = :status')
-            ->setParameter('status', 'LOST');
+            ->setParameter('status', 'LOST')
+            ->orderBy('lp.createdAt', 'DESC');
 
-        // Apply search filter
+        // Apply filters
         if (!empty($filters['search'])) {
-            $qb->andWhere('(a.name LIKE :search OR a.description LIKE :search OR lp.lostCircumstances LIKE :search)')
+            $qb->andWhere('a.name LIKE :search OR a.description LIKE :search OR lp.lostZone LIKE :search OR lp.lostAddress LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
 
-        // Apply animal type filter
         if (!empty($filters['animalType'])) {
             $qb->andWhere('a.animalType = :animalType')
                 ->setParameter('animalType', $filters['animalType']);
         }
 
-        // Apply tags filter
-        if (!empty($filters['tags'])) {
-            $qb->andWhere('t.name IN (:tags)')
-                ->setParameter('tags', $filters['tags']);
-        }
-
-        // First, get the lost pets IDs with pagination
-        $lostPetIds = (clone $qb)
-            ->select('lp.id')
-            ->groupBy('lp.id')
-            ->orderBy('lp.createdAt', 'DESC')
-            ->setFirstResult(($page - 1) * $limit)
+        // Get the basic results first
+        $basicResults = $qb->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
-        if (empty($lostPetIds)) {
+        // Now fetch the related data for these results
+        $results = [];
+        foreach ($basicResults as $lostPet) {
+            $qb = $this->createQueryBuilder('lp')
+                ->leftJoin('lp.animalId', 'a')
+                ->leftJoin('a.animalPhotos', 'ap')
+                ->leftJoin('a.animalTags', 'at')
+                ->leftJoin('at.tagId', 't')
+                ->leftJoin('lp.userId', 'u')
+                ->addSelect('a', 'ap', 'at', 't', 'u')
+                ->where('lp.id = :id')
+                ->setParameter('id', $lostPet->getId());
+
+            $fullResult = $qb->getQuery()->getSingleResult();
+            $results[] = $fullResult;
+        }
+
+        return $results;
+    }
+
+    private function findAllWithRelationsPaginatedWithLocation(int $page = 1, int $limit = 9, array $filters = []): array
+    {
+        $offset = ($page - 1) * $limit;
+        $latitude = (float) $filters['latitude'];
+        $longitude = (float) $filters['longitude'];
+
+        error_log("Lost Pets Location search - Latitude: $latitude, Longitude: $longitude, Page: $page, Limit: $limit, Offset: $offset");
+
+        // Build WHERE conditions for other filters
+        $whereConditions = ['1=1']; // Always true condition as base
+        $parameters = [
+            'latitude' => $latitude,
+            'longitude' => $longitude
+        ];
+
+        if (!empty($filters['search'])) {
+            $whereConditions[] = '(a.name LIKE :search OR a.description LIKE :search OR lp.lost_zone LIKE :search OR lp.lost_address LIKE :search)';
+            $parameters['search'] = '%' . $filters['search'] . '%';
+        }
+
+        if (!empty($filters['animalType'])) {
+            $whereConditions[] = 'a.animalType = :animalType';
+            $parameters['animalType'] = $filters['animalType'];
+        }
+
+        // Use native SQL to get IDs ordered by distance, then fetch full entities
+        $sql = "
+            SELECT lp.id, lp.created_at,
+                   (
+                       6371 * acos(
+                           cos(radians(:latitude)) *
+                           cos(radians(lp.latitude)) *
+                           cos(radians(lp.longitude) - radians(:longitude)) +
+                           sin(radians(:latitude)) *
+                           sin(radians(lp.latitude))
+                       )
+                   ) as distance
+            FROM lost_pets lp
+            LEFT JOIN animals a ON lp.animal_id_id = a.id
+            WHERE " . implode(' AND ', $whereConditions) . "
+            AND a.status = 'LOST'
+            AND lp.latitude IS NOT NULL
+            AND lp.longitude IS NOT NULL
+            ORDER BY distance ASC, lp.created_at DESC
+            LIMIT " . $limit . " OFFSET " . $offset;
+
+        error_log("Lost Pets SQL Query: " . $sql);
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+
+        // Bind parameters
+        foreach ($parameters as $key => $value) {
+            if (is_array($value)) {
+                $stmt->bindValue($key, implode(',', $value), \PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue($key, $value);
+            }
+        }
+
+        $result = $stmt->executeQuery();
+        $rows = $result->fetchAllAssociative();
+
+        error_log("Lost Pets SQL Results count: " . count($rows));
+
+        if (empty($rows)) {
             return [];
         }
 
-        $ids = array_column($lostPetIds, 'id');
+        // Extract IDs and fetch full entities
+        $ids = array_column($rows, 'id');
 
-        // Then, get the complete data for those IDs
-        return $this->createQueryBuilder('lp')
+        if (empty($ids)) {
+            return [];
+        }
+
+        error_log("Lost Pets IDs to fetch: " . implode(', ', $ids));
+
+        $qb = $this->createQueryBuilder('lp')
             ->leftJoin('lp.animalId', 'a')
             ->leftJoin('a.animalPhotos', 'ap')
             ->leftJoin('a.animalTags', 'at')
@@ -75,10 +160,26 @@ class LostPetsRepository extends ServiceEntityRepository
             ->leftJoin('lp.userId', 'u')
             ->addSelect('a', 'ap', 'at', 't', 'u')
             ->where('lp.id IN (:ids)')
-            ->setParameter('ids', $ids)
-            ->orderBy('lp.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('ids', $ids);
+
+        $results = $qb->getQuery()->getResult();
+
+        error_log("Lost Pets DQL Results count: " . count($results));
+
+        // Sort results to maintain the order from the SQL query
+        $orderedResults = [];
+        foreach ($ids as $id) {
+            foreach ($results as $result) {
+                if ($result->getId() == $id) {
+                    $orderedResults[] = $result;
+                    break;
+                }
+            }
+        }
+
+        error_log("Lost Pets Final ordered results count: " . count($orderedResults));
+
+        return $orderedResults;
     }
 
     /**
