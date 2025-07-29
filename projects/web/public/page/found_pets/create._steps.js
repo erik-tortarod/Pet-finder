@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Close mobile menu when clicking outside
         document.addEventListener("click", function (e) {
             if (
-                !mobileMenuButton.concreate.jstains(e.target) &&
+                !mobileMenuButton.contains(e.target) &&
                 !mobileMenu.contains(e.target)
             ) {
                 mobileMenu.classList.add("hidden");
@@ -107,7 +107,7 @@ window.initMap = function () {
         }).addTo(window.map);
 
         // Add click event to map for manual location selection
-        window.map.on("click", onMapcreate.jsClick);
+        window.map.on("click", onMapClick);
 
         // Initialize search functionality
         initLocationSearch();
