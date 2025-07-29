@@ -83,6 +83,15 @@ final class LostPetsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Debug: Log all request parameters
+                error_log('Lost Pets - All POST parameters: ' . json_encode($request->request->all()));
+
+                // Capturar coordenadas desde los parámetros de la petición
+                $latitude = $request->request->get('coordinates_latitude');
+                $longitude = $request->request->get('coordinates_longitude');
+
+                error_log('Lost Pets - Received coordinates: lat=' . var_export($latitude, true) . ', lon=' . var_export($longitude, true));
+
                 // Crear el animal
                 $animal = new Animals();
                 $animal->setName($form->get('animalName')->getData());
@@ -164,6 +173,15 @@ final class LostPetsController extends AbstractController
                 $lostPet->setLostCircumstances($form->get('lostCircumstances')->getData());
                 $lostPet->setRewardAmount($form->get('rewardAmount')->getData());
                 $lostPet->setRewardDescription($form->get('rewardDescription')->getData());
+
+                if ($latitude && $longitude && is_numeric($latitude) && is_numeric($longitude)) {
+                    $lostPet->setLatitude((float) $latitude);
+                    $lostPet->setLongitude((float) $longitude);
+                    error_log('Lost Pets - Coordinates saved: ' . $latitude . ', ' . $longitude);
+                } else {
+                    error_log('Lost Pets - No valid coordinates provided. Latitude: ' . $latitude . ', Longitude: ' . $longitude);
+                }
+
                 $lostPet->setCreatedAt(new \DateTimeImmutable());
                 $lostPet->setUpdatedAt(new \DateTimeImmutable());
 

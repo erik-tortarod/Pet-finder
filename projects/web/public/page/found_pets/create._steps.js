@@ -59,6 +59,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Initialize first step after DOM is loaded
     showStep(1);
+
+    // Add form submit listener to include coordinates
+    const form = document.getElementById("pet-form");
+    if (form) {
+        form.addEventListener("submit", function (e) {
+            addCoordinatesToForm();
+        });
+    }
 });
 
 // Step navigation functionality - make variables global
@@ -82,6 +90,69 @@ window.map = null;
 window.marker = null;
 window.searchTimeout = null;
 window.selectedLocation = null;
+window.coordinates = { latitude: null, longitude: null };
+
+// Function to update stored coordinates - GLOBAL
+window.updateStoredCoordinates = function (lat, lon) {
+    window.coordinates.latitude = lat;
+    window.coordinates.longitude = lon;
+    console.log("Coordinates stored:", lat, lon);
+};
+
+// Function to add coordinates to form submission - GLOBAL
+window.addCoordinatesToForm = function () {
+    console.log("addCoordinatesToForm called");
+    console.log("Current coordinates:", window.coordinates);
+
+    const form = document.getElementById("pet-form");
+    console.log("Form found:", !!form);
+
+    if (form && window.coordinates.latitude && window.coordinates.longitude) {
+        // Remove existing coordinate inputs if any
+        const existingLat = form.querySelector(
+            'input[name="coordinates_latitude"]'
+        );
+        const existingLon = form.querySelector(
+            'input[name="coordinates_longitude"]'
+        );
+        if (existingLat) {
+            console.log("Removing existing latitude input");
+            existingLat.remove();
+        }
+        if (existingLon) {
+            console.log("Removing existing longitude input");
+            existingLon.remove();
+        }
+
+        // Create hidden inputs for coordinates
+        const latInput = document.createElement("input");
+        latInput.type = "hidden";
+        latInput.name = "coordinates_latitude";
+        latInput.value = window.coordinates.latitude;
+
+        const lonInput = document.createElement("input");
+        lonInput.type = "hidden";
+        lonInput.name = "coordinates_longitude";
+        lonInput.value = window.coordinates.longitude;
+
+        form.appendChild(latInput);
+        form.appendChild(lonInput);
+
+        console.log(
+            "Coordinates added to form submission:",
+            window.coordinates
+        );
+        console.log("Latitude input value:", latInput.value);
+        console.log("Longitude input value:", lonInput.value);
+    } else {
+        console.error(
+            "Cannot add coordinates to form. Form:",
+            !!form,
+            "Coordinates:",
+            window.coordinates
+        );
+    }
+};
 
 // Initialize map
 window.initMap = function () {
@@ -296,6 +367,7 @@ async function onMapClick(e) {
             address: fullAddress,
             details: addressData,
         };
+        updateStoredCoordinates(lat, lon); // Store coordinates
     } catch (error) {
         const fallbackAddress = `Ubicación: ${lat.toFixed(6)}, ${lon.toFixed(
             6
@@ -303,6 +375,7 @@ async function onMapClick(e) {
         window.marker.bindPopup(fallbackAddress).openPopup();
         document.getElementById("location-search").value = fallbackAddress;
         window.selectedLocation = { lat, lon, address: fallbackAddress };
+        updateStoredCoordinates(lat, lon); // Store coordinates
     }
 
     console.log("Manual location selected:", lat, lon);
@@ -490,6 +563,7 @@ function selectPlace(place) {
             address: place.display_name,
             details: place,
         };
+        updateStoredCoordinates(lat, lon); // Store coordinates
 
         console.log("Selected place:", place);
         console.log("Coordinates:", lat, lon);
@@ -576,6 +650,7 @@ function getCurrentLocation() {
                         address: "Mi ubicación actual",
                         details: addressData,
                     };
+                    updateStoredCoordinates(lat, lon); // Store coordinates
                 })
                 .catch((error) => {
                     console.error(
@@ -587,6 +662,7 @@ function getCurrentLocation() {
                         lon,
                         address: "Mi ubicación actual",
                     };
+                    updateStoredCoordinates(lat, lon); // Store coordinates
                 });
 
             // Update search input

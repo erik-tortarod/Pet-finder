@@ -83,6 +83,15 @@ final class FoundPetsController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             try {
+                // Debug: Log all request parameters
+                error_log('Found Pets - All POST parameters: ' . json_encode($request->request->all()));
+
+                // Capturar coordenadas desde los parámetros de la petición
+                $latitude = $request->request->get('coordinates_latitude');
+                $longitude = $request->request->get('coordinates_longitude');
+
+                error_log('Found Pets - Received coordinates: lat=' . var_export($latitude, true) . ', lon=' . var_export($longitude, true));
+
                 // Crear el animal
                 $animal = new Animals();
                 $animal->setName($form->get('animalName')->getData() ?: 'Sin nombre');
@@ -163,7 +172,15 @@ final class FoundPetsController extends AbstractController
                 $foundAnimal->setFoundAddress($form->get('foundAddress')->getData());
                 $foundAnimal->setFoundCircumstances($form->get('foundCircumstances')->getData());
                 $foundAnimal->setAdditionalNotes($form->get('additionalNotes')->getData());
-                // Removido setStatus() ya que FoundAnimals no tiene este método
+
+                if ($latitude && $longitude && is_numeric($latitude) && is_numeric($longitude)) {
+                    $foundAnimal->setLatitude((float) $latitude);
+                    $foundAnimal->setLongitude((float) $longitude);
+                    error_log('Found Pets - Coordinates saved: ' . $latitude . ', ' . $longitude);
+                } else {
+                    error_log('Found Pets - No valid coordinates provided. Latitude: ' . $latitude . ', Longitude: ' . $longitude);
+                }
+
                 $foundAnimal->setCreatedAt(new \DateTimeImmutable());
                 $foundAnimal->setUpdatedAt(new \DateTimeImmutable());
 
