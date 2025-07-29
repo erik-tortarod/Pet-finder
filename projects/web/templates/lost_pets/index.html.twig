@@ -19,11 +19,16 @@
 	</section>
 
 	{# Search and Filters #}
-	<section class="bg-white border-b">
+	<section class="bg-white border-b"
+			 data-controller="location-search filters"
+			 data-filters-url-value="{{ path('app_lost_pets') }}"
+			 data-filters-current-page-value="{{ currentPage ?? 1 }}">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
 			<!-- Simple form for filters -->
-			<form method="GET" action="{{ path('app_lost_pets') }}" id="filtersForm">
+			<form method="GET" action="{{ path('app_lost_pets') }}"
+				  data-location-search-target="form"
+				  data-filters-target="form">
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
 					{# Search Input #}
@@ -36,6 +41,8 @@
 							       name="search"
 							       value="{{ filters.search ?? '' }}"
 							       placeholder="Buscar por nombre, descripción ..."
+							       data-filters-target="searchInput"
+							       data-action="input->filters#search"
 							       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
 						</div>
 					</div>
@@ -43,6 +50,8 @@
 					{# Type of Animal #}
 					<div>
 						<select name="animalType"
+						        data-filters-target="animalTypeSelect"
+						        data-action="change->filters#filterByAnimalType"
 						        class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
 							<option value="">Tipo de animal</option>
 							<option value="perro" {{ filters.animalType ?? '' == 'perro' ? 'selected' : '' }}>Perro</option>
@@ -54,17 +63,19 @@
 					</div>
 
 					<div>
-						<button type="button" id="toggleLocationButton" class="w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-center">
+						<button type="button"
+								data-location-search-target="toggleButton"
+								class="w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-center">
 							{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 16, class: 'mr-2 text-gray-400'} %}
-							<span id="locationText">Buscar por ubicación</span>
+							<span data-location-search-target="locationText">Buscar por ubicación</span>
 						</button>
-						<input type="hidden" name="latitude" id="latitudeInput" value="{{ filters.latitude ?? '' }}">
-						<input type="hidden" name="longitude" id="longitudeInput" value="{{ filters.longitude ?? '' }}">
+						<input type="hidden" name="latitude" data-location-search-target="latitudeInput" value="{{ filters.latitude ?? '' }}">
+						<input type="hidden" name="longitude" data-location-search-target="longitudeInput" value="{{ filters.longitude ?? '' }}">
 					</div>
 				</div>
 
 				<!-- Location search section -->
-				<div class="mt-4" id="locationSearchSection" style="display: none;">
+				<div class="mt-4" data-location-search-target="searchSection" style="display: none;">
 					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 						<div class="md:col-span-2">
 							<div class="relative search-container">
@@ -72,16 +83,16 @@
 									{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 20, class: 'text-gray-400'} %}
 								</div>
 								<input type="text"
-								       id="location-search"
+								       data-location-search-target="searchInput"
 								       placeholder="Buscar dirección o lugar..."
 								       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
-								<div id="location-suggestions"
+								<div data-location-search-target="suggestions"
 								     class="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-[9999] hidden max-h-48 overflow-y-auto">
 								</div>
 							</div>
 						</div>
 						<div>
-							<button type="button" id="current-location-btn" class="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+							<button type="button" data-location-search-target="currentLocationBtn" class="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
 								{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 16, class: 'mr-2'} %}
 								Mi ubicación
 							</button>
@@ -89,7 +100,7 @@
 					</div>
 
 					<!-- Map container -->
-					<div id="map" class="w-full h-64 rounded-lg border border-gray-300 mt-4" style="display: none;"></div>
+					<div data-location-search-target="mapContainer" class="w-full h-64 rounded-lg border border-gray-300 mt-4" style="display: none;"></div>
 				</div>
 
 				{# Tag Filters and buttons #}
@@ -106,464 +117,29 @@
 						</div>
 					</div>
 
-					<input type="hidden" name="tags" id="tagsInput" value="{{ (filters.tags ?? [])|join(',') }}">
+					<input type="hidden" name="tags" data-location-search-target="tagsInput" data-filters-target="tagsInput" value="{{ (filters.tags ?? [])|join(',') }}">
 
-					<div class="flex flex-wrap gap-2" id="quickFilters">
+					<div class="flex flex-wrap gap-2" data-location-search-target="quickFilters" data-filters-target="quickFilters">
 						{% set currentTags = filters.tags ?? [] %}
 
-						<button type="button" class="tag {{ 'Pequeño' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Pequeño">Pequeño</button>
-						<button type="button" class="tag {{ 'Mediano' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Mediano">Mediano</button>
-						<button type="button" class="tag {{ 'Grande' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Grande">Grande</button>
-						<button type="button" class="tag {{ 'Blanco' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Blanco">Blanco</button>
-						<button type="button" class="tag {{ 'Negro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Negro">Negro</button>
-						<button type="button" class="tag {{ 'Marrón' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Marrón">Marrón</button>
-						<button type="button" class="tag {{ 'Gris' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Gris">Gris</button>
-						<button type="button" class="tag {{ 'Con collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Con collar">Con collar</button>
-						<button type="button" class="tag {{ 'Sin collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Sin collar">Sin collar</button>
-						<button type="button" class="tag {{ 'Cachorro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Cachorro">Cachorro</button>
-						<button type="button" class="tag {{ 'Adulto' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Adulto">Adulto</button>
-						<button type="button" class="tag {{ 'Senior' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Senior">Senior</button>
+						<button type="button" class="tag {{ 'Pequeño' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Pequeño" data-filters-target="quickFilter">Pequeño</button>
+						<button type="button" class="tag {{ 'Mediano' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Mediano" data-filters-target="quickFilter">Mediano</button>
+						<button type="button" class="tag {{ 'Grande' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Grande" data-filters-target="quickFilter">Grande</button>
+						<button type="button" class="tag {{ 'Blanco' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Blanco" data-filters-target="quickFilter">Blanco</button>
+						<button type="button" class="tag {{ 'Negro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Negro" data-filters-target="quickFilter">Negro</button>
+						<button type="button" class="tag {{ 'Marrón' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Marrón" data-filters-target="quickFilter">Marrón</button>
+						<button type="button" class="tag {{ 'Gris' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Gris" data-filters-target="quickFilter">Gris</button>
+						<button type="button" class="tag {{ 'Con collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Con collar" data-filters-target="quickFilter">Con collar</button>
+						<button type="button" class="tag {{ 'Sin collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Sin collar" data-filters-target="quickFilter">Sin collar</button>
+						<button type="button" class="tag {{ 'Cachorro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Cachorro" data-filters-target="quickFilter">Cachorro</button>
+						<button type="button" class="tag {{ 'Adulto' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Adulto" data-filters-target="quickFilter">Adulto</button>
+						<button type="button" class="tag {{ 'Senior' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Senior" data-filters-target="quickFilter">Senior</button>
 					</div>
 				</div>
 			</form>
 
 		</div>
 	</section>
-
-	<script>
-		// Simple JavaScript for quick filters
-		document.addEventListener('DOMContentLoaded', function() {
-			const quickFilters = document.getElementById('quickFilters');
-			const tagsInput = document.getElementById('tagsInput');
-			const form = document.getElementById('filtersForm');
-			const toggleLocationButton = document.getElementById('toggleLocationButton');
-			const latitudeInput = document.getElementById('latitudeInput');
-			const longitudeInput = document.getElementById('longitudeInput');
-			const locationSearchSection = document.getElementById('locationSearchSection');
-			const locationSearchInput = document.getElementById('location-search');
-			const currentLocationBtn = document.getElementById('current-location-btn');
-			const mapContainer = document.getElementById('map');
-
-			// Global variables for map functionality
-			window.map = null;
-			window.marker = null;
-			window.searchTimeout = null;
-			window.selectedLocation = null;
-
-			// Show location indicator if coordinates are already set
-			if (latitudeInput.value && longitudeInput.value) {
-				document.getElementById('locationText').textContent = 'Ubicación seleccionada';
-			}
-
-			if (quickFilters && tagsInput) {
-				quickFilters.addEventListener('click', function(e) {
-					if (e.target.hasAttribute('data-tag')) {
-						e.preventDefault();
-
-						const button = e.target;
-						const tag = button.getAttribute('data-tag');
-						const isActive = button.classList.contains('tag-active');
-
-						// Get current tags
-						let currentTags = tagsInput.value ? tagsInput.value.split(',') : [];
-
-						if (isActive) {
-							// Remove tag
-							button.classList.remove('tag-active');
-							button.classList.add('tag-innactive');
-							currentTags = currentTags.filter(t => t !== tag);
-						} else {
-							// Add tag
-							button.classList.remove('tag-innactive');
-							button.classList.add('tag-active');
-							currentTags.push(tag);
-						}
-
-						// Update hidden input
-						tagsInput.value = currentTags.join(',');
-
-						// Auto-submit form
-						form.submit();
-					}
-				});
-			}
-
-			// Initialize map functionality
-			function initMap() {
-				try {
-					// Check if Leaflet is loaded
-					if (typeof L === "undefined") {
-						console.error("Leaflet is not loaded");
-						return;
-					}
-
-					// Check if map container exists
-					if (!mapContainer) {
-						console.error("Map container not found");
-						return;
-					}
-
-					// Default to Spain coordinates
-					window.map = L.map("map").setView([40.4168, -3.7038], 10);
-
-					L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-						attribution: "© OpenStreetMap contributors",
-					}).addTo(window.map);
-
-					// Add click event to map for manual location selection
-					window.map.on("click", onMapClick);
-
-					// Initialize search functionality
-					initLocationSearch();
-
-					console.log("Map initialized successfully");
-				} catch (error) {
-					console.error("Error initializing map:", error);
-				}
-			}
-
-			// Handle map click for manual location selection
-			async function onMapClick(e) {
-				const lat = e.latlng.lat;
-				const lon = e.latlng.lng;
-
-				// Update map
-				if (window.marker) {
-					window.map.removeLayer(window.marker);
-				}
-
-				window.marker = L.marker([lat, lon]).addTo(window.map);
-
-				// Try to get address for the clicked location
-				try {
-					const addressData = await reverseGeocodeDetailed(lat, lon);
-					const fullAddress = addressData.display_name;
-
-					window.marker.bindPopup(fullAddress).openPopup();
-					locationSearchInput.value = fullAddress;
-
-					window.selectedLocation = {
-						lat,
-						lon,
-						address: fullAddress,
-						details: addressData,
-					};
-
-					// Update hidden inputs
-					latitudeInput.value = lat;
-					longitudeInput.value = lon;
-					document.getElementById('locationText').textContent = 'Ubicación seleccionada';
-
-					// Auto-submit form
-					setTimeout(() => {
-						form.submit();
-					}, 500);
-				} catch (error) {
-					const fallbackAddress = `Ubicación: ${lat.toFixed(6)}, ${lon.toFixed(6)}`;
-					window.marker.bindPopup(fallbackAddress).openPopup();
-					locationSearchInput.value = fallbackAddress;
-					window.selectedLocation = { lat, lon, address: fallbackAddress };
-
-					// Update hidden inputs
-					latitudeInput.value = lat;
-					longitudeInput.value = lon;
-					document.getElementById('locationText').textContent = 'Ubicación seleccionada';
-
-					// Auto-submit form
-					setTimeout(() => {
-						form.submit();
-					}, 500);
-				}
-
-				console.log("Manual location selected:", lat, lon);
-			}
-
-			// Enhanced reverse geocoding to get detailed address information
-			async function reverseGeocodeDetailed(lat, lon) {
-				try {
-					const response = await fetch(
-						`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1&accept-language=es`
-					);
-					const data = await response.json();
-					return data;
-				} catch (error) {
-					console.error("Error reverse geocoding:", error);
-					throw error;
-				}
-			}
-
-			// Free geocoding service (Nominatim)
-			async function searchPlaces(query) {
-				try {
-					const response = await fetch(
-						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
-							query
-						)}&limit=5&addressdetails=1&accept-language=es`
-					);
-					const data = await response.json();
-					return data;
-				} catch (error) {
-					console.error("Error searching places:", error);
-					return [];
-				}
-			}
-
-			// Display suggestions
-			function showSuggestions(places) {
-				const suggestionsDiv = document.getElementById("location-suggestions");
-				suggestionsDiv.innerHTML = "";
-
-				if (places.length === 0) {
-					suggestionsDiv.classList.add("hidden");
-					return;
-				}
-
-				places.forEach((place) => {
-					const div = document.createElement("div");
-					div.className =
-						"px-3 py-2 cursor-pointer hover:bg-gray-100 border-b border-gray-200 last:border-b-0";
-					div.textContent = place.display_name;
-					div.onclick = () => selectPlace(place);
-					suggestionsDiv.appendChild(div);
-				});
-
-				suggestionsDiv.classList.remove("hidden");
-			}
-
-			// Select a place
-			function selectPlace(place) {
-				console.log("selectPlace called with:", place);
-
-				if (!window.map) {
-					console.error("Map not initialized");
-					return;
-				}
-
-				if (locationSearchInput) {
-					locationSearchInput.value = place.display_name;
-				}
-
-				document.getElementById("location-suggestions").classList.add("hidden");
-
-				// Update map
-				const lat = parseFloat(place.lat);
-				const lon = parseFloat(place.lon);
-
-				try {
-					window.map.setView([lat, lon], 15);
-
-					if (window.marker) {
-						window.map.removeLayer(window.marker);
-					}
-
-					window.marker = L.marker([lat, lon]).addTo(window.map);
-					window.marker.bindPopup(place.display_name).openPopup();
-
-					window.selectedLocation = {
-						lat,
-						lon,
-						address: place.display_name,
-						details: place,
-					};
-
-					// Update hidden inputs
-					latitudeInput.value = lat;
-					longitudeInput.value = lon;
-					document.getElementById('locationText').textContent = 'Ubicación seleccionada';
-
-					// Auto-submit form
-					setTimeout(() => {
-						form.submit();
-					}, 500);
-
-					console.log("Selected place:", place);
-					console.log("Coordinates:", lat, lon);
-				} catch (error) {
-					console.error("Error in selectPlace:", error);
-				}
-			}
-
-			// Initialize location search functionality
-			function initLocationSearch() {
-				if (!locationSearchInput || !currentLocationBtn) return;
-
-				// Handle input changes
-				locationSearchInput.addEventListener("input", function (e) {
-					const query = e.target.value.trim();
-
-					if (query.length < 3) {
-						document
-							.getElementById("location-suggestions")
-							.classList.add("hidden");
-						return;
-					}
-
-					// Debounce search
-					clearTimeout(window.searchTimeout);
-					window.searchTimeout = setTimeout(async () => {
-						const places = await searchPlaces(query);
-						showSuggestions(places);
-					}, 300);
-				});
-
-				// Hide suggestions when clicking outside
-				document.addEventListener("click", function (e) {
-					if (!e.target.closest(".search-container")) {
-						document
-							.getElementById("location-suggestions")
-							.classList.add("hidden");
-					}
-				});
-
-				// Get current location
-				currentLocationBtn.addEventListener("click", getCurrentLocation);
-			}
-
-			// Get current location
-			function getCurrentLocation() {
-				const button = currentLocationBtn;
-				const originalText = button.innerHTML;
-
-				if (!navigator.geolocation) {
-					alert("La geolocalización no es compatible con este navegador.");
-					return;
-				}
-
-				button.disabled = true;
-				button.innerHTML =
-					'<i class="fas fa-spinner fa-spin mr-1"></i>Obteniendo ubicación...';
-
-				navigator.geolocation.getCurrentPosition(
-					function (position) {
-						const lat = position.coords.latitude;
-						const lon = position.coords.longitude;
-
-						// Update map
-						window.map.setView([lat, lon], 15);
-
-						if (window.marker) {
-							window.map.removeLayer(window.marker);
-						}
-
-						window.marker = L.marker([lat, lon]).addTo(window.map);
-						window.marker.bindPopup("Tu ubicación actual").openPopup();
-
-						// Get detailed address information for current location
-						reverseGeocodeDetailed(lat, lon)
-							.then((addressData) => {
-								window.selectedLocation = {
-									lat,
-									lon,
-									address: "Mi ubicación actual",
-									details: addressData,
-								};
-
-								// Update hidden inputs
-								latitudeInput.value = lat;
-								longitudeInput.value = lon;
-								document.getElementById('locationText').textContent = 'Ubicación actual';
-
-								// Auto-submit form
-								setTimeout(() => {
-									form.submit();
-								}, 500);
-							})
-							.catch((error) => {
-								console.error(
-									"Error getting address details for current location:",
-									error
-								);
-								window.selectedLocation = {
-									lat,
-									lon,
-									address: "Mi ubicación actual",
-								};
-
-								// Update hidden inputs
-								latitudeInput.value = lat;
-								longitudeInput.value = lon;
-								document.getElementById('locationText').textContent = 'Ubicación actual';
-
-								// Auto-submit form
-								setTimeout(() => {
-									form.submit();
-								}, 500);
-							});
-
-						// Update search input
-						locationSearchInput.value = "Mi ubicación actual";
-
-						console.log("Current location:", lat, lon);
-
-						button.disabled = false;
-						button.innerHTML = originalText;
-					},
-					function (error) {
-						let errorMessage = "Error al obtener la ubicación: ";
-						switch (error.code) {
-							case error.PERMISSION_DENIED:
-								errorMessage +=
-									"Permiso denegado. Por favor, permite el acceso a la ubicación.";
-								break;
-							case error.POSITION_UNAVAILABLE:
-								errorMessage += "Información de ubicación no disponible.";
-								break;
-							case error.TIMEOUT:
-								errorMessage +=
-									"Solicitud de ubicación agotó el tiempo de espera.";
-								break;
-							default:
-								errorMessage += "Ocurrió un error desconocido.";
-								break;
-						}
-						alert(errorMessage);
-
-						button.disabled = false;
-						button.innerHTML = originalText;
-					},
-					{
-						enableHighAccuracy: true,
-						timeout: 10000,
-						maximumAge: 60000,
-					}
-				);
-			}
-
-			// Toggle location search functionality
-			if (toggleLocationButton) {
-				toggleLocationButton.addEventListener('click', function() {
-					if (locationSearchSection.style.display === 'none') {
-						locationSearchSection.style.display = 'block';
-						mapContainer.style.display = 'block';
-
-						// Initialize map if not already done
-						if (!window.map) {
-							initMap();
-						} else {
-							// Refresh map size
-							setTimeout(() => {
-								if (window.map && typeof window.map.invalidateSize === "function") {
-									window.map.invalidateSize();
-								}
-							}, 100);
-						}
-					} else {
-						locationSearchSection.style.display = 'none';
-						mapContainer.style.display = 'none';
-					}
-				});
-			}
-		});
-
-		// Function to clear location and reload page
-		function clearLocation() {
-			// Remove location parameters from URL and reload
-			const url = new URL(window.location);
-			url.searchParams.delete('latitude');
-			url.searchParams.delete('longitude');
-			window.location.href = url.toString();
-		}
-	</script>
 
 	{# Results #}
 	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
@@ -580,7 +156,7 @@
 						{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 20, class: 'text-blue-600 mr-2'} %}
 						<span class="text-blue-800 font-medium">Mostrando mascotas perdidas ordenadas por cercanía a tu ubicación</span>
 					</div>
-					<button onclick="clearLocation()" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+					<button data-action="click->location-search#clearLocation" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
 						Limpiar ubicación
 					</button>
 				</div>
@@ -589,7 +165,8 @@
 
 		<div id="lost-animals-container"
 			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-			 data-infinite-scroll-target="container">
+			 data-infinite-scroll-target="container"
+			 data-filters-target="container">
 			{% if lostPets is not empty %}
 				{% include 'lost_pets/_lost_animals_list.html.twig' with {'lostPets': lostPets} %}
 			{% else %}
@@ -615,7 +192,8 @@
 		</div>
 		<div id="loading"
 			 class="text-center py-6 hidden"
-			 data-infinite-scroll-target="loading">
+			 data-infinite-scroll-target="loading"
+			 data-filters-target="loading">
 			<div class="flex justify-center">
 				<div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
 			</div>

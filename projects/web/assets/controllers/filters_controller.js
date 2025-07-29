@@ -8,6 +8,8 @@ export default class extends Controller {
         "container",
         "loading",
         "quickFilter",
+        "form",
+        "tagsInput",
     ];
 
     static values = {
@@ -25,10 +27,85 @@ export default class extends Controller {
             animalType: "",
             zone: "",
             tags: [],
+            latitude: "",
+            longitude: "",
         };
 
         // Initialize quick filters
         this.initializeQuickFilters();
+
+        // Initialize current filter values from form inputs
+        this.initializeCurrentFilters();
+    }
+
+    initializeCurrentFilters() {
+        // Get current values from form inputs
+        if (this.hasSearchInputTarget) {
+            this.filters.search = this.searchInputTarget.value;
+        }
+
+        if (this.hasAnimalTypeSelectTarget) {
+            this.filters.animalType = this.animalTypeSelectTarget.value;
+        }
+
+        if (this.hasTagsInputTarget) {
+            const tagsValue = this.tagsInputTarget.value;
+            this.filters.tags = tagsValue
+                ? tagsValue.split(",").filter((tag) => tag.trim())
+                : [];
+        }
+
+        // Get location filters from URL parameters first
+        const urlParams = new URLSearchParams(window.location.search);
+        const urlLatitude = urlParams.get("latitude");
+        const urlLongitude = urlParams.get("longitude");
+
+        // Get location filters from location-search controller if available
+        const locationSearchController =
+            this.application.getControllerForElementAndIdentifier(
+                this.element,
+                "location-search"
+            );
+
+        if (locationSearchController) {
+            // If we have URL parameters, update the location inputs
+            if (urlLatitude && urlLongitude) {
+                if (locationSearchController.hasLatitudeInputTarget) {
+                    locationSearchController.latitudeInputTarget.value =
+                        urlLatitude;
+                }
+                if (locationSearchController.hasLongitudeInputTarget) {
+                    locationSearchController.longitudeInputTarget.value =
+                        urlLongitude;
+                }
+                // Update location text to show it's active
+                if (locationSearchController.hasLocationTextTarget) {
+                    locationSearchController.locationTextTarget.textContent =
+                        "Ubicación seleccionada";
+                }
+            }
+
+            // Get the values from the location inputs (either from URL or existing values)
+            if (locationSearchController.hasLatitudeInputTarget) {
+                this.filters.latitude =
+                    locationSearchController.latitudeInputTarget.value;
+            }
+            if (locationSearchController.hasLongitudeInputTarget) {
+                this.filters.longitude =
+                    locationSearchController.longitudeInputTarget.value;
+            }
+        }
+
+        // If we have location filters, apply them immediately
+        if (this.filters.latitude && this.filters.longitude) {
+            console.log(
+                "Location filters found on page load:",
+                this.filters.latitude,
+                this.filters.longitude
+            );
+            // Don't apply filters immediately on connect to avoid double requests
+            // The page should already show the filtered results
+        }
     }
 
     initializeQuickFilters() {
@@ -85,7 +162,20 @@ export default class extends Controller {
             this.filters.tags.push(tag);
         }
 
+        // Update hidden input
+        if (this.hasTagsInputTarget) {
+            this.tagsInputTarget.value = this.filters.tags.join(",");
+        }
+
         console.log("Current tags:", this.filters.tags);
+        this.applyFilters();
+    }
+
+    // Update location filters (called from location-search controller)
+    updateLocationFilters(latitude, longitude) {
+        console.log("Updating location filters:", latitude, longitude);
+        this.filters.latitude = latitude;
+        this.filters.longitude = longitude;
         this.applyFilters();
     }
 
@@ -103,6 +193,12 @@ export default class extends Controller {
                 zone: this.filters.zone,
                 tags: this.filters.tags.join(","),
             });
+
+            // Add location filters if present
+            if (this.filters.latitude && this.filters.longitude) {
+                params.append("latitude", this.filters.latitude);
+                params.append("longitude", this.filters.longitude);
+            }
 
             const url = `${this.urlValue}?${params.toString()}`;
             console.log("Fetching URL:", url);
@@ -204,7 +300,14 @@ export default class extends Controller {
             animalType: "",
             zone: "",
             tags: [],
+            latitude: "",
+            longitude: "",
         };
+
+        // Reset tags input
+        if (this.hasTagsInputTarget) {
+            this.tagsInputTarget.value = "";
+        }
 
         this.applyFilters();
     }
