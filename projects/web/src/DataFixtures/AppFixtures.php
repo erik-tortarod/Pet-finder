@@ -163,6 +163,8 @@ class AppFixtures extends Fixture
             'lostCircumstances' => 'Se soltó de la correa durante un paseo',
             'rewardAmount' => '200€',
             'rewardDescription' => 'Recompensa por información que lleve a su recuperación',
+            'latitude' => 40.4168,
+            'longitude' => -3.7038,
             'tags' => ['Amigable', 'Cariñoso', 'Sociable'],
             'user' => $users[0],
             'photos' => [
@@ -191,6 +193,8 @@ class AppFixtures extends Fixture
             'lostCircumstances' => 'Se escapó por la ventana',
             'rewardAmount' => '150€',
             'rewardDescription' => 'Recompensa por su devolución',
+            'latitude' => 40.4250,
+            'longitude' => -3.6800,
             'tags' => ['Juguetón', 'Cariñoso', 'Curioso'],
             'user' => $users[1],
             'photos' => [
@@ -219,6 +223,8 @@ class AppFixtures extends Fixture
             'lostCircumstances' => 'Se perdió durante una tormenta',
             'rewardAmount' => '300€',
             'rewardDescription' => 'Recompensa por información',
+            'latitude' => 40.3950,
+            'longitude' => -3.6500,
             'tags' => ['Protector', 'Leal', 'Valiente'],
             'user' => $users[0],
             'photos' => [
@@ -263,6 +269,8 @@ class AppFixtures extends Fixture
          $lostPet->setLostCircumstances($data['lostCircumstances']);
          $lostPet->setRewardAmount($data['rewardAmount']);
          $lostPet->setRewardDescription($data['rewardDescription']);
+         $lostPet->setLatitude($data['latitude']);
+         $lostPet->setLongitude($data['longitude']);
          $lostPet->setCreatedAt(new \DateTimeImmutable());
          $lostPet->setUpdatedAt(new \DateTimeImmutable());
 
@@ -313,6 +321,8 @@ class AppFixtures extends Fixture
             'foundAddress' => 'Paseo de la Argentina, 1',
             'foundCircumstances' => 'Se encontró sola en el parque, parece perdida',
             'additionalNotes' => 'Tiene un collar rojo pero sin identificación',
+            'latitude' => 40.4168,
+            'longitude' => -3.6889,
             'tags' => ['Tranquilo', 'Cariñoso', 'Miedoso'],
             'user' => $users[1],
             'photos' => [
@@ -340,6 +350,8 @@ class AppFixtures extends Fixture
             'foundAddress' => 'Calle de Bravo Murillo, 78',
             'foundCircumstances' => 'Se encontró vagando por la calle',
             'additionalNotes' => 'Parece estar bien cuidado, posiblemente se perdió recientemente',
+            'latitude' => 40.4350,
+            'longitude' => -3.7000,
             'tags' => ['Amigable', 'Energético', 'Sociable'],
             'user' => $users[2],
             'photos' => [
@@ -367,6 +379,8 @@ class AppFixtures extends Fixture
             'foundAddress' => 'Calle de la Palma, 23',
             'foundCircumstances' => 'Se encontró en el patio de un edificio',
             'additionalNotes' => 'Es muy independiente pero se deja acariciar',
+            'latitude' => 40.4250,
+            'longitude' => -3.7100,
             'tags' => ['Independiente', 'Tranquilo', 'Curioso'],
             'user' => $users[0],
             'photos' => [
@@ -410,6 +424,8 @@ class AppFixtures extends Fixture
          $foundAnimal->setFoundAddress($data['foundAddress']);
          $foundAnimal->setFoundCircumstances($data['foundCircumstances']);
          $foundAnimal->setAdditionalNotes($data['additionalNotes']);
+         $foundAnimal->setLatitude($data['latitude']);
+         $foundAnimal->setLongitude($data['longitude']);
          $foundAnimal->setCreatedAt(new \DateTimeImmutable());
          $foundAnimal->setUpdatedAt(new \DateTimeImmutable());
 

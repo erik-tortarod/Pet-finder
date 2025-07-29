@@ -67,6 +67,20 @@ class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterf
             'Barrio de Malasaña',
         ];
 
+        // Coordenadas de Madrid para generar ubicaciones aleatorias
+        $madridCoordinates = [
+            ['lat' => 40.4168, 'lon' => -3.7038], // Centro
+            ['lat' => 40.4250, 'lon' => -3.6800], // Salamanca
+            ['lat' => 40.4350, 'lon' => -3.7000], // Chamberí
+            ['lat' => 40.3950, 'lon' => -3.6500], // Vallecas
+            ['lat' => 40.4250, 'lon' => -3.7100], // Malasaña
+            ['lat' => 40.4168, 'lon' => -3.6889], // Retiro
+            ['lat' => 40.4450, 'lon' => -3.6900], // Norte
+            ['lat' => 40.3850, 'lon' => -3.7200], // Sur
+            ['lat' => 40.4100, 'lon' => -3.6500], // Este
+            ['lat' => 40.4200, 'lon' => -3.7500], // Oeste
+        ];
+
         for ($i = 1; $i <= 20; $i++) {
             // Create Animal
             $animal = new Animals();
@@ -105,6 +119,12 @@ class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterf
             $foundAnimal->setFoundZone($zones[array_rand($zones)]);
             $foundAnimal->setFoundAddress($addresses[array_rand($addresses)]);
             $foundAnimal->setFoundCircumstances('Vagando solo por la calle');
+
+            // Agregar coordenadas aleatorias de Madrid
+            $randomCoord = $madridCoordinates[array_rand($madridCoordinates)];
+            $foundAnimal->setLatitude($randomCoord['lat'] + (rand(-50, 50) / 1000)); // Variación de ±0.05 grados
+            $foundAnimal->setLongitude($randomCoord['lon'] + (rand(-50, 50) / 1000)); // Variación de ±0.05 grados
+
             $foundAnimal->setCreatedAt($createdAt);
             $foundAnimal->setUpdatedAt($createdAt);
 
@@ -136,6 +156,20 @@ class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterf
             'Perdido cerca de Plaza Mayor',
             'Última vez visto en Atocha',
             'Desapareció en Malasaña',
+        ];
+
+        // Coordenadas de Madrid para generar ubicaciones aleatorias
+        $madridCoordinates = [
+            ['lat' => 40.4168, 'lon' => -3.7038], // Centro
+            ['lat' => 40.4250, 'lon' => -3.6800], // Salamanca
+            ['lat' => 40.4350, 'lon' => -3.7000], // Chamberí
+            ['lat' => 40.3950, 'lon' => -3.6500], // Vallecas
+            ['lat' => 40.4250, 'lon' => -3.7100], // Malasaña
+            ['lat' => 40.4168, 'lon' => -3.6889], // Retiro
+            ['lat' => 40.4450, 'lon' => -3.6900], // Norte
+            ['lat' => 40.3850, 'lon' => -3.7200], // Sur
+            ['lat' => 40.4100, 'lon' => -3.6500], // Este
+            ['lat' => 40.4200, 'lon' => -3.7500], // Oeste
         ];
 
         for ($i = 1; $i <= 15; $i++) {
@@ -177,6 +211,12 @@ class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterf
             $lostPet->setLostAddress($addresses[array_rand($addresses)]);
             $lostPet->setLostCircumstances('Se escapó del jardín');
             $lostPet->setRewardDescription('Recompensa disponible');
+
+            // Agregar coordenadas aleatorias de Madrid
+            $randomCoord = $madridCoordinates[array_rand($madridCoordinates)];
+            $lostPet->setLatitude($randomCoord['lat'] + (rand(-50, 50) / 1000)); // Variación de ±0.05 grados
+            $lostPet->setLongitude($randomCoord['lon'] + (rand(-50, 50) / 1000)); // Variación de ±0.05 grados
+
             $lostPet->setCreatedAt($createdAt);
             $lostPet->setUpdatedAt($createdAt);
 
