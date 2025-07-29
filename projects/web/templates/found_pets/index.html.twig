@@ -21,7 +21,7 @@
 
 			<!-- Simple form for filters -->
 			<form method="GET" action="{{ path('app_found_pets') }}" id="filtersForm">
-				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 					<div class="md:col-span-2">
 						<div class="relative">
 							<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -44,18 +44,6 @@
 							<option value="ave" {{ filters.animalType ?? '' == 'ave' ? 'selected' : '' }}>Ave</option>
 							<option value="conejo" {{ filters.animalType ?? '' == 'conejo' ? 'selected' : '' }}>Conejo</option>
 							<option value="otro" {{ filters.animalType ?? '' == 'otro' ? 'selected' : '' }}>Otro</option>
-						</select>
-					</div>
-
-					<div>
-						<select name="zone"
-						        class="block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
-							<option value="">Zona</option>
-							<option value="centro" {{ filters.zone ?? '' == 'centro' ? 'selected' : '' }}>Centro</option>
-							<option value="norte" {{ filters.zone ?? '' == 'norte' ? 'selected' : '' }}>Norte</option>
-							<option value="sur" {{ filters.zone ?? '' == 'sur' ? 'selected' : '' }}>Sur</option>
-							<option value="este" {{ filters.zone ?? '' == 'este' ? 'selected' : '' }}>Este</option>
-							<option value="oeste" {{ filters.zone ?? '' == 'oeste' ? 'selected' : '' }}>Oeste</option>
 						</select>
 					</div>
 				</div>

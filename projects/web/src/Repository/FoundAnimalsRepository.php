@@ -44,12 +44,6 @@ class FoundAnimalsRepository extends ServiceEntityRepository
                 ->setParameter('animalType', $filters['animalType']);
         }
 
-        // Apply zone filter
-        if (!empty($filters['zone'])) {
-            $qb->andWhere('fa.foundZone LIKE :zone')
-                ->setParameter('zone', '%' . $filters['zone'] . '%');
-        }
-
         // Apply tags filter
         if (!empty($filters['tags'])) {
             $qb->andWhere('t.name IN (:tags)')

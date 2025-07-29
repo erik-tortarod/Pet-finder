@@ -30,7 +30,6 @@ final class LostPetsController extends AbstractController
         $filters = [
             'search' => $request->query->get('search', ''),
             'animalType' => $request->query->get('animalType', ''),
-            'zone' => $request->query->get('zone', ''),
             'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : []
         ];
 
