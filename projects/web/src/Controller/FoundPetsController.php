@@ -29,7 +29,9 @@ final class FoundPetsController extends AbstractController
         $filters = [
             'search' => $request->query->get('search', ''),
             'animalType' => $request->query->get('animalType', ''),
-            'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : []
+            'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : [],
+            'latitude' => $request->query->get('latitude', ''),
+            'longitude' => $request->query->get('longitude', '')
         ];
 
         // Debug: log the filters
@@ -37,8 +39,11 @@ final class FoundPetsController extends AbstractController
 
         $foundAnimals = $foundAnimalsRepository->findAllWithRelationsPaginated($page, $limit, $filters);
 
-        // Debug: log the count
+        // Debug: log the count and some details
         error_log('Found Pets Found: ' . count($foundAnimals));
+        if (!empty($foundAnimals)) {
+            error_log('First animal: ' . $foundAnimals[0]->getAnimalId()->getName());
+        }
 
         // Check if there are more items to load
         $hasMore = count($foundAnimals) === $limit;
@@ -55,6 +60,55 @@ final class FoundPetsController extends AbstractController
             'hasMore' => $hasMore,
             'currentPage' => $page
         ]);
+    }
+
+    #[Route('/api/geocode', name: 'app_geocode', methods: ['POST'])]
+    public function geocode(Request $request): Response
+    {
+        $address = $request->request->get('address');
+
+        if (!$address) {
+            return $this->json(['error' => 'Address is required'], 400);
+        }
+
+        try {
+            // Use Nominatim (OpenStreetMap) for geocoding - it's free and doesn't require API key
+            $url = 'https://nominatim.openstreetmap.org/search?' . http_build_query([
+                'q' => $address,
+                'format' => 'json',
+                'limit' => 1,
+                'addressdetails' => 1
+            ]);
+
+            $context = stream_context_create([
+                'http' => [
+                    'header' => 'User-Agent: PetFinder/1.0'
+                ]
+            ]);
+
+            $response = file_get_contents($url, false, $context);
+
+            if ($response === false) {
+                throw new \Exception('Failed to fetch geocoding data');
+            }
+
+            $data = json_decode($response, true);
+
+            if (empty($data)) {
+                return $this->json(['error' => 'Address not found'], 404);
+            }
+
+            $result = $data[0];
+
+            return $this->json([
+                'latitude' => (float) $result['lat'],
+                'longitude' => (float) $result['lon'],
+                'display_name' => $result['display_name']
+            ]);
+        } catch (\Exception $e) {
+            error_log('Geocoding error: ' . $e->getMessage());
+            return $this->json(['error' => 'Failed to geocode address'], 500);
+        }
     }
 
 

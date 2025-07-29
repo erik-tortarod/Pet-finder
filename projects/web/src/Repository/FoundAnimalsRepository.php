@@ -20,54 +20,136 @@ class FoundAnimalsRepository extends ServiceEntityRepository
     /**
      * Find all found animals with all related data (animals, photos, users)
      */
-    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 10, array $filters = []): array
+    public function findAllWithRelationsPaginated(int $page = 1, int $limit = 9, array $filters = []): array
     {
-        // Build the base query with filters
+        $offset = ($page - 1) * $limit;
+
+        // If location filters are present, use location-based search
+        if (!empty($filters['latitude']) && !empty($filters['longitude'])) {
+            return $this->findAllWithRelationsPaginatedWithLocation($page, $limit, $filters);
+        }
+
+        // Regular search without location - simplified to avoid JOIN issues
         $qb = $this->createQueryBuilder('fa')
             ->leftJoin('fa.animalId', 'a')
-            ->leftJoin('a.animalPhotos', 'ap')
-            ->leftJoin('a.animalTags', 'at')
-            ->leftJoin('at.tagId', 't')
-            ->leftJoin('fa.userId', 'u')
-            ->where('a.status = :status')
-            ->setParameter('status', 'FOUND');
+            ->addSelect('a')
+            ->orderBy('fa.createdAt', 'DESC');
 
-        // Apply search filter
+        // Apply filters
         if (!empty($filters['search'])) {
-            $qb->andWhere('(a.name LIKE :search OR a.description LIKE :search OR fa.foundCircumstances LIKE :search)')
+            $qb->andWhere('a.name LIKE :search OR a.description LIKE :search OR fa.foundZone LIKE :search OR fa.foundAddress LIKE :search')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
 
-        // Apply animal type filter
         if (!empty($filters['animalType'])) {
             $qb->andWhere('a.animalType = :animalType')
                 ->setParameter('animalType', $filters['animalType']);
         }
 
-        // Apply tags filter
-        if (!empty($filters['tags'])) {
-            $qb->andWhere('t.name IN (:tags)')
-                ->setParameter('tags', $filters['tags']);
-        }
-
-        // First, get the found animals IDs with pagination
-        $foundAnimalIds = (clone $qb)
-            ->select('fa.id')
-            ->groupBy('fa.id')
-            ->orderBy('fa.createdAt', 'DESC')
-            ->setFirstResult(($page - 1) * $limit)
+        // Get the basic results first
+        $basicResults = $qb->setFirstResult($offset)
             ->setMaxResults($limit)
             ->getQuery()
-            ->getArrayResult();
+            ->getResult();
 
-        if (empty($foundAnimalIds)) {
+        // Now fetch the related data for these results
+        $results = [];
+        foreach ($basicResults as $foundAnimal) {
+            $qb = $this->createQueryBuilder('fa')
+                ->leftJoin('fa.animalId', 'a')
+                ->leftJoin('a.animalPhotos', 'ap')
+                ->leftJoin('a.animalTags', 'at')
+                ->leftJoin('at.tagId', 't')
+                ->leftJoin('fa.userId', 'u')
+                ->addSelect('a', 'ap', 'at', 't', 'u')
+                ->where('fa.id = :id')
+                ->setParameter('id', $foundAnimal->getId());
+
+            $fullResult = $qb->getQuery()->getSingleResult();
+            $results[] = $fullResult;
+        }
+
+        return $results;
+    }
+
+    private function findAllWithRelationsPaginatedWithLocation(int $page = 1, int $limit = 9, array $filters = []): array
+    {
+        $offset = ($page - 1) * $limit;
+        $latitude = (float) $filters['latitude'];
+        $longitude = (float) $filters['longitude'];
+
+        error_log("Location search - Latitude: $latitude, Longitude: $longitude, Page: $page, Limit: $limit, Offset: $offset");
+
+        // Build WHERE conditions for other filters
+        $whereConditions = ['1=1']; // Always true condition as base
+        $parameters = [
+            'latitude' => $latitude,
+            'longitude' => $longitude
+        ];
+
+        if (!empty($filters['search'])) {
+            $whereConditions[] = '(a.name LIKE :search OR a.description LIKE :search OR fa.foundZone LIKE :search OR fa.foundAddress LIKE :search)';
+            $parameters['search'] = '%' . $filters['search'] . '%';
+        }
+
+        if (!empty($filters['animalType'])) {
+            $whereConditions[] = 'a.animalType = :animalType';
+            $parameters['animalType'] = $filters['animalType'];
+        }
+
+        // Use native SQL to get IDs ordered by distance, then fetch full entities
+        $sql = "
+            SELECT fa.id, fa.created_at,
+                   (
+                       6371 * acos(
+                           cos(radians(:latitude)) *
+                           cos(radians(fa.latitude)) *
+                           cos(radians(fa.longitude) - radians(:longitude)) +
+                           sin(radians(:latitude)) *
+                           sin(radians(fa.latitude))
+                       )
+                   ) as distance
+            FROM found_animals fa
+            LEFT JOIN animals a ON fa.animal_id_id = a.id
+            WHERE " . implode(' AND ', $whereConditions) . "
+            AND fa.latitude IS NOT NULL
+            AND fa.longitude IS NOT NULL
+            ORDER BY distance ASC, fa.created_at DESC
+            LIMIT " . $limit . " OFFSET " . $offset;
+
+        error_log("SQL Query: " . $sql);
+
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($sql);
+
+        // Bind parameters
+        foreach ($parameters as $key => $value) {
+            if (is_array($value)) {
+                $stmt->bindValue($key, implode(',', $value), \PDO::PARAM_STR);
+            } else {
+                $stmt->bindValue($key, $value);
+            }
+        }
+
+        $result = $stmt->executeQuery();
+        $rows = $result->fetchAllAssociative();
+
+        error_log("SQL Results count: " . count($rows));
+
+        if (empty($rows)) {
             return [];
         }
 
-        $ids = array_column($foundAnimalIds, 'id');
+        // Extract IDs and fetch full entities
+        $ids = array_column($rows, 'id');
 
-        // Then, get the complete data for those IDs
-        return $this->createQueryBuilder('fa')
+        if (empty($ids)) {
+            return [];
+        }
+
+        error_log("IDs to fetch: " . implode(', ', $ids));
+
+        $qb = $this->createQueryBuilder('fa')
             ->leftJoin('fa.animalId', 'a')
             ->leftJoin('a.animalPhotos', 'ap')
             ->leftJoin('a.animalTags', 'at')
@@ -75,10 +157,72 @@ class FoundAnimalsRepository extends ServiceEntityRepository
             ->leftJoin('fa.userId', 'u')
             ->addSelect('a', 'ap', 'at', 't', 'u')
             ->where('fa.id IN (:ids)')
-            ->setParameter('ids', $ids)
-            ->orderBy('fa.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
+            ->setParameter('ids', $ids);
+
+        $results = $qb->getQuery()->getResult();
+
+        error_log("DQL Results count: " . count($results));
+
+        // Sort results to maintain the order from the SQL query
+        $orderedResults = [];
+        foreach ($ids as $id) {
+            foreach ($results as $result) {
+                if ($result->getId() == $id) {
+                    $orderedResults[] = $result;
+                    break;
+                }
+            }
+        }
+
+        error_log("Final ordered results count: " . count($orderedResults));
+
+        return $orderedResults;
+    }
+
+    /**
+     * Find found animals by proximity to a given location using native SQL
+     */
+    public function findByProximity(float $latitude, float $longitude, float $radiusKm = 10, int $limit = 50): array
+    {
+        $sql = "
+            SELECT fa.*, a.*, u.*
+            FROM found_animals fa
+            LEFT JOIN animals a ON fa.animal_id_id = a.id
+            LEFT JOIN user u ON fa.user_id_id = u.id
+            WHERE a.status = 'FOUND'
+            AND fa.latitude IS NOT NULL
+            AND fa.longitude IS NOT NULL
+            AND (
+                6371 * acos(
+                    cos(radians(:latitude)) *
+                    cos(radians(fa.latitude)) *
+                    cos(radians(fa.longitude) - radians(:longitude)) +
+                    sin(radians(:latitude)) *
+                    sin(radians(fa.latitude))
+                )
+            ) <= :radius
+            ORDER BY fa.created_at DESC
+            LIMIT :limit
+        ";
+
+        $stmt = $this->getEntityManager()->getConnection()->prepare($sql);
+        $stmt->bindValue('latitude', $latitude);
+        $stmt->bindValue('longitude', $longitude);
+        $stmt->bindValue('radius', $radiusKm);
+        $stmt->bindValue('limit', $limit, \PDO::PARAM_INT);
+
+        $result = $stmt->executeQuery();
+
+        // Convert raw data to entities
+        $foundAnimals = [];
+        while ($row = $result->fetchAssociative()) {
+            $foundAnimal = $this->find($row['id']);
+            if ($foundAnimal) {
+                $foundAnimals[] = $foundAnimal;
+            }
+        }
+
+        return $foundAnimals;
     }
 
     /**

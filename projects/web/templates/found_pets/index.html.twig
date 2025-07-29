@@ -8,6 +8,14 @@
 	<link rel="stylesheet" href="{{ asset('page/found_pets/styles.css') }}">
 {% endblock %}
 
+{% block javascripts %}
+	{{ parent() }}
+	<!-- Leaflet CSS -->
+	<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+	<!-- Leaflet JavaScript -->
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+{% endblock %}
+
 {% block body %}
 	<section class="bg-white shadow">
 		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
@@ -21,7 +29,7 @@
 
 			<!-- Simple form for filters -->
 			<form method="GET" action="{{ path('app_found_pets') }}" id="filtersForm">
-				<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 					<div class="md:col-span-2">
 						<div class="relative">
 							<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -46,6 +54,44 @@
 							<option value="otro" {{ filters.animalType ?? '' == 'otro' ? 'selected' : '' }}>Otro</option>
 						</select>
 					</div>
+
+					<div>
+						<button type="button" id="toggleLocationButton" class="w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-center">
+							{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 16, class: 'mr-2 text-gray-400'} %}
+							<span id="locationText">Buscar por ubicación</span>
+						</button>
+						<input type="hidden" name="latitude" id="latitudeInput" value="{{ filters.latitude ?? '' }}">
+						<input type="hidden" name="longitude" id="longitudeInput" value="{{ filters.longitude ?? '' }}">
+					</div>
+				</div>
+
+				<!-- Location search section -->
+				<div class="mt-4" id="locationSearchSection" style="display: none;">
+					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+						<div class="md:col-span-2">
+							<div class="relative search-container">
+								<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+									{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 20, class: 'text-gray-400'} %}
+								</div>
+								<input type="text"
+								       id="location-search"
+								       placeholder="Buscar dirección o lugar..."
+								       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
+								<div id="location-suggestions"
+								     class="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-[9999] hidden max-h-48 overflow-y-auto">
+								</div>
+							</div>
+						</div>
+						<div>
+							<button type="button" id="current-location-btn" class="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+								{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 16, class: 'mr-2'} %}
+								Mi ubicación
+							</button>
+						</div>
+					</div>
+
+					<!-- Map container -->
+					<div id="map" class="w-full h-64 rounded-lg border border-gray-300 mt-4" style="display: none;"></div>
 				</div>
 
 				{# Tag Filters and buttons #}
@@ -92,6 +138,24 @@
 			const quickFilters = document.getElementById('quickFilters');
 			const tagsInput = document.getElementById('tagsInput');
 			const form = document.getElementById('filtersForm');
+			const toggleLocationButton = document.getElementById('toggleLocationButton');
+			const latitudeInput = document.getElementById('latitudeInput');
+			const longitudeInput = document.getElementById('longitudeInput');
+			const locationSearchSection = document.getElementById('locationSearchSection');
+			const locationSearchInput = document.getElementById('location-search');
+			const currentLocationBtn = document.getElementById('current-location-btn');
+			const mapContainer = document.getElementById('map');
+
+			// Global variables for map functionality
+			window.map = null;
+			window.marker = null;
+			window.searchTimeout = null;
+			window.selectedLocation = null;
+
+			// Show location indicator if coordinates are already set
+			if (latitudeInput.value && longitudeInput.value) {
+				document.getElementById('locationText').textContent = 'Ubicación seleccionada';
+			}
 
 			if (quickFilters && tagsInput) {
 				quickFilters.addEventListener('click', function(e) {
@@ -126,18 +190,381 @@
 				});
 			}
 
-			// Auto-submit on select change
-			// Commented out to not interfere with infinite scroll
-			// Users will need to click the search button to apply filters
-			/*
-			const selects = form.querySelectorAll('select');
-			selects.forEach(select => {
-				select.addEventListener('change', function() {
-					form.submit();
+			// Initialize map functionality
+			function initMap() {
+				try {
+					// Check if Leaflet is loaded
+					if (typeof L === "undefined") {
+						console.error("Leaflet is not loaded");
+						return;
+					}
+
+					// Check if map container exists
+					if (!mapContainer) {
+						console.error("Map container not found");
+						return;
+					}
+
+					// Default to Spain coordinates
+					window.map = L.map("map").setView([40.4168, -3.7038], 10);
+
+					L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+						attribution: "© OpenStreetMap contributors",
+					}).addTo(window.map);
+
+					// Add click event to map for manual location selection
+					window.map.on("click", onMapClick);
+
+					// Initialize search functionality
+					initLocationSearch();
+
+					console.log("Map initialized successfully");
+				} catch (error) {
+					console.error("Error initializing map:", error);
+				}
+			}
+
+			// Handle map click for manual location selection
+			async function onMapClick(e) {
+				const lat = e.latlng.lat;
+				const lon = e.latlng.lng;
+
+				// Update map
+				if (window.marker) {
+					window.map.removeLayer(window.marker);
+				}
+
+				window.marker = L.marker([lat, lon]).addTo(window.map);
+
+				// Try to get address for the clicked location
+				try {
+					const addressData = await reverseGeocodeDetailed(lat, lon);
+					const fullAddress = addressData.display_name;
+
+					window.marker.bindPopup(fullAddress).openPopup();
+					locationSearchInput.value = fullAddress;
+
+					window.selectedLocation = {
+						lat,
+						lon,
+						address: fullAddress,
+						details: addressData,
+					};
+
+					// Update hidden inputs
+					latitudeInput.value = lat;
+					longitudeInput.value = lon;
+					document.getElementById('locationText').textContent = 'Ubicación seleccionada';
+
+					// Auto-submit form
+					setTimeout(() => {
+						form.submit();
+					}, 500);
+				} catch (error) {
+					const fallbackAddress = `Ubicación: ${lat.toFixed(6)}, ${lon.toFixed(6)}`;
+					window.marker.bindPopup(fallbackAddress).openPopup();
+					locationSearchInput.value = fallbackAddress;
+					window.selectedLocation = { lat, lon, address: fallbackAddress };
+
+					// Update hidden inputs
+					latitudeInput.value = lat;
+					longitudeInput.value = lon;
+					document.getElementById('locationText').textContent = 'Ubicación seleccionada';
+
+					// Auto-submit form
+					setTimeout(() => {
+						form.submit();
+					}, 500);
+				}
+
+				console.log("Manual location selected:", lat, lon);
+			}
+
+			// Enhanced reverse geocoding to get detailed address information
+			async function reverseGeocodeDetailed(lat, lon) {
+				try {
+					const response = await fetch(
+						`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&addressdetails=1&accept-language=es`
+					);
+					const data = await response.json();
+					return data;
+				} catch (error) {
+					console.error("Error reverse geocoding:", error);
+					throw error;
+				}
+			}
+
+			// Free geocoding service (Nominatim)
+			async function searchPlaces(query) {
+				try {
+					const response = await fetch(
+						`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
+							query
+						)}&limit=5&addressdetails=1&accept-language=es`
+					);
+					const data = await response.json();
+					return data;
+				} catch (error) {
+					console.error("Error searching places:", error);
+					return [];
+				}
+			}
+
+			// Display suggestions
+			function showSuggestions(places) {
+				const suggestionsDiv = document.getElementById("location-suggestions");
+				suggestionsDiv.innerHTML = "";
+
+				if (places.length === 0) {
+					suggestionsDiv.classList.add("hidden");
+					return;
+				}
+
+				places.forEach((place) => {
+					const div = document.createElement("div");
+					div.className =
+						"px-3 py-2 cursor-pointer hover:bg-gray-100 border-b border-gray-200 last:border-b-0";
+					div.textContent = place.display_name;
+					div.onclick = () => selectPlace(place);
+					suggestionsDiv.appendChild(div);
 				});
-			});
-			*/
+
+				suggestionsDiv.classList.remove("hidden");
+			}
+
+			// Select a place
+			function selectPlace(place) {
+				console.log("selectPlace called with:", place);
+
+				if (!window.map) {
+					console.error("Map not initialized");
+					return;
+				}
+
+				if (locationSearchInput) {
+					locationSearchInput.value = place.display_name;
+				}
+
+				document.getElementById("location-suggestions").classList.add("hidden");
+
+				// Update map
+				const lat = parseFloat(place.lat);
+				const lon = parseFloat(place.lon);
+
+				try {
+					window.map.setView([lat, lon], 15);
+
+					if (window.marker) {
+						window.map.removeLayer(window.marker);
+					}
+
+					window.marker = L.marker([lat, lon]).addTo(window.map);
+					window.marker.bindPopup(place.display_name).openPopup();
+
+					window.selectedLocation = {
+						lat,
+						lon,
+						address: place.display_name,
+						details: place,
+					};
+
+					// Update hidden inputs
+					latitudeInput.value = lat;
+					longitudeInput.value = lon;
+					document.getElementById('locationText').textContent = 'Ubicación seleccionada';
+
+					// Auto-submit form
+					setTimeout(() => {
+						form.submit();
+					}, 500);
+
+					console.log("Selected place:", place);
+					console.log("Coordinates:", lat, lon);
+				} catch (error) {
+					console.error("Error in selectPlace:", error);
+				}
+			}
+
+			// Initialize location search functionality
+			function initLocationSearch() {
+				if (!locationSearchInput || !currentLocationBtn) return;
+
+				// Handle input changes
+				locationSearchInput.addEventListener("input", function (e) {
+					const query = e.target.value.trim();
+
+					if (query.length < 3) {
+						document
+							.getElementById("location-suggestions")
+							.classList.add("hidden");
+						return;
+					}
+
+					// Debounce search
+					clearTimeout(window.searchTimeout);
+					window.searchTimeout = setTimeout(async () => {
+						const places = await searchPlaces(query);
+						showSuggestions(places);
+					}, 300);
+				});
+
+				// Hide suggestions when clicking outside
+				document.addEventListener("click", function (e) {
+					if (!e.target.closest(".search-container")) {
+						document
+							.getElementById("location-suggestions")
+							.classList.add("hidden");
+					}
+				});
+
+				// Get current location
+				currentLocationBtn.addEventListener("click", getCurrentLocation);
+			}
+
+			// Get current location
+			function getCurrentLocation() {
+				const button = currentLocationBtn;
+				const originalText = button.innerHTML;
+
+				if (!navigator.geolocation) {
+					alert("La geolocalización no es compatible con este navegador.");
+					return;
+				}
+
+				button.disabled = true;
+				button.innerHTML =
+					'<i class="fas fa-spinner fa-spin mr-1"></i>Obteniendo ubicación...';
+
+				navigator.geolocation.getCurrentPosition(
+					function (position) {
+						const lat = position.coords.latitude;
+						const lon = position.coords.longitude;
+
+						// Update map
+						window.map.setView([lat, lon], 15);
+
+						if (window.marker) {
+							window.map.removeLayer(window.marker);
+						}
+
+						window.marker = L.marker([lat, lon]).addTo(window.map);
+						window.marker.bindPopup("Tu ubicación actual").openPopup();
+
+						// Get detailed address information for current location
+						reverseGeocodeDetailed(lat, lon)
+							.then((addressData) => {
+								window.selectedLocation = {
+									lat,
+									lon,
+									address: "Mi ubicación actual",
+									details: addressData,
+								};
+
+								// Update hidden inputs
+								latitudeInput.value = lat;
+								longitudeInput.value = lon;
+								document.getElementById('locationText').textContent = 'Ubicación actual';
+
+								// Auto-submit form
+								setTimeout(() => {
+									form.submit();
+								}, 500);
+							})
+							.catch((error) => {
+								console.error(
+									"Error getting address details for current location:",
+									error
+								);
+								window.selectedLocation = {
+									lat,
+									lon,
+									address: "Mi ubicación actual",
+								};
+
+								// Update hidden inputs
+								latitudeInput.value = lat;
+								longitudeInput.value = lon;
+								document.getElementById('locationText').textContent = 'Ubicación actual';
+
+								// Auto-submit form
+								setTimeout(() => {
+									form.submit();
+								}, 500);
+							});
+
+						// Update search input
+						locationSearchInput.value = "Mi ubicación actual";
+
+						console.log("Current location:", lat, lon);
+
+						button.disabled = false;
+						button.innerHTML = originalText;
+					},
+					function (error) {
+						let errorMessage = "Error al obtener la ubicación: ";
+						switch (error.code) {
+							case error.PERMISSION_DENIED:
+								errorMessage +=
+									"Permiso denegado. Por favor, permite el acceso a la ubicación.";
+								break;
+							case error.POSITION_UNAVAILABLE:
+								errorMessage += "Información de ubicación no disponible.";
+								break;
+							case error.TIMEOUT:
+								errorMessage +=
+									"Solicitud de ubicación agotó el tiempo de espera.";
+								break;
+							default:
+								errorMessage += "Ocurrió un error desconocido.";
+								break;
+						}
+						alert(errorMessage);
+
+						button.disabled = false;
+						button.innerHTML = originalText;
+					},
+					{
+						enableHighAccuracy: true,
+						timeout: 10000,
+						maximumAge: 60000,
+					}
+				);
+			}
+
+			// Toggle location search functionality
+			if (toggleLocationButton) {
+				toggleLocationButton.addEventListener('click', function() {
+					if (locationSearchSection.style.display === 'none') {
+						locationSearchSection.style.display = 'block';
+						mapContainer.style.display = 'block';
+
+						// Initialize map if not already done
+						if (!window.map) {
+							initMap();
+						} else {
+							// Refresh map size
+							setTimeout(() => {
+								if (window.map && typeof window.map.invalidateSize === "function") {
+									window.map.invalidateSize();
+								}
+							}, 100);
+						}
+					} else {
+						locationSearchSection.style.display = 'none';
+						mapContainer.style.display = 'none';
+					}
+				});
+			}
 		});
+
+		// Function to clear location and reload page
+		function clearLocation() {
+			// Remove location parameters from URL and reload
+			const url = new URL(window.location);
+			url.searchParams.delete('latitude');
+			url.searchParams.delete('longitude');
+			window.location.href = url.toString();
+		}
 	</script>
 
 	<section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
@@ -145,6 +572,23 @@
 			 data-infinite-scroll-url-value="{{ path('app_found_pets') }}"
 			 data-infinite-scroll-page-value="{{ currentPage ?? 1 }}"
 			 data-infinite-scroll-has-more-value="{{ hasMore ?? false ? 'true' : 'false' }}">
+
+		<!-- Location search indicator -->
+		{% if filters.latitude and filters.longitude %}
+			<div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+				<div class="flex items-center">
+					{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 20, class: 'text-blue-600 mr-3'} %}
+					<div>
+						<h3 class="text-sm font-medium text-blue-900">Búsqueda por proximidad activa</h3>
+						<p class="text-sm text-blue-700">Mostrando mascotas encontradas ordenadas por cercanía a tu ubicación</p>
+					</div>
+					<button onclick="clearLocation()" class="ml-auto text-blue-600 hover:text-blue-800 text-sm font-medium">
+						Limpiar ubicación
+					</button>
+				</div>
+			</div>
+		{% endif %}
+
 		<div id="found-animals-container"
 			 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
 			 data-infinite-scroll-target="container">
@@ -154,7 +598,13 @@
 				<div class="col-span-full text-center py-12">
 					{% include 'components/Icon.html.twig' with {name: 'paw', size: 64, class: 'mx-auto text-gray-300 mb-4'} %}
 					<h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas encontradas</h3>
-					<p class="text-gray-500">No se encontraron mascotas encontradas con los filtros aplicados.</p>
+					<p class="text-gray-500">
+						{% if filters.latitude and filters.longitude %}
+							No se encontraron mascotas encontradas cerca de tu ubicación.
+						{% else %}
+							No se encontraron mascotas encontradas con los filtros aplicados.
+						{% endif %}
+					</p>
 				</div>
 			{% endif %}
 		</div>
