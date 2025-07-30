@@ -29,11 +29,32 @@ final class AuthController extends AbstractController
             $password = $request->request->get('password');
             $confirmPassword = $request->request->get('confirm_password');
             $emailNotifications = $request->request->get('emailNotifications');
+            $isShelter = $request->request->get('isShelter') === 'on';
+
+            // Shelter-specific fields
+            $shelterName = $request->request->get('shelterName');
+            $shelterDescription = $request->request->get('shelterDescription');
+            $shelterAddress = $request->request->get('shelterAddress');
+            $shelterPhone = $request->request->get('shelterPhone');
+            $shelterWebsite = $request->request->get('shelterWebsite');
+            $shelterFacebook = $request->request->get('shelterFacebook');
 
             // Validaciones básicas
             if (empty($firstName) || empty($lastName) || empty($email) || empty($password)) {
                 $this->addFlash('error', 'Todos los campos obligatorios deben estar completos');
                 return $this->redirectToRoute('app_auth_register');
+            }
+
+            // Validaciones específicas para protectoras
+            if ($isShelter) {
+                if (empty($shelterName)) {
+                    $this->addFlash('error', 'El nombre de la protectora es obligatorio');
+                    return $this->redirectToRoute('app_auth_register');
+                }
+                if (empty($shelterAddress)) {
+                    $this->addFlash('error', 'La dirección de la protectora es obligatoria');
+                    return $this->redirectToRoute('app_auth_register');
+                }
             }
 
             if ($password !== $confirmPassword) {
@@ -60,15 +81,28 @@ final class AuthController extends AbstractController
 
             $user->setCreatedAt(new \DateTimeImmutable());
             $user->setUpdatedAt(new \DateTimeImmutable());
-            $user->setRoles(['ROLE_USER']);
+            $user->setRoles($isShelter ? ['ROLE_USER', 'ROLE_SHELTER'] : ['ROLE_USER']);
             $user->setIsActive(true);
             $user->setLastLogin(new \DateTime());
             $user->setEmailNotifications($emailNotifications == "on" ? true : false);
-            $user->setIsShelter(false);
+            $user->setIsShelter($isShelter);
+
+            // Set shelter-specific fields if registering as shelter
+            if ($isShelter) {
+                $user->setShelterName($shelterName);
+                $user->setShelterDescription($shelterDescription);
+                $user->setShelterAddress($shelterAddress);
+                $user->setShelterPhone($shelterPhone);
+                $user->setShelterWebsite($shelterWebsite);
+                $user->setShelterFacebook($shelterFacebook);
+                $user->setShelterVerificationStatus('pending');
+                $user->setShelterVerificationDate(new \DateTime());
+            }
 
             $userRepository->add($user, true);
 
-            $this->addFlash('success', 'Usuario registrado exitosamente');
+            $successMessage = $isShelter ? 'Protectora registrada exitosamente. Tu cuenta está pendiente de verificación.' : 'Usuario registrado exitosamente';
+            $this->addFlash('success', $successMessage);
             return $this->redirectToRoute('app_user');
         }
 

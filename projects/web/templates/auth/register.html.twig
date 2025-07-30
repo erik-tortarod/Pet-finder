@@ -5,77 +5,228 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<link rel="stylesheet" href="{{ asset('page/auth/register.css') }}">
 {% endblock %}
 
 {% block body %}
 
-	<div class="auth-container">
-		<div class="auth-header">
-			<h1>Registro de Usuario</h1>
-			<p>Crea tu cuenta en Pet Finder</p>
+	<div class="max-w-lg mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
+		<div class="text-center mb-10">
+			<h1 class="text-3xl font-bold text-gray-800 mb-3">Registro de Usuario</h1>
+			<p class="text-gray-600">Crea tu cuenta en Pet Finder</p>
 		</div>
 
-		<div class="oauth-section">
+		<!-- Toggle Switch para tipo de registro -->
+		<div class="mb-10">
+			<div class="bg-gray-100 p-1 rounded-lg flex">
+				<button type="button" id="user-toggle" class="flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200">
+					<i class="fas fa-user mr-2"></i>Usuario Regular
+				</button>
+				<button type="button" id="shelter-toggle" class="flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700">
+					<i class="fas fa-home mr-2"></i>Protectora
+				</button>
+			</div>
+			<input type="hidden" name="isShelter" id="isShelter" value="0">
+		</div>
+
+		<div class="mb-10 text-center">
 			{% for owner in hwi_oauth_resource_owners() %}
-				<a href="{{ hwi_oauth_login_url(owner) }}" class="oauth-btn">
-					Continuar con
+				<a href="{{ hwi_oauth_login_url(owner) }}" class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 m-2">
+					<i class="fab fa-google mr-2"></i>Continuar con
 					{{ owner | trans({}, 'HWIOAuthBundle') }}
 				</a>
 			{% endfor %}
 		</div>
 
-		<div class="divider">
-			<span>o</span>
+		<div class="relative my-8">
+			<div class="absolute inset-0 flex items-center">
+				<div class="w-full border-t border-gray-300"></div>
+			</div>
+			<div class="relative flex justify-center text-sm">
+				<span class="px-2 bg-white text-gray-500">o</span>
+			</div>
 		</div>
 
 		<form action="{{ path('app_auth_register') }}" method="post">
-			<div class="form-row">
-				<div class="form-group">
-					<label for="firstName">Nombre *</label>
-					<input type="text" name="firstName" id="firstName" placeholder="Tu nombre" required>
+			<div class="grid grid-cols-2 gap-6 mb-6">
+				<div>
+					<label for="firstName" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-user mr-1"></i>Nombre <span class="text-red-500">*</span>
+					</label>
+					<input type="text" name="firstName" id="firstName" placeholder="Tu nombre" required
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
-				<div class="form-group">
-					<label for="lastName">Apellido *</label>
-					<input type="text" name="lastName" id="lastName" placeholder="Tu apellido" required>
-				</div>
-			</div>
-
-			<div class="form-group">
-				<label for="email">Email *</label>
-				<input type="email" name="email" id="email" placeholder="tu@email.com" required>
-			</div>
-
-			<div class="form-group">
-				<label for="phone">Teléfono</label>
-				<input type="tel" name="phone" id="phone" placeholder="Tu número de teléfono">
-			</div>
-
-			<div class="form-row">
-				<div class="form-group">
-					<label for="password">Contraseña *</label>
-					<input type="password" name="password" id="password" placeholder="Tu contraseña" required>
-				</div>
-
-				<div class="form-group">
-					<label for="confirm_password">Confirmar Contraseña *</label>
-					<input type="password" name="confirm_password" id="confirm_password" placeholder="Confirma tu contraseña" required>
+				<div>
+					<label for="lastName" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-user mr-1"></i>Apellido <span class="text-red-500">*</span>
+					</label>
+					<input type="text" name="lastName" id="lastName" placeholder="Tu apellido" required
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 			</div>
 
-			<div class="checkbox-group">
-				<input type="checkbox" name="emailNotifications" id="emailNotifications">
-				<label for="emailNotifications">Recibir notificaciones por email</label>
+			<div class="mb-6">
+				<label for="email" class="block text-sm font-medium text-gray-700 mb-3">
+					<i class="fas fa-envelope mr-1"></i>Email <span class="text-red-500">*</span>
+				</label>
+				<input type="email" name="email" id="email" placeholder="tu@email.com" required
+					   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
-			<button type="submit" class="btn">Crear Cuenta</button>
+			<div class="mb-6">
+				<label for="phone" class="block text-sm font-medium text-gray-700 mb-3">
+					<i class="fas fa-phone mr-1"></i>Teléfono
+				</label>
+				<input type="tel" name="phone" id="phone" placeholder="Tu número de teléfono"
+					   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+			</div>
+
+			<div class="grid grid-cols-2 gap-6 mb-6">
+				<div>
+					<label for="password" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-lock mr-1"></i>Contraseña <span class="text-red-500">*</span>
+					</label>
+					<input type="password" name="password" id="password" placeholder="Tu contraseña" required
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+				</div>
+
+				<div>
+					<label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-lock mr-1"></i>Confirmar Contraseña <span class="text-red-500">*</span>
+					</label>
+					<input type="password" name="confirm_password" id="confirm_password" placeholder="Confirma tu contraseña" required
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+				</div>
+			</div>
+
+			<div class="flex items-center mb-8">
+				<input type="checkbox" name="emailNotifications" id="emailNotifications"
+					   class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+				<label for="emailNotifications" class="ml-3 block text-sm text-gray-700">
+					<i class="fas fa-bell mr-1"></i>Recibir notificaciones por email
+				</label>
+			</div>
+
+			<!-- Campos específicos de protectora -->
+			<div id="shelter-fields" class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-8 mb-8" style="display: none;">
+				<div class="flex items-center mb-6">
+					<div class="flex-shrink-0">
+						<div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
+							<i class="fas fa-home text-white text-lg"></i>
+						</div>
+					</div>
+					<div class="ml-4">
+						<h3 class="text-xl font-semibold text-gray-800">Información de la Protectora</h3>
+						<p class="text-sm text-gray-600">Completa los datos de tu organización</p>
+					</div>
+				</div>
+
+				<div class="mb-6">
+					<label for="shelterName" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-building mr-1"></i><span class="text-red-500">*</span> Nombre de la Protectora
+					</label>
+					<input type="text" name="shelterName" id="shelterName" placeholder="Ej: Protectora Animales Felices"
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+				</div>
+
+				<div class="mb-6">
+					<label for="shelterDescription" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-info-circle mr-1"></i>Descripción
+					</label>
+					<textarea name="shelterDescription" id="shelterDescription" placeholder="Describe tu misión, valores y cómo ayudas a los animales..." rows="4"
+							  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y min-h-24 transition-all duration-200"></textarea>
+				</div>
+
+				<div class="mb-6">
+					<label for="shelterAddress" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-map-marker-alt mr-1"></i><span class="text-red-500">*</span> Dirección
+					</label>
+					<input type="text" name="shelterAddress" id="shelterAddress" placeholder="Dirección completa de la protectora"
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+				</div>
+
+				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+					<div>
+						<label for="shelterPhone" class="block text-sm font-medium text-gray-700 mb-3">
+							<i class="fas fa-phone mr-1"></i>Teléfono
+						</label>
+						<input type="tel" name="shelterPhone" id="shelterPhone" placeholder="Teléfono de contacto"
+							   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+					</div>
+					<div>
+						<label for="shelterWebsite" class="block text-sm font-medium text-gray-700 mb-3">
+							<i class="fas fa-globe mr-1"></i>Sitio Web
+						</label>
+						<input type="url" name="shelterWebsite" id="shelterWebsite" placeholder="https://tu-sitio.com"
+							   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+					</div>
+				</div>
+
+				<div class="mb-6">
+					<label for="shelterFacebook" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fab fa-facebook mr-1"></i>Facebook
+					</label>
+					<input type="url" name="shelterFacebook" id="shelterFacebook" placeholder="https://facebook.com/tu-protectora"
+						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+				</div>
+			</div>
+
+			<button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 font-medium shadow-lg text-lg">
+				<i class="fas fa-user-plus mr-2"></i>Crear Cuenta
+			</button>
 		</form>
 
-		<div class="auth-footer">
-			<p>¿Ya tienes una cuenta?
-				<a href="{{ path('app_auth_login') }}">Inicia sesión aquí</a>
+		<div class="text-center mt-8 pt-8 border-t border-gray-200">
+			<p class="text-gray-600">
+				¿Ya tienes una cuenta?
+				<a href="{{ path('app_auth_login') }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+					<i class="fas fa-sign-in-alt mr-1"></i>Inicia sesión aquí
+				</a>
 			</p>
 		</div>
 	</div>
+
+	<script>
+		// Toggle switch functionality
+		const userToggle = document.getElementById('user-toggle');
+		const shelterToggle = document.getElementById('shelter-toggle');
+		const isShelterInput = document.getElementById('isShelter');
+		const shelterFields = document.getElementById('shelter-fields');
+		const requiredFields = ['shelterName', 'shelterAddress'];
+
+		function setActiveToggle(isShelter) {
+			if (isShelter) {
+				// Activate shelter toggle
+				shelterToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200';
+				userToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700';
+				isShelterInput.value = '1';
+
+				// Show shelter fields
+				shelterFields.style.display = 'block';
+				requiredFields.forEach(fieldId => {
+					const field = document.getElementById(fieldId);
+					if (field) field.required = true;
+				});
+			} else {
+				// Activate user toggle
+				userToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200';
+				shelterToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700';
+				isShelterInput.value = '0';
+
+				// Hide shelter fields
+				shelterFields.style.display = 'none';
+				requiredFields.forEach(fieldId => {
+					const field = document.getElementById(fieldId);
+					if (field) field.required = false;
+				});
+			}
+		}
+
+		// Event listeners
+		userToggle.addEventListener('click', () => setActiveToggle(false));
+		shelterToggle.addEventListener('click', () => setActiveToggle(true));
+
+		// Initialize with user toggle active
+		setActiveToggle(false);
+	</script>
 {% endblock %}
