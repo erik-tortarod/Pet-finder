@@ -13,12 +13,22 @@ security:
             security: false
         main:
             lazy: true
+            entry_point: form_login
 
             # Define the path handling the logout and where to redirect
             logout:
                 path: /logout
                 target: /
 
+            # Configuración para autenticación por formulario
+            form_login:
+                login_path: /auth/login
+                check_path: /auth/login
+                enable_csrf: false
+                default_target_path: /user
+                failure_path: /auth/login
+
+            # Configuración para OAuth
             oauth:
                 # Again, define the same path as in the Google Cloud Console
                 resource_owners:

@@ -29,15 +29,21 @@
 			<span>o</span>
 		</div>
 
+		{% if error %}
+			<div class="alert alert-danger">
+				{{ error.messageKey|trans(error.messageData, 'security') }}
+			</div>
+		{% endif %}
+
 		<form action="{{ path('app_auth_login') }}" method="post">
 			<div class="form-group">
-				<label for="email">Email</label>
-				<input type="email" name="email" id="email" placeholder="tu@email.com" required>
+				<label for="username">Email</label>
+				<input type="email" name="_username" id="username" value="{{ last_username }}" placeholder="tu@email.com" required autofocus>
 			</div>
 
 			<div class="form-group">
 				<label for="password">Contraseña</label>
-				<input type="password" name="password" id="password" placeholder="Tu contraseña" required>
+				<input type="password" name="_password" id="password" placeholder="Tu contraseña" required>
 			</div>
 
 			<div style="text-align: right; margin-bottom: 1rem;">

@@ -10,6 +10,7 @@ use App\Repository\UserRepository;
 use App\Service\PasswordResetService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 final class AuthController extends AbstractController
 {
@@ -112,47 +113,17 @@ final class AuthController extends AbstractController
     }
 
     #[Route('/auth/login', name: 'app_auth_login')]
-    public function login(Request $request, UserRepository $userRepository): Response
+    public function login(AuthenticationUtils $authenticationUtils): Response
     {
-        if ($request->isMethod('POST')) {
-            $email = $request->request->get('email');
-            $password = $request->request->get('password');
+        // get the login error if there is one
+        $error = $authenticationUtils->getLastAuthenticationError();
 
-            // Validaciones básicas
-            if (empty($email) || empty($password)) {
-                $this->addFlash('error', 'Email y contraseña son requeridos');
-                return $this->redirectToRoute('app_auth_login');
-            }
-
-            $user = $userRepository->findOneBy(['email' => $email]);
-
-            if (!$user) {
-                $this->addFlash('error', 'Usuario no encontrado');
-                return $this->redirectToRoute('app_auth_login');
-            }
-
-            // Verify the password
-            if (!$this->passwordHasher->isPasswordValid($user, $password)) {
-                $this->addFlash('error', 'Contraseña incorrecta');
-                return $this->redirectToRoute('app_auth_login');
-            }
-
-            // Update last login
-            $user->setLastLogin(new \DateTime());
-            $userRepository->add($user, true);
-
-            // Crear sesión manualmente
-            $request->getSession()->set('user_id', $user->getId());
-            $request->getSession()->set('user_email', $user->getEmail());
-            $request->getSession()->set('user_first_name', $user->getFirstName());
-            $request->getSession()->set('user_last_name', $user->getLastName());
-
-            $this->addFlash('success', 'Inicio de sesión exitoso');
-            return $this->redirectToRoute('app_user');
-        }
+        // last username entered by the user
+        $lastUsername = $authenticationUtils->getLastUsername();
 
         return $this->render('auth/login.html.twig', [
-            'controller_name' => 'AuthController',
+            'last_username' => $lastUsername,
+            'error' => $error,
         ]);
     }
 

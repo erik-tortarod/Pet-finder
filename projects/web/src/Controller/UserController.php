@@ -12,10 +12,12 @@ use App\Repository\FoundAnimalsRepository;
 use App\Utils\ControllerUtils;
 use App\Form\UserProfileUpdateType;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 final class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]
+    #[IsGranted('ROLE_USER')]
     public function index(): Response
     {
         // Redirect to the main user dashboard with lost pets tab active
@@ -23,19 +25,10 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/lost-pets', name: 'app_user_lost_pets')]
-    public function userLostPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
+    #[IsGranted('ROLE_USER')]
+    public function userLostPets(LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
-        $user = ControllerUtils::requireValidatedAuthentication(
-            $request,
-            $userRepository,
-            fn($type, $message) => $this->addFlash($type, $message)
-        );
-        if (!$user) {
-            return ControllerUtils::redirectToLogin(
-                fn($type, $message) => $this->addFlash($type, $message),
-                fn($route) => $this->redirectToRoute($route)
-            );
-        }
+        $user = $this->getUser();
 
         // Obtener todas las mascotas perdidas del usuario con toda la información
         $lostPets = $lostPetsRepository->findByUserWithRelations($user);
@@ -52,19 +45,10 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/found-pets', name: 'app_user_found_pets')]
-    public function userFoundPets(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
+    #[IsGranted('ROLE_USER')]
+    public function userFoundPets(LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository): Response
     {
-        $user = ControllerUtils::requireValidatedAuthentication(
-            $request,
-            $userRepository,
-            fn($type, $message) => $this->addFlash($type, $message)
-        );
-        if (!$user) {
-            return ControllerUtils::redirectToLogin(
-                fn($type, $message) => $this->addFlash($type, $message),
-                fn($route) => $this->redirectToRoute($route)
-            );
-        }
+        $user = $this->getUser();
 
         // Obtener todos los animales encontrados del usuario con toda la información
         $foundAnimals = $foundAnimalsRepository->findByUserWithRelations($user);
@@ -81,19 +65,10 @@ final class UserController extends AbstractController
     }
 
     #[Route('/user/settings', name: 'app_user_settings')]
-    public function userSettings(Request $request, UserRepository $userRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, EntityManagerInterface $entityManager): Response
+    #[IsGranted('ROLE_USER')]
+    public function userSettings(Request $request, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, EntityManagerInterface $entityManager): Response
     {
-        $user = ControllerUtils::requireValidatedAuthentication(
-            $request,
-            $userRepository,
-            fn($type, $message) => $this->addFlash($type, $message)
-        );
-        if (!$user) {
-            return ControllerUtils::redirectToLogin(
-                fn($type, $message) => $this->addFlash($type, $message),
-                fn($route) => $this->redirectToRoute($route)
-            );
-        }
+        $user = $this->getUser();
 
         // Crear el formulario de edición de perfil
         $form = $this->createForm(UserProfileUpdateType::class, $user);
