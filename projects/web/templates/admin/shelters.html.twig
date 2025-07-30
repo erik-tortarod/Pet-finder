@@ -1,0 +1,155 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administrar Shelters - Pet Finder
+{% endblock %}
+
+{% block body %}
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-200">
+            <h1 class="text-3xl font-bold text-gray-800">Administrar Shelters</h1>
+            <a href="{{ path('app_admin') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                <i class="fas fa-arrow-left mr-2"></i>Volver al Panel
+            </a>
+        </div>
+
+        <!-- Filtros -->
+        <div class="mb-8">
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ path('app_admin_shelters', {'filter': 'all'}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'all' %}
+                              bg-blue-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-list mr-2"></i>Todas
+                </a>
+                <a href="{{ path('app_admin_shelters', {'filter': 'pending'}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'pending' %}
+                              bg-yellow-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-clock mr-2"></i>Pendientes
+                </a>
+                <a href="{{ path('app_admin_shelters', {'filter': 'verified'}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'verified' %}
+                              bg-green-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-check-circle mr-2"></i>Verificadas
+                </a>
+                <a href="{{ path('app_admin_shelters', {'filter': 'rejected'}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'rejected' %}
+                              bg-red-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-times-circle mr-2"></i>Rechazadas
+                </a>
+            </div>
+        </div>
+
+        {% if shelters is empty %}
+            <div class="text-center py-12">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">
+                    {% if currentFilter == 'all' %}
+                        No hay shelters registradas
+                    {% elseif currentFilter == 'pending' %}
+                        No hay shelters pendientes
+                    {% elseif currentFilter == 'verified' %}
+                        No hay shelters verificadas
+                    {% elseif currentFilter == 'rejected' %}
+                        No hay shelters rechazadas
+                    {% endif %}
+                </h3>
+                <p class="text-gray-600">
+                    {% if currentFilter == 'all' %}
+                        Aún no se han registrado protectoras en el sistema.
+                    {% else %}
+                        No se encontraron shelters con el estado seleccionado.
+                    {% endif %}
+                </p>
+            </div>
+        {% else %}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {% for shelter in shelters %}
+                    <div class="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-semibold text-gray-800">
+                                {{ shelter.shelterName ?: shelter.firstName ~ ' ' ~ shelter.lastName }}
+                            </h3>
+                            <span class="px-3 py-1 rounded-full text-xs font-medium uppercase
+                                {% if shelter.shelterVerificationStatus == 'pending' %}
+                                    bg-yellow-100 text-yellow-800
+                                {% elseif shelter.shelterVerificationStatus == 'verified' %}
+                                    bg-green-100 text-green-800
+                                {% else %}
+                                    bg-red-100 text-red-800
+                                {% endif %}">
+                                {{ shelter.shelterVerificationStatus|upper }}
+                            </span>
+                        </div>
+
+                        <div class="space-y-2 mb-4">
+                            <div class="flex">
+                                <span class="font-medium text-gray-600 min-w-[100px]">Contacto:</span>
+                                <span class="text-gray-800">{{ shelter.firstName }} {{ shelter.lastName }}</span>
+                            </div>
+                            <div class="flex">
+                                <span class="font-medium text-gray-600 min-w-[100px]">Email:</span>
+                                <span class="text-gray-800">{{ shelter.email }}</span>
+                            </div>
+                            {% if shelter.phone %}
+                                <div class="flex">
+                                    <span class="font-medium text-gray-600 min-w-[100px]">Teléfono:</span>
+                                    <span class="text-gray-800">{{ shelter.phone }}</span>
+                                </div>
+                            {% endif %}
+                            {% if shelter.shelterPhone %}
+                                <div class="flex">
+                                    <span class="font-medium text-gray-600 min-w-[100px]">Tel. Shelter:</span>
+                                    <span class="text-gray-800">{{ shelter.shelterPhone }}</span>
+                                </div>
+                            {% endif %}
+                            {% if shelter.shelterAddress %}
+                                <div class="flex">
+                                    <span class="font-medium text-gray-600 min-w-[100px]">Dirección:</span>
+                                    <span class="text-gray-800">{{ shelter.shelterAddress }}</span>
+                                </div>
+                            {% endif %}
+                            <div class="flex">
+                                <span class="font-medium text-gray-600 min-w-[100px]">Registrado:</span>
+                                <span class="text-gray-800">{{ shelter.createdAt|date('d/m/Y') }}</span>
+                            </div>
+                        </div>
+
+                        {% if shelter.shelterDescription %}
+                            <div class="text-gray-600 italic mb-4 leading-relaxed">
+                                "{{ shelter.shelterDescription }}"
+                            </div>
+                        {% endif %}
+
+                        <div class="flex gap-2">
+                            {% if shelter.shelterVerificationStatus == 'pending' %}
+                                <button class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-sm font-medium">
+                                    <i class="fas fa-check mr-2"></i>Aprobar
+                                </button>
+                                <button class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
+                                    <i class="fas fa-times mr-2"></i>Rechazar
+                                </button>
+                            {% endif %}
+                            <a href="mailto:{{ shelter.email }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
+                                <i class="fas fa-envelope mr-2"></i>Contactar
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
