@@ -1,0 +1,223 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestionar Usuarios - Pet Finder{% endblock %}
+
+{% block body %}
+    <div class="max-w-6xl mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-200">
+            <h1 class="text-3xl font-bold text-gray-800">Gestionar Usuarios</h1>
+            <a href="{{ path('app_admin') }}" class="text-blue-600 hover:text-blue-800 font-medium">
+                <i class="fas fa-arrow-left mr-2"></i>Volver al Panel
+            </a>
+        </div>
+
+        <!-- Filtros y Búsqueda -->
+        <div class="mb-8 space-y-4">
+            <!-- Filtros -->
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ path('app_admin_users', {'filter': 'all', 'search': search}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'all' %}
+                              bg-blue-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-list mr-2"></i>Todos
+                </a>
+                <a href="{{ path('app_admin_users', {'filter': 'admin', 'search': search}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'admin' %}
+                              bg-purple-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-user-shield mr-2"></i>Administradores
+                </a>
+                <a href="{{ path('app_admin_users', {'filter': 'shelter', 'search': search}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'shelter' %}
+                              bg-yellow-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-home mr-2"></i>Shelters
+                </a>
+                <a href="{{ path('app_admin_users', {'filter': 'regular', 'search': search}) }}"
+                   class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
+                          {% if currentFilter == 'regular' %}
+                              bg-green-600 text-white
+                          {% else %}
+                              bg-gray-200 text-gray-700 hover:bg-gray-300
+                          {% endif %}">
+                    <i class="fas fa-user mr-2"></i>Usuarios Regulares
+                </a>
+            </div>
+
+            <!-- Búsqueda -->
+            <form method="GET" action="{{ path('app_admin_users') }}" class="flex gap-2">
+                <input type="hidden" name="filter" value="{{ currentFilter }}">
+                <input type="text"
+                       name="search"
+                       value="{{ search }}"
+                       placeholder="Buscar por email, nombre o shelter..."
+                       class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
+                    <i class="fas fa-search mr-2"></i>Buscar
+                </button>
+                {% if search %}
+                    <a href="{{ path('app_admin_users', {'filter': currentFilter}) }}"
+                       class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200">
+                        <i class="fas fa-times mr-2"></i>Limpiar
+                    </a>
+                {% endif %}
+            </form>
+        </div>
+
+        {% if users is empty %}
+            <div class="text-center py-12">
+                <h3 class="text-xl font-semibold text-gray-700 mb-4">
+                    {% if currentFilter == 'all' %}
+                        No hay usuarios registrados
+                    {% elseif currentFilter == 'admin' %}
+                        No hay administradores
+                    {% elseif currentFilter == 'shelter' %}
+                        No hay shelters
+                    {% elseif currentFilter == 'regular' %}
+                        No hay usuarios regulares
+                    {% endif %}
+                </h3>
+                <p class="text-gray-600">
+                    {% if search %}
+                        No se encontraron usuarios que coincidan con tu búsqueda.
+                    {% else %}
+                        No se encontraron usuarios con el filtro seleccionado.
+                    {% endif %}
+                </p>
+            </div>
+        {% else %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Usuario
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Email
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Tipo
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Estado
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Registrado
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for user in users %}
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
+                                                    <span class="text-sm font-medium text-gray-700">
+                                                        {{ user.firstName|first|upper }}{{ user.lastName|first|upper }}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ user.firstName }} {{ user.lastName }}
+                                                </div>
+                                                {% if user.shelterName %}
+                                                    <div class="text-sm text-gray-500">
+                                                        {{ user.shelterName }}
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                        {{ user.email }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex flex-wrap gap-1">
+                                            {% if 'ROLE_ADMIN' in user.roles %}
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                    <i class="fas fa-user-shield mr-1"></i>Admin
+                                                </span>
+                                            {% endif %}
+                                            {% if user.isShelter %}
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                                    <i class="fas fa-home mr-1"></i>Shelter
+                                                </span>
+                                            {% endif %}
+                                            {% if not 'ROLE_ADMIN' in user.roles and not user.isShelter %}
+                                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                                    <i class="fas fa-user mr-1"></i>Usuario
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {% if user.isShelter %}
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                                {% if user.shelterVerificationStatus == 'pending' %}
+                                                    bg-yellow-100 text-yellow-800
+                                                {% elseif user.shelterVerificationStatus == 'verified' %}
+                                                    bg-green-100 text-green-800
+                                                {% else %}
+                                                    bg-red-100 text-red-800
+                                                {% endif %}">
+                                                {{ user.shelterVerificationStatus|upper }}
+                                            </span>
+                                        {% else %}
+                                            <span class="text-sm text-gray-500">-</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ user.createdAt|date('d/m/Y') }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <div class="flex gap-2">
+                                            {% if user.id != app.user.id %}
+                                                <form method="POST" action="{{ path('app_admin_toggle_admin', {'id': user.id}) }}" class="inline">
+                                                    <button type="submit"
+                                                            class="{% if 'ROLE_ADMIN' in user.roles %}bg-red-600 hover:bg-red-700{% else %}bg-purple-600 hover:bg-purple-700{% endif %} text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200"
+                                                            onclick="return confirm('¿Estás seguro de que quieres {% if 'ROLE_ADMIN' in user.roles %}quitar{% else %}asignar{% endif %} el rol de administrador a este usuario?')">
+                                                        {% if 'ROLE_ADMIN' in user.roles %}
+                                                            <i class="fas fa-user-minus mr-1"></i>Quitar Admin
+                                                        {% else %}
+                                                            <i class="fas fa-user-plus mr-1"></i>Hacer Admin
+                                                        {% endif %}
+                                                    </button>
+                                                </form>
+                                            {% else %}
+                                                <span class="text-gray-400 text-xs">Tu cuenta</span>
+                                            {% endif %}
+                                            <a href="mailto:{{ user.email }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200">
+                                                <i class="fas fa-envelope mr-1"></i>Contactar
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Información adicional -->
+            <div class="mt-6 text-center text-sm text-gray-600">
+                <p>Total de usuarios mostrados: {{ users|length }}</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
