@@ -24,8 +24,13 @@ class AuthenticationSuccessHandler implements AuthenticationSuccessHandlerInterf
             $verificationStatus = $user->getShelterVerificationStatus();
 
             // Si el shelter no está verificado, redirigir a la página de verificación pendiente
-            if ($verificationStatus !== 'verified' && $verificationStatus !== 'VERIFIED') {
+            if ($verificationStatus === 'pending') {
                 return new RedirectResponse($this->urlGenerator->generate('app_shelter_pending_verification'));
+            }
+
+            // Si el shelter fue rechazado, redirigir a la página de rechazo
+            if ($verificationStatus === 'rejected') {
+                return new RedirectResponse($this->urlGenerator->generate('app_shelter_rejected'));
             }
         }
 

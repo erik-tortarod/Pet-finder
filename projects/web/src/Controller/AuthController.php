@@ -246,4 +246,12 @@ final class AuthController extends AbstractController
             'controller_name' => 'AuthController',
         ]);
     }
+
+    #[Route('/shelter/rejected', name: 'app_shelter_rejected')]
+    public function shelterRejected(): Response
+    {
+        return $this->render('auth/shelter_rejected.html.twig', [
+            'controller_name' => 'AuthController',
+        ]);
+    }
 }

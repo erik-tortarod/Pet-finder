@@ -134,15 +134,45 @@
                             </div>
                         {% endif %}
 
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 flex-wrap">
                             {% if shelter.shelterVerificationStatus == 'pending' %}
-                                <button class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-sm font-medium">
-                                    <i class="fas fa-check mr-2"></i>Aprobar
-                                </button>
-                                <button class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
-                                    <i class="fas fa-times mr-2"></i>Rechazar
-                                </button>
+                                <!-- Botones para shelters pendientes -->
+                                <form method="POST" action="{{ path('app_admin_shelter_approve', {'id': shelter.id}) }}" class="inline">
+                                    <button type="submit"
+                                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
+                                            onclick="return confirm('¿Estás seguro de que quieres aprobar esta shelter?')">
+                                        <i class="fas fa-check mr-2"></i>Aprobar
+                                    </button>
+                                </form>
+                                <form method="POST" action="{{ path('app_admin_shelter_reject', {'id': shelter.id}) }}" class="inline">
+                                    <button type="submit"
+                                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 text-sm font-medium"
+                                            onclick="return confirm('¿Estás seguro de que quieres rechazar esta shelter?')">
+                                        <i class="fas fa-times mr-2"></i>Rechazar
+                                    </button>
+                                </form>
+                            {% else %}
+                                <!-- Dropdown para cambiar estado de shelters verificadas/rechazadas -->
+                                <div class="relative inline-block text-left">
+                                    <form method="POST" action="{{ path('app_admin_shelter_change_status', {'id': shelter.id}) }}" class="inline">
+                                        <select name="new_status"
+                                                class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors duration-200 text-sm font-medium border-0 focus:ring-2 focus:ring-gray-500 focus:outline-none"
+                                                onchange="this.form.submit()">
+                                            <option value="">Cambiar Estado</option>
+                                            {% if shelter.shelterVerificationStatus != 'pending' %}
+                                                <option value="pending">Marcar como Pendiente</option>
+                                            {% endif %}
+                                            {% if shelter.shelterVerificationStatus != 'VERIFIED' %}
+                                                <option value="VERIFIED">Aprobar</option>
+                                            {% endif %}
+                                            {% if shelter.shelterVerificationStatus != 'rejected' %}
+                                                <option value="rejected">Rechazar</option>
+                                            {% endif %}
+                                        </select>
+                                    </form>
+                                </div>
                             {% endif %}
+
                             <a href="mailto:{{ shelter.email }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
                                 <i class="fas fa-envelope mr-2"></i>Contactar
                             </a>
