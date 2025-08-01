@@ -238,4 +238,12 @@ final class AuthController extends AbstractController
                 "Session Started: " . ($session->isStarted() ? 'Yes' : 'No')
         );
     }
+
+    #[Route('/shelter/pending-verification', name: 'app_shelter_pending_verification')]
+    public function shelterPendingVerification(): Response
+    {
+        return $this->render('auth/shelter_pending_verification.html.twig', [
+            'controller_name' => 'AuthController',
+        ]);
+    }
 }

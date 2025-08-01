@@ -35,3 +35,9 @@ services:
     App\Service\FileUploadService:
         arguments:
             $uploadsDir: "%app.uploads_dir%"
+
+    # Configuración del Authentication Success Handler
+    app.security.authentication_success_handler:
+        class: App\Security\AuthenticationSuccessHandler
+        arguments:
+            - "@router.default"

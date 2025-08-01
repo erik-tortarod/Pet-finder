@@ -2,18 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
-use App\Repository\UserRepository;
 use App\Repository\LostPetsRepository;
 use App\Repository\FoundAnimalsRepository;
-use App\Utils\ControllerUtils;
 use App\Form\UserProfileUpdateType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
+/**
+ * @method User getUser()
+ */
 final class UserController extends AbstractController
 {
     #[Route('/user', name: 'app_user')]

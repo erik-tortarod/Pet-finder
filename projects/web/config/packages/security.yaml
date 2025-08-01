@@ -27,6 +27,7 @@ security:
                 enable_csrf: false
                 default_target_path: /user
                 failure_path: /auth/login
+                success_handler: app.security.authentication_success_handler
 
             # Configuración para OAuth
             oauth:
