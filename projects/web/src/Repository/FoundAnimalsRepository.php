@@ -37,7 +37,17 @@ class FoundAnimalsRepository extends ServiceEntityRepository
 
         // Apply filters
         if (!empty($filters['search'])) {
-            $qb->andWhere('a.name LIKE :search OR a.description LIKE :search OR fa.foundZone LIKE :search OR fa.foundAddress LIKE :search')
+            // First, try to find animals by direct field search
+            $qb->andWhere('a.name LIKE :search OR a.description LIKE :search OR a.animalType LIKE :search OR a.age LIKE :search OR fa.foundZone LIKE :search OR fa.foundAddress LIKE :search')
+                ->setParameter('search', '%' . $filters['search'] . '%');
+
+            // Also search for animals that have tags matching the search term
+            $qb->orWhere('EXISTS (
+                SELECT 1 FROM App\Entity\AnimalTags at2
+                JOIN at2.tagId t2
+                WHERE at2.animalId = a.id
+                AND t2.name LIKE :search
+            )')
                 ->setParameter('search', '%' . $filters['search'] . '%');
         }
 
@@ -88,7 +98,7 @@ class FoundAnimalsRepository extends ServiceEntityRepository
         ];
 
         if (!empty($filters['search'])) {
-            $whereConditions[] = '(a.name LIKE :search OR a.description LIKE :search OR fa.foundZone LIKE :search OR fa.foundAddress LIKE :search)';
+            $whereConditions[] = '(a.name LIKE :search OR a.description LIKE :search OR a.animalType LIKE :search OR a.age LIKE :search OR fa.foundZone LIKE :search OR fa.foundAddress LIKE :search OR EXISTS (SELECT 1 FROM animal_tags at2 JOIN tags t2 ON at2.tag_id_id = t2.id WHERE at2.animal_id_id = a.id AND t2.name LIKE :search))';
             $parameters['search'] = '%' . $filters['search'] . '%';
         }
 

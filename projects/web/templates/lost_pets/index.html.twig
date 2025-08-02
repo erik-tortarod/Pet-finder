@@ -39,7 +39,7 @@
 							<input type="text"
 							       name="search"
 							       value="{{ filters.search ?? '' }}"
-							       placeholder="Buscar por nombre, descripción ..."
+							       placeholder="Buscar por nombre, descripción, tipo, edad, etiquetas..."
 							       data-filters-target="searchInput"
 							       data-action="input->filters#search"
 							       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
@@ -76,7 +76,7 @@
 				{# Tag Filters and buttons #}
 				<div class="mt-4">
 					<div class="flex items-center justify-between mb-2">
-						<h3 class="text-sm font-medium text-gray-700">Filtros rápidos:</h3>
+						<h3 class="text-sm font-medium text-transparent">Filtros rápidos:</h3>
 						<div class="flex gap-2">
 							<button type="submit" class="text-sm bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
 								Buscar
@@ -85,25 +85,6 @@
 								Limpiar filtros
 							</a>
 						</div>
-					</div>
-
-					<input type="hidden" name="tags" data-filters-target="tagsInput" value="{{ (filters.tags ?? [])|join(',') }}">
-
-					<div class="flex flex-wrap gap-2" data-filters-target="quickFilters">
-						{% set currentTags = filters.tags ?? [] %}
-
-						<button type="button" class="tag {{ 'Pequeño' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Pequeño" data-filters-target="quickFilter">Pequeño</button>
-						<button type="button" class="tag {{ 'Mediano' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Mediano" data-filters-target="quickFilter">Mediano</button>
-						<button type="button" class="tag {{ 'Grande' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Grande" data-filters-target="quickFilter">Grande</button>
-						<button type="button" class="tag {{ 'Blanco' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Blanco" data-filters-target="quickFilter">Blanco</button>
-						<button type="button" class="tag {{ 'Negro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Negro" data-filters-target="quickFilter">Negro</button>
-						<button type="button" class="tag {{ 'Marrón' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Marrón" data-filters-target="quickFilter">Marrón</button>
-						<button type="button" class="tag {{ 'Gris' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Gris" data-filters-target="quickFilter">Gris</button>
-						<button type="button" class="tag {{ 'Con collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Con collar" data-filters-target="quickFilter">Con collar</button>
-						<button type="button" class="tag {{ 'Sin collar' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Sin collar" data-filters-target="quickFilter">Sin collar</button>
-						<button type="button" class="tag {{ 'Cachorro' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Cachorro" data-filters-target="quickFilter">Cachorro</button>
-						<button type="button" class="tag {{ 'Adulto' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Adulto" data-filters-target="quickFilter">Adulto</button>
-						<button type="button" class="tag {{ 'Senior' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Senior" data-filters-target="quickFilter">Senior</button>
 					</div>
 				</div>
 			</form>
