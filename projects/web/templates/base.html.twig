@@ -25,6 +25,7 @@
 	<body>
 		{% include 'components/NavBar.html.twig' %}
 		{% include 'components/PublishModal.html.twig' %}
+		{% include 'components/LocationSearchModal.html.twig' %}
 		{% include 'components/FlashMessages.html.twig' %}
 		{% block body %}{% endblock %}
 		{% include 'components/Footer.html.twig' %}
@@ -33,6 +34,7 @@
 		<script src="{{ asset('page/base/menu_navigation.js') }}"></script>
 		<script src="{{ asset('page/base/utils.js') }}"></script>
 		<script src="{{ asset('page/base/publish_modal.js') }}"></script>
+		<script src="{{ asset('page/base/location_search_modal.js') }}"></script>
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}

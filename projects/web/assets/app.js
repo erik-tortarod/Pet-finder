@@ -11,48 +11,33 @@ import "./styles/app.css";
 
 // Handle Turbo navigation events to ensure proper controller initialization
 document.addEventListener("turbo:load", function () {
-    console.log(
-        "Turbo load event - ensuring controllers are properly initialized"
-    );
-
-    // Force reconnection of controllers if needed
-    if (window.Stimulus) {
-        // Trigger a small delay to ensure DOM is ready
-        setTimeout(() => {
-            // Reconnect any controllers that might need it
-            const locationSearchControllers = document.querySelectorAll(
-                '[data-controller*="location-search"]'
-            );
-            locationSearchControllers.forEach((element) => {
-                const controller =
-                    window.Stimulus.getControllerForElementAndIdentifier(
-                        element,
-                        "location-search"
-                    );
-                if (controller && typeof controller.connect === "function") {
-                    console.log("Reconnecting location-search controller");
-                    controller.connect();
-                }
-            });
-
-            const filtersControllers = document.querySelectorAll(
-                '[data-controller*="filters"]'
-            );
-            filtersControllers.forEach((element) => {
-                const controller =
-                    window.Stimulus.getControllerForElementAndIdentifier(
-                        element,
-                        "filters"
-                    );
-                if (controller && typeof controller.connect === "function") {
-                    console.log("Reconnecting filters controller");
-                    controller.connect();
-                }
-            });
-        }, 200);
-    }
+    console.log("Turbo load event - page loaded");
 });
 
 document.addEventListener("turbo:render", function () {
-    console.log("Turbo render event - controllers should be ready");
+    console.log("Turbo render event - page rendered");
+});
+
+document.addEventListener("turbo:before-render", function () {
+    console.log("Turbo before-render event - cleaning up before navigation");
+    // Clean up all maps globally before navigation
+    if (window.mapRegistry) {
+        window.mapRegistry.forEach((controller, id) => {
+            console.log(
+                `Cleaning up map from controller ${id} before navigation`
+            );
+            controller.cleanupMap();
+        });
+    }
+});
+
+document.addEventListener("turbo:before-cache", function () {
+    console.log("Turbo before-cache event - caching current page");
+    // Clean up all maps globally before caching
+    if (window.mapRegistry) {
+        window.mapRegistry.forEach((controller, id) => {
+            console.log(`Cleaning up map from controller ${id} before caching`);
+            controller.cleanupMap();
+        });
+    }
 });

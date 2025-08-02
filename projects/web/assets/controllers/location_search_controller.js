@@ -1,5 +1,64 @@
 import { Controller } from "@hotwired/stimulus";
 
+// Global map registry to prevent conflicts
+if (!window.mapRegistry) {
+    window.mapRegistry = new Map();
+}
+
+// Global function to disconnect all location search controllers
+window.disconnectAllLocationSearchControllers = function () {
+    console.log("Disconnecting all location search controllers");
+    if (window.mapRegistry) {
+        window.mapRegistry.forEach((controller, id) => {
+            console.log(`Disconnecting controller ${id}`);
+            if (controller.disconnect) {
+                controller.disconnect();
+            }
+        });
+        window.mapRegistry.clear();
+    }
+};
+
+// Global function to clean up all Leaflet maps in the DOM
+window.cleanupAllLeafletMaps = function () {
+    console.log("Cleaning up all Leaflet maps in DOM");
+
+    // Remove all leaflet containers
+    const leafletContainers = document.querySelectorAll(".leaflet-container");
+    leafletContainers.forEach((container) => {
+        console.log("Removing leaflet container:", container);
+        try {
+            container.remove();
+        } catch (error) {
+            console.warn("Error removing leaflet container:", error);
+        }
+    });
+
+    // Remove all map containers with our pattern
+    const mapContainers = document.querySelectorAll('[id^="map-container-"]');
+    mapContainers.forEach((container) => {
+        console.log("Removing map container:", container.id);
+        try {
+            container.remove();
+        } catch (error) {
+            console.warn("Error removing map container:", error);
+        }
+    });
+
+    // Clear any map containers that might have content
+    const allMapContainers = document.querySelectorAll(
+        '[data-location-search-target="mapContainer"]'
+    );
+    allMapContainers.forEach((container) => {
+        console.log("Clearing map container content");
+        try {
+            container.innerHTML = "";
+        } catch (error) {
+            console.warn("Error clearing map container:", error);
+        }
+    });
+};
+
 export default class extends Controller {
     static targets = [
         "toggleButton",
@@ -22,42 +81,181 @@ export default class extends Controller {
     };
 
     connect() {
-        console.log("LocationSearch controller connected");
+        // Clean up all existing Leaflet maps first
+        window.cleanupAllLeafletMaps();
+
+        // Disconnect all existing controllers first
+        window.disconnectAllLocationSearchControllers();
+
+        // Generate unique ID for this controller instance
+        this.controllerId = Math.random().toString(36).substr(2, 9);
+
+        console.log(`LocationSearch controller ${this.controllerId} connected`);
         console.log("Controller element:", this.element);
         console.log("Available targets:", this.targets);
 
         this.map = null;
         this.marker = null;
         this.searchTimeout = null;
+        this.toggleTimeout = null;
         this.selectedLocation = null;
         this.mapInitialized = false;
 
-        // Use a small delay to ensure DOM is fully ready after Turbo navigation
-        setTimeout(() => {
-            this.initializeLocationIndicator();
-            this.initializeQuickFilters();
-            this.initializeLocationSearch();
-            this.initializeToggleButton();
+        // Register this controller
+        window.mapRegistry.set(this.controllerId, this);
 
-            // If location search section is visible, initialize map
-            if (
-                this.hasSearchSectionTarget &&
-                this.searchSectionTarget.style.display !== "none"
-            ) {
-                this.initMap();
-            }
-        }, 100);
+        // Listen for Turbo navigation events
+        this.handleTurboBeforeRender = this.handleTurboBeforeRender.bind(this);
+        this.handleTurboBeforeCache = this.handleTurboBeforeCache.bind(this);
+        this.handleTurboLoad = this.handleTurboLoad.bind(this);
+
+        document.addEventListener(
+            "turbo:before-render",
+            this.handleTurboBeforeRender
+        );
+        document.addEventListener(
+            "turbo:before-cache",
+            this.handleTurboBeforeCache
+        );
+        document.addEventListener("turbo:load", this.handleTurboLoad);
+
+        // Initialize immediately
+        this.initializeController();
     }
 
     disconnect() {
-        console.log("LocationSearch controller disconnected");
+        console.log(
+            `LocationSearch controller ${this.controllerId} disconnected`
+        );
+
+        // Remove from registry
+        window.mapRegistry.delete(this.controllerId);
+
+        // Remove Turbo event listeners
+        document.removeEventListener(
+            "turbo:before-render",
+            this.handleTurboBeforeRender
+        );
+        document.removeEventListener(
+            "turbo:before-cache",
+            this.handleTurboBeforeCache
+        );
+        document.removeEventListener("turbo:load", this.handleTurboLoad);
+
+        // Clean up timeouts
+        if (this.searchTimeout) {
+            clearTimeout(this.searchTimeout);
+        }
+        if (this.toggleTimeout) {
+            clearTimeout(this.toggleTimeout);
+        }
+
         // Clean up event listeners
         this.cleanupEventListeners();
 
+        // Properly clean up the map
+        this.cleanupMap();
+
+        // Clear the map container
+        if (this.hasMapContainerTarget) {
+            this.mapContainerTarget.innerHTML = "";
+        }
+    }
+
+    handleTurboLoad() {
+        console.log(
+            `Controller ${this.controllerId}: Turbo load event - reinitializing controller`
+        );
+        // Reinitialize the controller after Turbo navigation
+        this.initializeController();
+    }
+
+    handleTurboBeforeRender() {
+        console.log(
+            `Turbo before-render - cleaning up location search controller ${this.controllerId}`
+        );
+        this.cleanupMap();
+    }
+
+    handleTurboBeforeCache() {
+        console.log(
+            `Turbo before-cache - cleaning up location search controller ${this.controllerId}`
+        );
+        this.cleanupMap();
+    }
+
+    // Static method to clean up all maps globally
+    static cleanupAllMaps() {
+        console.log("Cleaning up all maps globally");
+        if (window.mapRegistry) {
+            window.mapRegistry.forEach((controller, id) => {
+                console.log(`Cleaning up map from controller ${id}`);
+                controller.cleanupMap();
+            });
+        }
+    }
+
+    cleanupMap() {
         if (this.map) {
-            this.map.remove();
+            console.log(
+                `Controller ${this.controllerId}: Cleaning up existing map`
+            );
+            try {
+                // Remove all layers first
+                this.map.eachLayer((layer) => {
+                    this.map.removeLayer(layer);
+                });
+                // Remove the map instance
+                this.map.remove();
+                console.log(
+                    `Controller ${this.controllerId}: Map cleaned up successfully`
+                );
+            } catch (error) {
+                console.warn(
+                    `Controller ${this.controllerId}: Error cleaning up map:`,
+                    error
+                );
+            }
             this.map = null;
             this.mapInitialized = false;
+        } else {
+            console.log(`Controller ${this.controllerId}: No map to clean up`);
+        }
+
+        // Aggressive cleanup of the container
+        if (this.hasMapContainerTarget && this.mapContainerTarget) {
+            console.log(
+                `Controller ${this.controllerId}: Aggressively cleaning map container`
+            );
+
+            try {
+                // Remove all child elements
+                while (this.mapContainerTarget.firstChild) {
+                    this.mapContainerTarget.removeChild(
+                        this.mapContainerTarget.firstChild
+                    );
+                }
+
+                // Remove any Leaflet-specific classes and attributes
+                this.mapContainerTarget.className =
+                    this.mapContainerTarget.className.replace(
+                        /\bleaflet\S*/g,
+                        ""
+                    );
+                this.mapContainerTarget.removeAttribute("style");
+
+                // Remove unique identifiers
+                this.mapContainerTarget.removeAttribute("data-controller-id");
+                this.mapContainerTarget.removeAttribute("id");
+
+                // Force a reflow to ensure DOM is clean
+                this.mapContainerTarget.offsetHeight;
+            } catch (error) {
+                console.warn(
+                    `Controller ${this.controllerId}: Error cleaning container:`,
+                    error
+                );
+            }
         }
     }
 
@@ -221,59 +419,221 @@ export default class extends Controller {
         }
     }
 
-    toggleLocationSearch() {
-        if (this.searchSectionTarget.style.display === "none") {
-            this.searchSectionTarget.style.display = "block";
-            this.mapContainerTarget.style.display = "block";
+    initializeController() {
+        console.log(`Controller ${this.controllerId}: Initializing controller`);
 
-            // Initialize map if not already done
-            if (!this.mapInitialized) {
-                this.initMap();
-            } else if (this.map) {
-                // Refresh map size
-                setTimeout(() => {
-                    if (
-                        this.map &&
-                        typeof this.map.invalidateSize === "function"
-                    ) {
-                        this.map.invalidateSize();
+        // Reset state
+        this.mapInitialized = false;
+        this.selectedLocation = null;
+
+        // Clean up any existing maps
+        this.cleanupMap();
+        this.cleanupOtherMaps();
+
+        // Initialize components
+        this.initializeLocationIndicator();
+        this.initializeQuickFilters();
+        this.initializeLocationSearch();
+        this.initializeToggleButton();
+
+        console.log(
+            `Controller ${this.controllerId}: Controller initialized successfully`
+        );
+    }
+
+    toggleLocationSearch() {
+        // Check if controller is in valid state
+        if (!this.isValidState()) {
+            console.warn(
+                `Controller ${this.controllerId}: Controller not in valid state, forcing reset`
+            );
+            this.forceReset();
+            return;
+        }
+
+        // Prevent rapid clicking
+        if (this.toggleTimeout) {
+            clearTimeout(this.toggleTimeout);
+        }
+
+        this.toggleTimeout = setTimeout(() => {
+            try {
+                if (
+                    this.hasSearchSectionTarget &&
+                    this.searchSectionTarget.style.display === "none"
+                ) {
+                    console.log(
+                        `Controller ${this.controllerId}: Showing location search section`
+                    );
+                    this.searchSectionTarget.style.display = "block";
+
+                    if (this.hasMapContainerTarget) {
+                        this.mapContainerTarget.style.display = "block";
                     }
-                }, 100);
+
+                    // Initialize map when showing the section
+                    this.mapInitialized = false;
+                    this.initMap();
+                } else if (this.hasSearchSectionTarget) {
+                    console.log(
+                        `Controller ${this.controllerId}: Hiding location search section`
+                    );
+                    this.searchSectionTarget.style.display = "none";
+
+                    if (this.hasMapContainerTarget) {
+                        this.mapContainerTarget.style.display = "none";
+                    }
+                }
+            } catch (error) {
+                console.error(
+                    `Controller ${this.controllerId}: Error in toggleLocationSearch:`,
+                    error
+                );
+                // Try to reset the controller state
+                this.forceReset();
             }
-        } else {
-            this.searchSectionTarget.style.display = "none";
-            this.mapContainerTarget.style.display = "none";
+        }, 100);
+    }
+
+    // Method to reinitialize the controller (useful for debugging)
+    reinitialize() {
+        console.log(
+            `Controller ${this.controllerId}: Reinitializing location search controller`
+        );
+        this.cleanupMap();
+        this.mapInitialized = false;
+
+        // Reinitialize components
+        this.initializeLocationIndicator();
+        this.initializeQuickFilters();
+        this.initializeLocationSearch();
+        this.initializeToggleButton();
+    }
+
+    // Method to check if controller is in valid state
+    isValidState() {
+        return (
+            this.element &&
+            this.element.isConnected &&
+            this.hasMapContainerTarget
+        );
+    }
+
+    // Method to check for container conflicts
+    hasContainerConflict() {
+        if (!this.hasMapContainerTarget) return false;
+
+        // Check if the container has any Leaflet-specific elements
+        const hasLeafletElements =
+            this.mapContainerTarget.querySelector(".leaflet-container") !==
+            null;
+        const hasLeafletClasses =
+            this.mapContainerTarget.className.includes("leaflet");
+
+        // Check if there are any other map containers in the DOM
+        const otherMapContainers = document.querySelectorAll(
+            '[id^="map-container-"]'
+        );
+        const hasOtherContainers = otherMapContainers.length > 0;
+
+        // Check if the container has any child elements (potential map elements)
+        const hasChildElements = this.mapContainerTarget.children.length > 0;
+
+        return (
+            hasLeafletElements ||
+            hasLeafletClasses ||
+            hasOtherContainers ||
+            hasChildElements
+        );
+    }
+
+    // Method to force reset the controller state
+    forceReset() {
+        console.log(
+            `Controller ${this.controllerId}: Force resetting controller state`
+        );
+        this.cleanupMap();
+        this.mapInitialized = false;
+        this.selectedLocation = null;
+
+        try {
+            if (this.hasMapContainerTarget && this.mapContainerTarget) {
+                this.mapContainerTarget.innerHTML = "";
+            }
+
+            if (this.hasSearchSectionTarget && this.searchSectionTarget) {
+                this.searchSectionTarget.style.display = "none";
+            }
+
+            if (this.hasLocationTextTarget && this.locationTextTarget) {
+                this.locationTextTarget.textContent = "Buscar por ubicación";
+            }
+        } catch (error) {
+            console.warn(
+                `Controller ${this.controllerId}: Error in forceReset:`,
+                error
+            );
         }
     }
 
     initMap() {
+        console.log(
+            `Controller ${this.controllerId}: Starting map initialization`
+        );
+
         try {
             // Check if Leaflet is loaded
             if (typeof L === "undefined") {
-                console.error("Leaflet is not loaded");
+                console.error(
+                    `Controller ${this.controllerId}: Leaflet is not loaded`
+                );
                 return;
             }
 
             // Check if map container exists
             if (!this.hasMapContainerTarget) {
-                console.error("Map container not found");
+                console.error(
+                    `Controller ${this.controllerId}: Map container not found`
+                );
                 return;
             }
 
             // Check if map is already initialized
-            if (this.mapInitialized) {
-                console.log("Map already initialized, skipping...");
+            if (this.mapInitialized && this.map) {
+                console.log(
+                    `Controller ${this.controllerId}: Map already initialized, skipping...`
+                );
                 return;
             }
 
-            // Clear the container first to avoid conflicts
+            // Clean up any existing maps
+            this.cleanupMap();
+
+            // Clear the container completely
             this.mapContainerTarget.innerHTML = "";
 
-            // Default to Spain coordinates
-            this.map = L.map(this.mapContainerTarget).setView(
-                [40.4168, -3.7038],
-                10
+            // Create a new map container with a unique ID
+            const newMapContainer = document.createElement("div");
+            newMapContainer.id = `map-container-${
+                this.controllerId
+            }-${Date.now()}`;
+            newMapContainer.className =
+                "w-full h-64 rounded-lg border border-gray-300";
+            newMapContainer.style.cssText = "width: 100%; height: 256px;";
+            newMapContainer.setAttribute(
+                "data-controller-id",
+                this.controllerId
             );
+
+            // Add the new container
+            this.mapContainerTarget.appendChild(newMapContainer);
+
+            console.log(
+                `Controller ${this.controllerId}: Creating Leaflet map instance in container: ${newMapContainer.id}`
+            );
+
+            // Create the map
+            this.map = L.map(newMapContainer).setView([40.4168, -3.7038], 10);
 
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 attribution: "© OpenStreetMap contributors",
@@ -283,11 +643,70 @@ export default class extends Controller {
             this.map.on("click", (e) => this.onMapClick(e));
 
             this.mapInitialized = true;
-            console.log("Map initialized successfully");
+            console.log(
+                `Controller ${this.controllerId}: Map initialized successfully`
+            );
         } catch (error) {
-            console.error("Error initializing map:", error);
+            console.error(
+                `Controller ${this.controllerId}: Error initializing map:`,
+                error
+            );
             this.mapInitialized = false;
+            // Clear the container on error
+            if (this.hasMapContainerTarget) {
+                this.mapContainerTarget.innerHTML = "";
+            }
         }
+    }
+
+    cleanupOtherMaps() {
+        console.log(`Controller ${this.controllerId}: Cleaning up other maps`);
+
+        // Clean up maps from other controllers
+        window.mapRegistry.forEach((controller, id) => {
+            if (id !== this.controllerId && controller.map) {
+                console.log(
+                    `Controller ${this.controllerId}: Cleaning up map from controller ${id}`
+                );
+                controller.cleanupMap();
+            }
+        });
+
+        // Also clean up any existing Leaflet maps in the DOM that might be orphaned
+        const existingMaps = document.querySelectorAll(".leaflet-container");
+        existingMaps.forEach((mapElement) => {
+            console.log(
+                `Controller ${this.controllerId}: Removing orphaned map element`
+            );
+            try {
+                mapElement.remove();
+            } catch (error) {
+                console.warn(
+                    `Controller ${this.controllerId}: Error removing orphaned map:`,
+                    error
+                );
+            }
+        });
+
+        // Clean up any map containers with our specific ID pattern
+        const mapContainers = document.querySelectorAll(
+            '[id^="map-container-"]'
+        );
+        mapContainers.forEach((container) => {
+            if (container.id !== `map-container-${this.controllerId}`) {
+                console.log(
+                    `Controller ${this.controllerId}: Removing other map container: ${container.id}`
+                );
+                try {
+                    container.remove();
+                } catch (error) {
+                    console.warn(
+                        `Controller ${this.controllerId}: Error removing other map container:`,
+                        error
+                    );
+                }
+            }
+        });
     }
 
     async onMapClick(e) {

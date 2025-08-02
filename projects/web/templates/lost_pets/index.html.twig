@@ -20,14 +20,13 @@
 
 	{# Search and Filters #}
 	<section class="bg-white border-b"
-			 data-controller="location-search filters"
+			 data-controller="filters"
 			 data-filters-url-value="{{ path('app_lost_pets') }}"
 			 data-filters-current-page-value="{{ currentPage ?? 1 }}">
 		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
 			<!-- Simple form for filters -->
 			<form method="GET" action="{{ path('app_lost_pets') }}"
-				  data-location-search-target="form"
 				  data-filters-target="form">
 				<div class="grid grid-cols-1 md:grid-cols-4 gap-4">
 
@@ -64,43 +63,14 @@
 
 					<div>
 						<button type="button"
-								data-location-search-target="toggleButton"
+								data-location-search-btn
 								class="w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 flex items-center justify-center">
 							{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 16, class: 'mr-2 text-gray-400'} %}
-							<span data-location-search-target="locationText">Buscar por ubicación</span>
+							<span data-location-text>Buscar por ubicación</span>
 						</button>
-						<input type="hidden" name="latitude" data-location-search-target="latitudeInput" value="{{ filters.latitude ?? '' }}">
-						<input type="hidden" name="longitude" data-location-search-target="longitudeInput" value="{{ filters.longitude ?? '' }}">
+						<input type="hidden" name="latitude" value="{{ filters.latitude ?? '' }}">
+						<input type="hidden" name="longitude" value="{{ filters.longitude ?? '' }}">
 					</div>
-				</div>
-
-				<!-- Location search section -->
-				<div class="mt-4" data-location-search-target="searchSection" style="display: none;">
-					<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-						<div class="md:col-span-2">
-							<div class="relative search-container">
-								<div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-									{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 20, class: 'text-gray-400'} %}
-								</div>
-								<input type="text"
-								       data-location-search-target="searchInput"
-								       placeholder="Buscar dirección o lugar..."
-								       class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
-								<div data-location-search-target="suggestions"
-								     class="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-[9999] hidden max-h-48 overflow-y-auto">
-								</div>
-							</div>
-						</div>
-						<div>
-							<button type="button" data-location-search-target="currentLocationBtn" class="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-								{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 16, class: 'mr-2'} %}
-								Mi ubicación
-							</button>
-						</div>
-					</div>
-
-					<!-- Map container -->
-					<div data-location-search-target="mapContainer" class="w-full h-64 rounded-lg border border-gray-300 mt-4" style="display: none;"></div>
 				</div>
 
 				{# Tag Filters and buttons #}
@@ -117,9 +87,9 @@
 						</div>
 					</div>
 
-					<input type="hidden" name="tags" data-location-search-target="tagsInput" data-filters-target="tagsInput" value="{{ (filters.tags ?? [])|join(',') }}">
+					<input type="hidden" name="tags" data-filters-target="tagsInput" value="{{ (filters.tags ?? [])|join(',') }}">
 
-					<div class="flex flex-wrap gap-2" data-location-search-target="quickFilters" data-filters-target="quickFilters">
+					<div class="flex flex-wrap gap-2" data-filters-target="quickFilters">
 						{% set currentTags = filters.tags ?? [] %}
 
 						<button type="button" class="tag {{ 'Pequeño' in currentTags ? 'tag-active' : 'tag-innactive' }}" data-tag="Pequeño" data-filters-target="quickFilter">Pequeño</button>
