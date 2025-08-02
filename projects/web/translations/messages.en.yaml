@@ -1,0 +1,24 @@
+# English Translations
+nav:
+    home: "Home"
+    lost_pets: "Lost Pets"
+    found_pets: "Found Pets"
+    publish: "Publish"
+    my_account: "My Account"
+
+language:
+    spanish: "Español"
+    english: "English"
+
+common:
+    loading: "Loading..."
+    save: "Save"
+    cancel: "Cancel"
+    edit: "Edit"
+    delete: "Delete"
+    search: "Search"
+    filter: "Filter"
+    close: "Close"
+    back: "Back"
+    next: "Next"
+    previous: "Previous"

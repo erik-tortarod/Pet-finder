@@ -1,0 +1,57 @@
+<div class="relative" x-data="{ open: false }">
+    <!-- Botón del selector de idioma -->
+    <button
+        @click="open = !open"
+        class="flex items-center justify-center w-10 h-10 rounded-full border-2 border-gray-200 hover:border-blue-500 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+        title="{{ app.request.locale == 'es' ? 'language.spanish'|trans : 'language.english'|trans }}"
+    >
+        {% if app.request.locale == 'es' %}
+            <!-- Bandera de España -->
+            <img src="{{ asset('images/espana.png') }}" alt="Español" class="w-6 h-6 rounded-full object-cover">
+        {% else %}
+            <!-- Bandera de Reino Unido -->
+            <img src="{{ asset('images/reino-unido.png') }}" alt="English" class="w-6 h-6 rounded-full object-cover">
+        {% endif %}
+    </button>
+
+    <!-- Dropdown de idiomas -->
+    <div
+        x-show="open"
+        @click.away="open = false"
+        x-transition:enter="transition ease-out duration-100"
+        x-transition:enter-start="transform opacity-0 scale-95"
+        x-transition:enter-end="transform opacity-100 scale-100"
+        x-transition:leave="transition ease-in duration-75"
+        x-transition:leave-start="transform opacity-100 scale-100"
+        x-transition:leave-end="transform opacity-0 scale-95"
+        class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200"
+    >
+        <!-- Opción Español -->
+        <a
+            href="{{ path('app_change_locale', {locale: 'es'}) }}"
+            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors {% if app.request.locale == 'es' %}bg-blue-50 text-blue-700{% endif %}"
+        >
+            <img src="{{ asset('images/espana.png') }}" alt="Español" class="w-5 h-5 rounded-full object-cover mr-3">
+            <span>{{ 'language.spanish'|trans }}</span>
+            {% if app.request.locale == 'es' %}
+                <svg class="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            {% endif %}
+        </a>
+
+        <!-- Opción Inglés -->
+        <a
+            href="{{ path('app_change_locale', {locale: 'en'}) }}"
+            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors {% if app.request.locale == 'en' %}bg-blue-50 text-blue-700{% endif %}"
+        >
+            <img src="{{ asset('images/reino-unido.png') }}" alt="English" class="w-5 h-5 rounded-full object-cover mr-3">
+            <span>{{ 'language.english'|trans }}</span>
+            {% if app.request.locale == 'en' %}
+                <svg class="w-4 h-4 ml-auto text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                </svg>
+            {% endif %}
+        </a>
+    </div>
+</div>

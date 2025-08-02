@@ -1,0 +1,24 @@
+# Traducciones en Español
+nav:
+    home: "Inicio"
+    lost_pets: "Buscados"
+    found_pets: "Avistados"
+    publish: "Publicar"
+    my_account: "Mi Cuenta"
+
+language:
+    spanish: "Español"
+    english: "English"
+
+common:
+    loading: "Cargando..."
+    save: "Guardar"
+    cancel: "Cancelar"
+    edit: "Editar"
+    delete: "Eliminar"
+    search: "Buscar"
+    filter: "Filtrar"
+    close: "Cerrar"
+    back: "Volver"
+    next: "Siguiente"
+    previous: "Anterior"

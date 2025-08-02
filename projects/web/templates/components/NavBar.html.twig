@@ -12,28 +12,32 @@
 			<!-- Desktop Navigation -->
 			<div class="hidden md:flex items-center space-x-2 lg:space-x-4">
 				<a href="{{path('app_home')}}" class="nav-link {% if app.request.get('_route') == 'app_home' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
-					Inicio
+					{{ 'nav.home'|trans }}
 				</a>
 				<a href="{{path('app_lost_pets')}}" class="nav-link {% if app.request.get('_route') == 'app_lost_pets' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
-					Buscados
+					{{ 'nav.lost_pets'|trans }}
 				</a>
 				<a href="{{path('app_found_pets')}}" class="nav-link {% if app.request.get('_route') == 'app_found_pets' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
-					Avistados
+					{{ 'nav.found_pets'|trans }}
 				</a>
 				<a class="nav-publish-btn">
-					Publicar
+					{{ 'nav.publish'|trans }}
 				</a>
 				<div class="relative">
 					<a href="{{path('app_user')}}" class="nav-user-link {% if app.request.get('_route') starts with 'app_user' %}nav-user-link-desktop active{% else %}nav-user-link-desktop{% endif %}">
 						{% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-1 lg:mr-2'} %}
-						<span class="hidden lg:inline">Mi Cuenta</span>
+						<span class="hidden lg:inline">{{ 'nav.my_account'|trans }}</span>
 						{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 12, class: 'ml-1'} %}
 					</a>
 				</div>
+				<!-- Selector de idioma -->
+				{% include 'components/LanguageSelector.html.twig' %}
 			</div>
 
 			<!-- Mobile menu button -->
-			<div class="md:hidden flex items-center">
+			<div class="md:hidden flex items-center space-x-2">
+				<!-- Selector de idioma para mobile -->
+				{% include 'components/LanguageSelector.html.twig' %}
 				<button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 p-2 rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500">
 					{% include 'components/Icon.html.twig' with {name: 'menu', size: 20} %}
 				</button>
@@ -44,19 +48,19 @@
 		<div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-200 shadow-lg">
 			<div class="px-2 pt-2 pb-3 space-y-1">
 				<a href="{{path('app_home')}}" class="{% if app.request.get('_route') == 'app_home' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
-					{% include 'components/Icon.html.twig' with {name: 'home', size: 20, class: 'inline mr-3'} %}Inicio
+					{% include 'components/Icon.html.twig' with {name: 'home', size: 20, class: 'inline mr-3'} %}{{ 'nav.home'|trans }}
 				</a>
 				<a href="{{path('app_lost_pets')}}" class="{% if app.request.get('_route') == 'app_lost_pets' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
-					{% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'inline mr-3'} %}Buscados
+					{% include 'components/Icon.html.twig' with {name: 'search', size: 20, class: 'inline mr-3'} %}{{ 'nav.lost_pets'|trans }}
 				</a>
 				<a href="{{path('app_found_pets')}}" class="{% if app.request.get('_route') == 'app_found_pets' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
-					{% include 'components/Icon.html.twig' with {name: 'heart', size: 20, class: 'inline mr-3'} %}Avistados
+					{% include 'components/Icon.html.twig' with {name: 'heart', size: 20, class: 'inline mr-3'} %}{{ 'nav.found_pets'|trans }}
 				</a>
 				<a class="nav-publish-btn-mobile">
-					{% include 'components/Icon.html.twig' with {name: 'plus', size: 20, class: 'inline mr-3'} %}Publicar
+					{% include 'components/Icon.html.twig' with {name: 'plus', size: 20, class: 'inline mr-3'} %}{{ 'nav.publish'|trans }}
 				</a>
 				<a href="{{path('app_user')}}" class="{% if app.request.get('_route') starts with 'app_user' %}nav-user-link-mobile active{% else %}nav-user-link-mobile{% endif %}">
-					{% include 'components/Icon.html.twig' with {name: 'user', size: 20, class: 'inline mr-3'} %}Mi Cuenta
+					{% include 'components/Icon.html.twig' with {name: 'user', size: 20, class: 'inline mr-3'} %}{{ 'nav.my_account'|trans }}
 				</a>
 			</div>
 		</div>
