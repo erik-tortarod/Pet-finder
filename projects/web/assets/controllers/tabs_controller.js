@@ -32,7 +32,10 @@ export default class extends Controller {
 
         // Update button link and text
         this.viewAllBtnTarget.href = this.lostRouteValue;
-        this.viewAllTextTarget.textContent = "Ver todas las perdidas";
+        // Get translation from data attribute or use default
+        const lostText =
+            this.viewAllTextTarget.dataset.lostText || "Ver todas las perdidas";
+        this.viewAllTextTarget.textContent = lostText;
     }
 
     showFoundPets() {
@@ -48,6 +51,10 @@ export default class extends Controller {
 
         // Update button link and text
         this.viewAllBtnTarget.href = this.foundRouteValue;
-        this.viewAllTextTarget.textContent = "Ver todas las encontradas";
+        // Get translation from data attribute or use default
+        const foundText =
+            this.viewAllTextTarget.dataset.foundText ||
+            "Ver todas las encontradas";
+        this.viewAllTextTarget.textContent = foundText;
     }
 }

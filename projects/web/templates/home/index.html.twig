@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Inicio - Pet Finder
-{% endblock %}
+{% block title %}{{ 'home.title'|trans }}{% endblock %}
 
 {% block body %}
 
@@ -14,31 +13,29 @@
             <!-- Left Content -->
             <div class="text-center lg:text-left">
                <div class="inline-block bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold mb-6">
-                  <i class="fas fa-rocket mr-2"></i>Proyecto en desarrollo
+                  <i class="fas fa-rocket mr-2"></i>{{ 'home.hero.project_status'|trans }}
                </div>
 
                <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold text-gray-900 leading-tight mb-6">
-                  Reúne a las
+                  {{ 'home.hero.main_title'|trans }}
                   <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600">
-                     familias
+                     {{ 'home.hero.families'|trans }}
                   </span>
-                  con sus mascotas
+                  {{ 'home.hero.subtitle'|trans }}
                </h1>
 
                <p class="text-lg text-gray-600 mb-8 leading-relaxed">
-                  Una plataforma diseñada para conectar personas que han perdido mascotas con quienes pueden ayudarles a
-                  encontrarlas.
-                  Cada segundo cuenta cuando una mascota se pierde.
+                  {{ 'home.hero.description'|trans }}
                </p>
 
                <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
                   <a href="{{path('app_lost_pets_create')}}"
                      class="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-8 py-4 rounded-xl text-lg font-semibold hover:from-blue-700 hover:to-blue-800 transform hover:scale-105 transition-all duration-200 shadow-lg">
-                     <i class="fas fa-plus mr-2"></i>Reportar mascota perdida
+                     <i class="fas fa-plus mr-2"></i>{{ 'home.hero.report_lost'|trans }}
                   </a>
                   <a href="{{path('app_lost_pets')}}"
                      class="bg-white text-blue-600 border-2 border-blue-600 px-8 py-4 rounded-xl text-lg font-semibold hover:bg-blue-600 hover:text-white transform hover:scale-105 transition-all duration-200 shadow-lg">
-                     <i class="fas fa-search mr-2"></i>Explorar casos
+                     <i class="fas fa-search mr-2"></i>{{ 'home.hero.explore_cases'|trans }}
                   </a>
                </div>
             </div>
@@ -53,9 +50,8 @@
                            <i class="fas fa-camera text-blue-600 text-xl"></i>
                         </div>
                         <div class="flex-1">
-                           <h3 class="text-lg font-semibold text-gray-900 mb-2">Publica fácilmente</h3>
-                           <p class="text-gray-600 text-sm">Sube fotos, añade la ubicación y descripción de tu mascota
-                              perdida para que otros usuarios puedan ayudarte.</p>
+                           <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ 'home.features.publish_easily.title'|trans }}</h3>
+                           <p class="text-gray-600 text-sm">{{ 'home.features.publish_easily.description'|trans }}</p>
                         </div>
                      </div>
                   </div>
@@ -68,9 +64,8 @@
                            <i class="fas fa-map-marker-alt text-purple-600 text-xl"></i>
                         </div>
                         <div class="flex-1">
-                           <h3 class="text-lg font-semibold text-gray-900 mb-2">Busca y filtra</h3>
-                           <p class="text-gray-600 text-sm">Explora publicaciones por zona, tipo de animal,
-                              características físicas y otros filtros útiles.</p>
+                           <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ 'home.features.search_filter.title'|trans }}</h3>
+                           <p class="text-gray-600 text-sm">{{ 'home.features.search_filter.description'|trans }}</p>
                         </div>
                      </div>
                   </div>
@@ -82,9 +77,8 @@
                            <i class="fas fa-users text-green-600 text-xl"></i>
                         </div>
                         <div class="flex-1">
-                           <h3 class="text-lg font-semibold text-gray-900 mb-2">Conecta directamente</h3>
-                           <p class="text-gray-600 text-sm">Contacta directamente con los dueños de mascotas perdidas o
-                              con personas que han encontrado animales.</p>
+                           <h3 class="text-lg font-semibold text-gray-900 mb-2">{{ 'home.features.connect_directly.title'|trans }}</h3>
+                           <p class="text-gray-600 text-sm">{{ 'home.features.connect_directly.description'|trans }}</p>
                         </div>
                      </div>
                   </div>
@@ -100,10 +94,10 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
          <div class="text-center mb-16">
             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
-               ¿Cómo funciona?
+               {{ 'home.how_it_works.title'|trans }}
             </h2>
             <p class="text-xl text-gray-600 max-w-3xl mx-auto">
-               Un proceso simple y efectivo diseñado para maximizar las posibilidades de reunión
+               {{ 'home.how_it_works.subtitle'|trans }}
             </p>
          </div>
 
@@ -126,8 +120,8 @@
                         </div>
                      </div>
                      <div class="flex-1 flex flex-col">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Publica</h3>
-                        <p class="text-gray-600 flex-1">Sube fotos claras, describe características únicas y marca la última ubicación conocida</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ 'home.how_it_works.step1.title'|trans }}</h3>
+                        <p class="text-gray-600 flex-1">{{ 'home.how_it_works.step1.description'|trans }}</p>
                      </div>
                   </div>
                </div>
@@ -144,8 +138,8 @@
                         </div>
                      </div>
                      <div class="flex-1 flex flex-col">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Notificamos</h3>
-                        <p class="text-gray-600 flex-1">Alertamos automáticamente a la comunidad local y activamos la red de búsqueda</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ 'home.how_it_works.step2.title'|trans }}</h3>
+                        <p class="text-gray-600 flex-1">{{ 'home.how_it_works.step2.description'|trans }}</p>
                      </div>
                   </div>
                </div>
@@ -162,8 +156,8 @@
                         </div>
                      </div>
                      <div class="flex-1 flex flex-col">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Buscamos</h3>
-                        <p class="text-gray-600 flex-1">Voluntarios y nuestra comunidad trabajan juntos para generar avistamientos y pistas valiosas</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ 'home.how_it_works.step3.title'|trans }}</h3>
+                        <p class="text-gray-600 flex-1">{{ 'home.how_it_works.step3.description'|trans }}</p>
                      </div>
                   </div>
                </div>
@@ -180,8 +174,8 @@
                         </div>
                      </div>
                      <div class="flex-1 flex flex-col">
-                        <h3 class="text-xl font-bold text-gray-900 mb-3">Reunimos</h3>
-                        <p class="text-gray-600 flex-1">Facilitamos el contacto seguro y coordinamos el feliz reencuentro</p>
+                        <h3 class="text-xl font-bold text-gray-900 mb-3">{{ 'home.how_it_works.step4.title'|trans }}</h3>
+                        <p class="text-gray-600 flex-1">{{ 'home.how_it_works.step4.description'|trans }}</p>
                      </div>
                   </div>
                </div>
@@ -195,10 +189,10 @@
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
          <div class="text-center mb-16">
             <h2 class="text-4xl font-extrabold text-gray-900 mb-4">
-               Animales recientes
+               {{ 'home.recent_animals.title'|trans }}
             </h2>
             <p class="text-xl text-gray-600">
-               Últimas publicaciones de mascotas perdidas y encontradas
+               {{ 'home.recent_animals.subtitle'|trans }}
             </p>
          </div>
 
@@ -213,12 +207,12 @@
                   <button data-tabs-target="lostTab"
                           data-action="click->tabs#showLostPets"
                           class="px-6 py-2 rounded-md text-sm font-medium bg-blue-600 text-white transition-colors">
-                     Perdidas
+                     {{ 'home.recent_animals.tabs.lost'|trans }}
                   </button>
                   <button data-tabs-target="foundTab"
                           data-action="click->tabs#showFoundPets"
                           class="px-6 py-2 rounded-md text-sm font-medium text-gray-600 hover:text-gray-900 transition-colors">
-                     Encontradas
+                     {{ 'home.recent_animals.tabs.found'|trans }}
                   </button>
                </div>
             </div>
@@ -235,7 +229,7 @@
                         <div class="h-48 bg-gradient-to-r from-blue-100 to-blue-200 flex items-center justify-center">
                            {% if primaryPhoto %}
                               <img src="{{ asset(primaryPhoto.filePath) }}"
-                                   alt="{{ animal.name ?: 'Mascota sin nombre' }}"
+                                   alt="{{ animal.name ?: 'home.recent_animals.unnamed_pet'|trans }}"
                                    class="w-full h-full object-cover">
                            {% else %}
                               {% set iconClass = animal.animalType|lower == 'perro' ? 'fa-dog' : (animal.animalType|lower == 'gato' ? 'fa-cat' : (animal.animalType|lower == 'ave' ? 'fa-dove' : (animal.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
@@ -244,8 +238,8 @@
                         </div>
                         <div class="p-6">
                            <div class="flex items-center justify-between mb-3">
-                              <h3 class="text-lg font-semibold text-gray-900">{{ animal.name ?: 'Sin nombre' }}</h3>
-                              <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">Perdida</span>
+                              <h3 class="text-lg font-semibold text-gray-900">{{ animal.name ?: 'home.recent_animals.unnamed_pet'|trans }}</h3>
+                              <span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-semibold">{{ 'home.recent_animals.status.lost'|trans }}</span>
                            </div>
                            <p class="text-sm text-gray-600 mb-3">
                               {{ animal.animalType|title }}
@@ -258,15 +252,15 @@
                            <div class="flex items-center text-xs text-gray-500 mb-4">
                               <i class="fas fa-map-marker-alt mr-1"></i>
                               <span>
-                                 {{ lostPet.lostZone ?: 'Zona no especificada' }} •
+                                 {{ lostPet.lostZone ?: 'home.recent_animals.zone_not_specified'|trans }} •
                                  {% set daysDiff = 'now'|date('U') - lostPet.createdAt.timestamp %}
                                  {% set days = (daysDiff / 86400)|round %}
                                  {% if days == 0 %}
-                                    Hoy
+                                    {{ 'home.recent_animals.today'|trans }}
                                  {% elseif days == 1 %}
-                                    Hace 1 día
+                                    {{ 'home.recent_animals.one_day_ago'|trans }}
                                  {% else %}
-                                    Hace {{ days }} días
+                                    {{ 'home.recent_animals.days_ago'|trans({'days': days}) }}
                                  {% endif %}
                               </span>
                            </div>
@@ -275,17 +269,17 @@
                            <div class="flex gap-2">
                               <button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
                                       data-action="click->contact-modal#open"
-                                      data-pet-name="{{ animal.name ?: 'Mascota sin nombre' }}"
+                                      data-pet-name="{{ animal.name ?: 'home.recent_animals.unnamed_pet'|trans }}"
                                       data-phone="{{ user.phone ?? 'No disponible' }}"
                                       data-email="{{ user.email }}"
                                       onclick="event.stopPropagation();">
-                                 <i class="fas fa-phone text-sm mr-2"></i>Contactar
+                                 <i class="fas fa-phone text-sm mr-2"></i>{{ 'home.recent_animals.contact'|trans }}
                               </button>
                               <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
                                       data-action="click->contact-modal#copyLink"
                                       data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}"
                                       onclick="event.stopPropagation();">
-                                 <i class="fas fa-share text-sm mr-2"></i>Compartir
+                                 <i class="fas fa-share text-sm mr-2"></i>{{ 'home.recent_animals.share'|trans }}
                               </button>
                            </div>
                         </div>
@@ -294,8 +288,8 @@
                {% else %}
                   <div class="col-span-full text-center py-12">
                      <i class="fas fa-paw text-6xl text-gray-300 mb-4"></i>
-                     <h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas perdidas recientes</h3>
-                     <p class="text-gray-500">No se han reportado mascotas perdidas recientemente.</p>
+                     <h3 class="text-lg font-medium text-gray-900 mb-2">{{ 'home.recent_animals.no_lost'|trans }}</h3>
+                     <p class="text-gray-500">{{ 'home.recent_animals.no_lost_desc'|trans }}</p>
                   </div>
                {% endif %}
             </div>
@@ -312,7 +306,7 @@
                         <div class="h-48 bg-gradient-to-r from-green-100 to-green-200 flex items-center justify-center">
                            {% if primaryPhoto %}
                               <img src="{{ asset(primaryPhoto.filePath) }}"
-                                   alt="{{ animal.name ?: 'Animal encontrado' }}"
+                                   alt="{{ animal.name ?: (animal.animalType|title ~ ' ' ~ 'home.recent_animals.found_animal'|trans) }}"
                                    class="w-full h-full object-cover">
                            {% else %}
                               {% set iconClass = animal.animalType|lower == 'perro' ? 'fa-dog' : (animal.animalType|lower == 'gato' ? 'fa-cat' : (animal.animalType|lower == 'ave' ? 'fa-dove' : (animal.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
@@ -322,9 +316,9 @@
                         <div class="p-6">
                            <div class="flex items-center justify-between mb-3">
                               <h3 class="text-lg font-semibold text-gray-900">
-                                 {{ animal.name ?: (animal.animalType|title ~ ' encontrado') }}
+                                 {{ animal.name ?: (animal.animalType|title ~ ' ' ~ 'home.recent_animals.found_animal'|trans) }}
                               </h3>
-                              <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">Encontrada</span>
+                              <span class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-semibold">{{ 'home.recent_animals.status.found'|trans }}</span>
                            </div>
                            <p class="text-sm text-gray-600 mb-3">
                               {{ animal.animalType|title }}
@@ -337,15 +331,15 @@
                            <div class="flex items-center text-xs text-gray-500 mb-4">
                               <i class="fas fa-map-marker-alt mr-1"></i>
                               <span>
-                                 {{ foundAnimal.foundZone ?: 'Zona no especificada' }} •
+                                 {{ foundAnimal.foundZone ?: 'home.recent_animals.zone_not_specified'|trans }} •
                                  {% set daysDiff = 'now'|date('U') - foundAnimal.createdAt.timestamp %}
                                  {% set days = (daysDiff / 86400)|round %}
                                  {% if days == 0 %}
-                                    Hoy
+                                    {{ 'home.recent_animals.today'|trans }}
                                  {% elseif days == 1 %}
-                                    Hace 1 día
+                                    {{ 'home.recent_animals.one_day_ago'|trans }}
                                  {% else %}
-                                    Hace {{ days }} días
+                                    {{ 'home.recent_animals.days_ago'|trans({'days': days}) }}
                                  {% endif %}
                               </span>
                            </div>
@@ -354,17 +348,17 @@
                            <div class="flex gap-2">
                               <button class="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
                                       data-action="click->contact-modal#open"
-                                      data-pet-name="{{ animal.name ?: (animal.animalType|title ~ ' encontrado') }}"
+                                      data-pet-name="{{ animal.name ?: (animal.animalType|title ~ ' ' ~ 'home.recent_animals.found_animal'|trans) }}"
                                       data-phone="{{ user.phone ?? 'No disponible' }}"
                                       data-email="{{ user.email }}"
                                       onclick="event.stopPropagation();">
-                                 <i class="fas fa-whatsapp text-sm mr-2"></i>Contactar
+                                 <i class="fas fa-whatsapp text-sm mr-2"></i>{{ 'home.recent_animals.contact'|trans }}
                               </button>
                               <button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
                                       data-action="click->contact-modal#copyLink"
                                       data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}"
                                       onclick="event.stopPropagation();">
-                                 <i class="fas fa-share text-sm mr-2"></i>Compartir
+                                 <i class="fas fa-share text-sm mr-2"></i>{{ 'home.recent_animals.share'|trans }}
                               </button>
                            </div>
                         </div>
@@ -373,8 +367,8 @@
                {% else %}
                   <div class="col-span-full text-center py-12">
                      <i class="fas fa-paw text-6xl text-gray-300 mb-4"></i>
-                     <h3 class="text-lg font-medium text-gray-900 mb-2">No hay mascotas encontradas recientes</h3>
-                     <p class="text-gray-500">No se han reportado mascotas encontradas recientemente.</p>
+                     <h3 class="text-lg font-medium text-gray-900 mb-2">{{ 'home.recent_animals.no_found'|trans }}</h3>
+                     <p class="text-gray-500">{{ 'home.recent_animals.no_found_desc'|trans }}</p>
                   </div>
                {% endif %}
             </div>
@@ -383,7 +377,11 @@
             <div class="text-center mt-8">
                <a data-tabs-target="viewAllBtn" href="{{ path('app_lost_pets') }}"
                   class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors">
-                  <span data-tabs-target="viewAllText">Ver todas las perdidas</span>
+                  <span data-tabs-target="viewAllText"
+                        data-lost-text="{{ 'home.recent_animals.view_all_lost'|trans }}"
+                        data-found-text="{{ 'home.recent_animals.view_all_found'|trans }}">
+                     {{ 'home.recent_animals.view_all_lost'|trans }}
+                  </span>
                   <i class="fas fa-arrow-right ml-2"></i>
                </a>
             </div>
@@ -401,7 +399,7 @@
             <div class="mt-3">
                <!-- Modal Header -->
                <div class="flex items-center justify-between mb-4">
-                  <h3 class="text-lg font-semibold text-gray-900">Información de Contacto</h3>
+                  <h3 class="text-lg font-semibold text-gray-900">{{ 'home.contact_modal.title'|trans }}</h3>
                   <button data-action="click->contact-modal#close" class="text-gray-400 hover:text-gray-600">
                      <i class="fas fa-x text-xl"></i>
                   </button>
@@ -410,7 +408,7 @@
                <!-- Pet Name -->
                <div class="text-center mb-6">
                   <h4 data-contact-modal-target="petName" class="text-xl font-bold text-blue-600"></h4>
-                  <p class="text-sm text-gray-600 mt-1">Mascota</p>
+                  <p class="text-sm text-gray-600 mt-1">{{ 'home.contact_modal.pet'|trans }}</p>
                </div>
 
                <!-- Contact Information -->
@@ -420,7 +418,7 @@
                         <i class="fas fa-phone text-blue-600 text-lg"></i>
                      </div>
                      <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-900">Teléfono</p>
+                        <p class="text-sm font-medium text-gray-900">{{ 'home.contact_modal.phone'|trans }}</p>
                         <p data-contact-modal-target="phone" class="text-sm text-gray-600"></p>
                      </div>
                   </div>
@@ -430,7 +428,7 @@
                         <i class="fas fa-envelope text-blue-600 text-lg"></i>
                      </div>
                      <div class="ml-3">
-                        <p class="text-sm font-medium text-gray-900">Email</p>
+                        <p class="text-sm font-medium text-gray-900">{{ 'home.contact_modal.email'|trans }}</p>
                         <p data-contact-modal-target="email" class="text-sm text-gray-600"></p>
                      </div>
                   </div>
@@ -439,17 +437,17 @@
                <!-- Action Buttons -->
                <div class="flex space-x-3">
                   <button data-action="click->contact-modal#sendWhatsApp" class="flex-1 bg-green-500 text-white py-3 px-4 rounded-md hover:bg-green-600 transition-colors flex items-center justify-center">
-                     <i class="fas fa-whatsapp text-lg mr-2"></i>WhatsApp
+                     <i class="fas fa-whatsapp text-lg mr-2"></i>{{ 'home.contact_modal.whatsapp'|trans }}
                   </button>
                   <button data-action="click->contact-modal#sendEmail" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-md hover:bg-blue-700 transition-colors flex items-center justify-center">
-                     <i class="fas fa-envelope text-lg mr-2"></i>Email
+                     <i class="fas fa-envelope text-lg mr-2"></i>{{ 'home.contact_modal.email'|trans }}
                   </button>
                </div>
 
                <!-- Info Text -->
                <div class="mt-4 text-center">
                   <p class="text-xs text-gray-500">
-                     Haz clic en WhatsApp o Email para contactar directamente
+                     {{ 'home.contact_modal.info_text'|trans }}
                   </p>
                </div>
             </div>

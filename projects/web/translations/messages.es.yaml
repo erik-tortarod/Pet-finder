@@ -22,3 +22,76 @@ common:
     back: "Volver"
     next: "Siguiente"
     previous: "Anterior"
+
+footer:
+    tagline: "Conectando familias con sus mascotas perdidas desde 2025"
+
+home:
+    title: "Inicio - Pet Finder"
+    hero:
+        project_status: "Proyecto en desarrollo"
+        main_title: "Reúne a las"
+        families: "familias"
+        subtitle: "con sus mascotas"
+        description: "Una plataforma diseñada para conectar personas que han perdido mascotas con quienes pueden ayudarles a encontrarlas. Cada segundo cuenta cuando una mascota se pierde."
+        report_lost: "Reportar mascota perdida"
+        explore_cases: "Explorar casos"
+
+    features:
+        publish_easily:
+            title: "Publica fácilmente"
+            description: "Sube fotos, añade la ubicación y descripción de tu mascota perdida para que otros usuarios puedan ayudarte."
+        search_filter:
+            title: "Busca y filtra"
+            description: "Explora publicaciones por zona, tipo de animal, características físicas y otros filtros útiles."
+        connect_directly:
+            title: "Conecta directamente"
+            description: "Contacta directamente con los dueños de mascotas perdidas o con personas que han encontrado animales."
+
+    how_it_works:
+        title: "¿Cómo funciona?"
+        subtitle: "Un proceso simple y efectivo diseñado para maximizar las posibilidades de reunión"
+        step1:
+            title: "Publica"
+            description: "Sube fotos claras, describe características únicas y marca la última ubicación conocida"
+        step2:
+            title: "Notificamos"
+            description: "Alertamos automáticamente a la comunidad local y activamos la red de búsqueda"
+        step3:
+            title: "Buscamos"
+            description: "Voluntarios y nuestra comunidad trabajan juntos para generar avistamientos y pistas valiosas"
+        step4:
+            title: "Reunimos"
+            description: "Facilitamos el contacto seguro y coordinamos el feliz reencuentro"
+
+    recent_animals:
+        title: "Animales recientes"
+        subtitle: "Últimas publicaciones de mascotas perdidas y encontradas"
+        tabs:
+            lost: "Perdidas"
+            found: "Encontradas"
+        status:
+            lost: "Perdida"
+            found: "Encontrada"
+        no_lost: "No hay mascotas perdidas recientes"
+        no_lost_desc: "No se han reportado mascotas perdidas recientemente."
+        no_found: "No hay mascotas encontradas recientes"
+        no_found_desc: "No se han reportado mascotas encontradas recientemente."
+        view_all_lost: "Ver todas las perdidas"
+        view_all_found: "Ver todas las encontradas"
+        contact: "Contactar"
+        share: "Compartir"
+        zone_not_specified: "Zona no especificada"
+        today: "Hoy"
+        days_ago: "Hace {days} días"
+        one_day_ago: "Hace 1 día"
+        unnamed_pet: "Sin nombre"
+        found_animal: "encontrado"
+
+    contact_modal:
+        title: "Información de Contacto"
+        pet: "Mascota"
+        phone: "Teléfono"
+        email: "Email"
+        whatsapp: "WhatsApp"
+        info_text: "Haz clic en WhatsApp o Email para contactar directamente"

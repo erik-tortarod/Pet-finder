@@ -22,3 +22,76 @@ common:
     back: "Back"
     next: "Next"
     previous: "Previous"
+
+footer:
+    tagline: "Connecting families with their lost pets since 2025"
+
+home:
+    title: "Home - Pet Finder"
+    hero:
+        project_status: "Project in development"
+        main_title: "Reunite"
+        families: "families"
+        subtitle: "with their pets"
+        description: "A platform designed to connect people who have lost pets with those who can help them find them. Every second counts when a pet is lost."
+        report_lost: "Report lost pet"
+        explore_cases: "Explore cases"
+
+    features:
+        publish_easily:
+            title: "Publish easily"
+            description: "Upload photos, add location and description of your lost pet so other users can help you."
+        search_filter:
+            title: "Search and filter"
+            description: "Explore posts by area, animal type, physical characteristics and other useful filters."
+        connect_directly:
+            title: "Connect directly"
+            description: "Contact directly with lost pet owners or people who have found animals."
+
+    how_it_works:
+        title: "How it works?"
+        subtitle: "A simple and effective process designed to maximize reunion possibilities"
+        step1:
+            title: "Publish"
+            description: "Upload clear photos, describe unique characteristics and mark the last known location"
+        step2:
+            title: "Notify"
+            description: "We automatically alert the local community and activate the search network"
+        step3:
+            title: "Search"
+            description: "Volunteers and our community work together to generate sightings and valuable clues"
+        step4:
+            title: "Reunite"
+            description: "We facilitate safe contact and coordinate the happy reunion"
+
+    recent_animals:
+        title: "Recent animals"
+        subtitle: "Latest posts of lost and found pets"
+        tabs:
+            lost: "Lost"
+            found: "Found"
+        status:
+            lost: "Lost"
+            found: "Found"
+        no_lost: "No recent lost pets"
+        no_lost_desc: "No lost pets have been reported recently."
+        no_found: "No recent found pets"
+        no_found_desc: "No found pets have been reported recently."
+        view_all_lost: "View all lost"
+        view_all_found: "View all found"
+        contact: "Contact"
+        share: "Share"
+        zone_not_specified: "Zone not specified"
+        today: "Today"
+        days_ago: "{days} days ago"
+        one_day_ago: "1 day ago"
+        unnamed_pet: "Unnamed"
+        found_animal: "found"
+
+    contact_modal:
+        title: "Contact Information"
+        pet: "Pet"
+        phone: "Phone"
+        email: "Email"
+        whatsapp: "WhatsApp"
+        info_text: "Click on WhatsApp or Email to contact directly"
