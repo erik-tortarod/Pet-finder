@@ -1,3 +1,18 @@
+/* Fixed Header Styles */
+header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+}
+
+/* Add padding to body to prevent content from being hidden behind fixed header */
+body {
+    padding-top: 4rem;
+    /* 64px - height of the header */
+}
+
 /* Navbar Base Styles */
 .nav-link {
     @apply px-2 lg:px-3 py-2 rounded-md text-sm font-medium transition-colors;
