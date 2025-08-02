@@ -16,6 +16,10 @@ export default class extends Controller {
     }
 
     open(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
         const button = event.currentTarget;
         const petName = button.dataset.petName;
         const phone = button.dataset.phone || "No disponible";
@@ -84,6 +88,10 @@ export default class extends Controller {
     }
 
     copyLink(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+
         const url = event.currentTarget.dataset.url;
         const fullUrl = window.location.origin + url;
 
