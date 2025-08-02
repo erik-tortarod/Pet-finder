@@ -20,7 +20,7 @@
 				<a href="{{path('app_found_pets')}}" class="nav-link {% if app.request.get('_route') == 'app_found_pets' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}">
 					Avistados
 				</a>
-				<a href="{{path('app_lost_pets_create')}}" class="nav-publish-btn">
+				<a class="nav-publish-btn">
 					Publicar
 				</a>
 				<div class="relative">
@@ -52,7 +52,7 @@
 				<a href="{{path('app_found_pets')}}" class="{% if app.request.get('_route') == 'app_found_pets' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
 					{% include 'components/Icon.html.twig' with {name: 'heart', size: 20, class: 'inline mr-3'} %}Avistados
 				</a>
-				<a href="{{path('app_lost_pets_create')}}" class="nav-publish-btn-mobile">
+				<a class="nav-publish-btn-mobile">
 					{% include 'components/Icon.html.twig' with {name: 'plus', size: 20, class: 'inline mr-3'} %}Publicar
 				</a>
 				<a href="{{path('app_user')}}" class="{% if app.request.get('_route') starts with 'app_user' %}nav-user-link-mobile active{% else %}nav-user-link-mobile{% endif %}">
