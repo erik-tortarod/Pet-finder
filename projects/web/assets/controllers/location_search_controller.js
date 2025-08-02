@@ -32,18 +32,60 @@ export default class extends Controller {
         this.selectedLocation = null;
         this.mapInitialized = false;
 
-        this.initializeLocationIndicator();
-        this.initializeQuickFilters();
-        this.initializeLocationSearch();
-        this.initializeToggleButton();
+        // Use a small delay to ensure DOM is fully ready after Turbo navigation
+        setTimeout(() => {
+            this.initializeLocationIndicator();
+            this.initializeQuickFilters();
+            this.initializeLocationSearch();
+            this.initializeToggleButton();
+
+            // If location search section is visible, initialize map
+            if (
+                this.hasSearchSectionTarget &&
+                this.searchSectionTarget.style.display !== "none"
+            ) {
+                this.initMap();
+            }
+        }, 100);
     }
 
     disconnect() {
         console.log("LocationSearch controller disconnected");
+        // Clean up event listeners
+        this.cleanupEventListeners();
+
         if (this.map) {
             this.map.remove();
             this.map = null;
             this.mapInitialized = false;
+        }
+    }
+
+    cleanupEventListeners() {
+        // Remove any global event listeners that might persist
+        if (this.searchInputTarget) {
+            this.searchInputTarget.removeEventListener(
+                "input",
+                this.handleSearchInput
+            );
+        }
+        if (this.currentLocationBtnTarget) {
+            this.currentLocationBtnTarget.removeEventListener(
+                "click",
+                this.handleCurrentLocation
+            );
+        }
+        if (this.toggleButtonTarget) {
+            this.toggleButtonTarget.removeEventListener(
+                "click",
+                this.handleToggle
+            );
+        }
+        if (this.quickFiltersTarget) {
+            this.quickFiltersTarget.removeEventListener(
+                "click",
+                this.handleQuickFilters
+            );
         }
     }
 
@@ -80,7 +122,8 @@ export default class extends Controller {
 
     initializeQuickFilters() {
         if (this.hasQuickFiltersTarget && this.hasTagsInputTarget) {
-            this.quickFiltersTarget.addEventListener("click", (e) => {
+            // Store reference to handler for cleanup
+            this.handleQuickFilters = (e) => {
                 if (e.target.hasAttribute("data-tag")) {
                     e.preventDefault();
 
@@ -111,14 +154,19 @@ export default class extends Controller {
                     // Trigger filters update instead of form submit
                     this.triggerFiltersUpdate();
                 }
-            });
+            };
+
+            this.quickFiltersTarget.addEventListener(
+                "click",
+                this.handleQuickFilters
+            );
         }
     }
 
     initializeLocationSearch() {
         if (this.hasSearchInputTarget && this.hasCurrentLocationBtnTarget) {
-            // Handle input changes
-            this.searchInputTarget.addEventListener("input", (e) => {
+            // Store reference to handlers for cleanup
+            this.handleSearchInput = (e) => {
                 const query = e.target.value.trim();
 
                 if (query.length < 3) {
@@ -132,7 +180,17 @@ export default class extends Controller {
                     const places = await this.searchPlaces(query);
                     this.showSuggestions(places);
                 }, 300);
-            });
+            };
+
+            this.handleCurrentLocation = () => {
+                this.getCurrentLocation();
+            };
+
+            // Handle input changes
+            this.searchInputTarget.addEventListener(
+                "input",
+                this.handleSearchInput
+            );
 
             // Hide suggestions when clicking outside
             document.addEventListener("click", (e) => {
@@ -142,17 +200,24 @@ export default class extends Controller {
             });
 
             // Get current location
-            this.currentLocationBtnTarget.addEventListener("click", () => {
-                this.getCurrentLocation();
-            });
+            this.currentLocationBtnTarget.addEventListener(
+                "click",
+                this.handleCurrentLocation
+            );
         }
     }
 
     initializeToggleButton() {
         if (this.hasToggleButtonTarget) {
-            this.toggleButtonTarget.addEventListener("click", () => {
+            // Store reference to handler for cleanup
+            this.handleToggle = () => {
                 this.toggleLocationSearch();
-            });
+            };
+
+            this.toggleButtonTarget.addEventListener(
+                "click",
+                this.handleToggle
+            );
         }
     }
 

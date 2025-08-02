@@ -31,11 +31,32 @@ export default class extends Controller {
             longitude: "",
         };
 
-        // Initialize quick filters
-        this.initializeQuickFilters();
+        // Use a small delay to ensure DOM is fully ready after Turbo navigation
+        setTimeout(() => {
+            // Initialize quick filters
+            this.initializeQuickFilters();
 
-        // Initialize current filter values from form inputs
-        this.initializeCurrentFilters();
+            // Initialize current filter values from form inputs
+            this.initializeCurrentFilters();
+        }, 100);
+    }
+
+    disconnect() {
+        console.log("Filters controller disconnected");
+        // Clean up event listeners
+        this.cleanupEventListeners();
+    }
+
+    cleanupEventListeners() {
+        // Remove any event listeners that might persist
+        if (this.quickFilterTargets.length > 0) {
+            this.quickFilterTargets.forEach((button) => {
+                button.removeEventListener(
+                    "click",
+                    this.handleQuickFilterClick
+                );
+            });
+        }
     }
 
     initializeCurrentFilters() {
@@ -113,12 +134,16 @@ export default class extends Controller {
             "Initializing quick filters, found:",
             this.quickFilterTargets.length
         );
+
+        // Store reference to handler for cleanup
+        this.handleQuickFilterClick = (e) => {
+            e.preventDefault();
+            console.log("Quick filter clicked:", e.target.textContent.trim());
+            this.toggleQuickFilter(e.target);
+        };
+
         this.quickFilterTargets.forEach((button) => {
-            button.addEventListener("click", (e) => {
-                e.preventDefault();
-                console.log("Quick filter clicked:", button.textContent.trim());
-                this.toggleQuickFilter(button);
-            });
+            button.addEventListener("click", this.handleQuickFilterClick);
         });
     }
 
