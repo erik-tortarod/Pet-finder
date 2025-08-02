@@ -6,11 +6,11 @@ framework:
     session:
         enabled: true
         # Configuración de sesiones para mayor duración
-        cookie_lifetime: 0 # 0 = hasta que se cierre el navegador
+        cookie_lifetime: 2592000 # 30 días en segundos (30 * 24 * 60 * 60)
         cookie_secure: auto
         cookie_samesite: lax
         cookie_httponly: true
-        gc_maxlifetime: 3600 # 1 hora en segundos
+        gc_maxlifetime: 2592000 # 30 días en segundos (debe coincidir con cookie_lifetime)
         gc_probability: 1
         gc_divisor: 100
         # Configuración de almacenamiento de sesiones
