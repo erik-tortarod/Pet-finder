@@ -18,9 +18,6 @@
 		<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
 		<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-		{# Alpine.js #}
-		<script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
-
 		{% block stylesheets %}
 			{{ encore_entry_link_tags('app') }}
 		{% endblock %}
@@ -38,6 +35,9 @@
 		<script src="{{ asset('page/base/utils.js') }}"></script>
 		<script src="{{ asset('page/base/publish_modal.js') }}"></script>
 		<script src="{{ asset('page/base/location_search_modal.js') }}"></script>
+
+		{# Custom JavaScript #}
+		<script src="{{ asset('js/alpine.js') }}"></script>
 
 		{% block javascripts %}
 			{{ encore_entry_script_tags('app') }}
