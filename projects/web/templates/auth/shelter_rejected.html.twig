@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Shelter Rechazada - Pet Finder{% endblock %}
+{% block title %}{{ 'auth.shelter_verification.rejected.title'|trans }} - Pet Finder{% endblock %}
 
 {% block body %}
 <div class="min-h-screen bg-gradient-to-br from-red-50 to-pink-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -16,10 +16,10 @@
             <!-- Título -->
             <div class="text-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">
-                    Solicitud Rechazada
+                    {{ 'auth.shelter_verification.rejected.title'|trans }}
                 </h2>
                 <p class="text-gray-600">
-                    Tu solicitud de registro como protectora no fue aprobada
+                    {{ 'auth.shelter_verification.rejected.subtitle'|trans }}
                 </p>
             </div>
 
@@ -33,12 +33,11 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm font-medium text-red-800">
-                            Solicitud no aprobada
+                            {{ 'auth.shelter_verification.rejected.status'|trans }}
                         </h3>
                         <div class="mt-2 text-sm text-red-700">
                             <p>
-                                Lamentamos informarte que tu solicitud para registrarte como protectora
-                                no cumplió con nuestros criterios de verificación.
+                                {{ 'auth.shelter_verification.rejected.description'|trans }}
                             </p>
                         </div>
                     </div>
@@ -55,7 +54,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-gray-700">
-                            Puedes contactar con nuestro equipo de soporte para obtener más información sobre los motivos del rechazo
+                            {{ 'auth.shelter_verification.rejected.support_info'|trans }}
                         </p>
                     </div>
                 </div>
@@ -68,7 +67,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-gray-700">
-                            Si consideras que esto es un error, puedes volver a solicitar el registro con información actualizada
+                            {{ 'auth.shelter_verification.rejected.retry_info'|trans }}
                         </p>
                     </div>
                 </div>
@@ -81,7 +80,7 @@
                     <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
-                    Cerrar Sesión
+                    {{ 'auth.shelter_verification.rejected.logout'|trans }}
                 </a>
 
                 <div class="flex gap-2">
@@ -90,7 +89,7 @@
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
                         </svg>
-                        Contactar Soporte
+                        {{ 'auth.shelter_verification.rejected.contact_support'|trans }}
                     </a>
 
                     <a href="{{ path('app_auth_register') }}"
@@ -98,7 +97,7 @@
                         <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
-                        Nueva Solicitud
+                        {{ 'auth.shelter_verification.rejected.try_again'|trans }}
                     </a>
                 </div>
             </div>

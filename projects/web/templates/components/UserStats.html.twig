@@ -14,7 +14,7 @@
                 {% include 'components/Icon.html.twig' with {name: 'search', size: 24, class: 'text-blue-600'} %}
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Mascotas Perdidas</p>
+                <p class="text-sm font-medium text-gray-600">{{ 'user.stats.lost_pets'|trans }}</p>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.totalLostPets|default(0) }}</p>
             </div>
         </div>
@@ -26,7 +26,7 @@
                 {% include 'components/Icon.html.twig' with {name: 'heart', size: 24, class: 'text-green-600'} %}
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Animales Avistados</p>
+                <p class="text-sm font-medium text-gray-600">{{ 'user.stats.found_animals'|trans }}</p>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.totalFoundAnimals|default(0) }}</p>
             </div>
         </div>
@@ -38,7 +38,7 @@
                 {% include 'components/Icon.html.twig' with {name: 'list', size: 24, class: 'text-purple-600'} %}
             </div>
             <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Publicaciones</p>
+                <p class="text-sm font-medium text-gray-600">{{ 'user.stats.total_publications'|trans }}</p>
                 <p class="text-2xl font-bold text-gray-900">{{ stats.totalPublications|default(0) }}</p>
             </div>
         </div>

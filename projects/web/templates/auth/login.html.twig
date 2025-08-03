@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Iniciar Sesión
-{% endblock %}
+{% block title %}{{ 'auth.login.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 	{{ parent() }}
@@ -12,21 +11,21 @@
 
 	<div class="auth-container">
 		<div class="auth-header">
-			<h1>Iniciar Sesión</h1>
-			<p>Accede a tu cuenta de Pet Finder</p>
+			<h1>{{ 'auth.login.title'|trans }}</h1>
+			<p>{{ 'auth.login.subtitle'|trans }}</p>
 		</div>
 
 		<div class="oauth-section">
 			{% for owner in hwi_oauth_resource_owners() %}
 				<a href="{{ hwi_oauth_login_url(owner) }}" class="oauth-btn">
-					Continuar con
+					{{ 'auth.login.oauth_continue'|trans }}
 					{{ owner | trans({}, 'HWIOAuthBundle') }}
 				</a>
 			{% endfor %}
 		</div>
 
 		<div class="divider">
-			<span>o</span>
+			<span>{{ 'auth.login.or_divider'|trans }}</span>
 		</div>
 
 		{% if error %}
@@ -37,27 +36,27 @@
 
 		<form action="{{ path('app_auth_login') }}" method="post">
 			<div class="form-group">
-				<label for="username">Email</label>
-				<input type="email" name="_username" id="username" value="{{ last_username }}" placeholder="tu@email.com" required autofocus>
+				<label for="username">{{ 'auth.login.email'|trans }}</label>
+				<input type="email" name="_username" id="username" value="{{ last_username }}" placeholder="{{ 'auth.login.email_placeholder'|trans }}" required autofocus>
 			</div>
 
 			<div class="form-group">
-				<label for="password">Contraseña</label>
-				<input type="password" name="_password" id="password" placeholder="Tu contraseña" required>
+				<label for="password">{{ 'auth.login.password'|trans }}</label>
+				<input type="password" name="_password" id="password" placeholder="{{ 'auth.login.password_placeholder'|trans }}" required>
 			</div>
 
 			<div style="text-align: right; margin-bottom: 1rem;">
 				<a href="{{ path('app_auth_forgot_password') }}" style="color: #667eea; text-decoration: none; font-size: 0.875rem;">
-					¿Olvidaste tu contraseña?
+					{{ 'auth.login.forgot_password'|trans }}
 				</a>
 			</div>
 
-			<button type="submit" class="btn">Iniciar Sesión</button>
+			<button type="submit" class="btn">{{ 'auth.login.login_button'|trans }}</button>
 		</form>
 
 		<div class="auth-footer">
-			<p>¿No tienes una cuenta?
-				<a href="{{ path('app_auth_register') }}">Regístrate aquí</a>
+			<p>{{ 'auth.login.no_account'|trans }}
+				<a href="{{ path('app_auth_register') }}">{{ 'auth.login.register_link'|trans }}</a>
 			</p>
 		</div>
 	</div>

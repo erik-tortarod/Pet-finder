@@ -1,14 +1,13 @@
 {% extends 'user/base.html.twig' %}
 
-{% block title %}Mis Mascotas Perdidas
-{% endblock %}
+{% block title %}{{ 'user.pages.lost_pets.title'|trans }}{% endblock %}
 
 {% block content %}
 
 	{# Lost Pets List #}
 	<section class="bg-white rounded-lg shadow">
 		<div class="px-4 sm:px-6 py-4 border-b border-gray-200">
-			<h3 class="text-base sm:text-lg font-medium text-gray-900">Mis Mascotas Perdidas</h3>
+			<h3 class="text-base sm:text-lg font-medium text-gray-900">{{ 'user.pages.lost_pets.header'|trans }}</h3>
 		</div>
 
 		<div class="divide-y divide-gray-200">
@@ -37,20 +36,16 @@
 									{{ item.animalId.age|default("") }}
 								</p>
 								<p class="text-xs sm:text-sm text-gray-500">
-									Publicado
+									{{ 'user.dates.published'|trans }}
 									{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
 									{% if daysAgo < 1 %}
-										Hoy
+										{{ 'user.dates.today'|trans }}
 									{% elseif daysAgo < 2 %}
-										Ayer
+										{{ 'user.dates.yesterday'|trans }}
 									{% elseif daysAgo < 7 %}
-										hace
-										{{ daysAgo|round(0, 'floor') }}
-										días
+										{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
 									{% else %}
-										Hace
-										{{ (daysAgo / 7)|round(0, 'floor') }}
-										semanas
+										{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
 									{% endif %}
 								</p>
 
@@ -75,30 +70,30 @@
 							{% if item.animalId.status != 'ARCHIVED' %}
 								<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="flex items-center text-xs sm:text-sm rounded-md btn btn-primary">
 									{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 16, class: 'mr-1'} %}
-									Editar
+									{{ 'user.actions.edit'|trans }}
 								</a>
 								<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
 									{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
-									Encontrada
+									{{ 'user.actions.found'|trans }}
 								</a>
 								<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmArchive('{{ item.animalId.name }}')">
 									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
 										{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
-										Archivar
+										{{ 'user.actions.archive'|trans }}
 									</button>
 								</form>
 							{% else %}
 								<form method="POST" action="{{ path('app_animal_restore', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmRestore('{{ item.animalId.name }}')">
 									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
 										{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
-										Restaurar
+										{{ 'user.actions.restore'|trans }}
 									</button>
 								</form>
 							{% endif %}
 							<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
 								<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
 									{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
-									Eliminar
+									{{ 'user.actions.delete'|trans }}
 								</button>
 							</form>
 						</div>
@@ -111,14 +106,14 @@
 
 	<script>
 		function confirmDelete(animalName) {
-return confirm (`¿Estás seguro de que quieres eliminar la publicación de "${animalName}"? Esta acción no se puede deshacer.`);
-}
-function confirmArchive(animalName) {
-return confirm (`¿Estás seguro de que quieres archivar la publicación de "${animalName}"? La publicación se ocultará pero podrás restaurarla más tarde.`);
-}
-function confirmRestore(animalName) {
-return confirm (`¿Estás seguro de que quieres restaurar la publicación de "${animalName}"? La publicación volverá a estar activa.`);
-}
+			return confirm(`{{ 'user.confirmations.delete'|trans({'name': '${animalName}'}) }}`);
+		}
+		function confirmArchive(animalName) {
+			return confirm(`{{ 'user.confirmations.archive'|trans({'name': '${animalName}'}) }}`);
+		}
+		function confirmRestore(animalName) {
+			return confirm(`{{ 'user.confirmations.restore'|trans({'name': '${animalName}'}) }}`);
+		}
 	</script>
 
 </div></section>{% endblock %}

@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Verificación Pendiente - Pet Finder{% endblock %}
+{% block title %}{{ 'auth.shelter_verification.pending.title'|trans }} - Pet Finder{% endblock %}
 
 {% block body %}
 <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -16,10 +16,10 @@
             <!-- Título -->
             <div class="text-center mb-6">
                 <h2 class="text-3xl font-bold text-gray-900 mb-2">
-                    Verificación Pendiente
+                    {{ 'auth.shelter_verification.pending.title'|trans }}
                 </h2>
                 <p class="text-gray-600">
-                    Tu cuenta de protectora está siendo revisada
+                    {{ 'auth.shelter_verification.pending.subtitle'|trans }}
                 </p>
             </div>
 
@@ -33,12 +33,11 @@
                     </div>
                     <div class="ml-3">
                         <h3 class="text-sm font-medium text-yellow-800">
-                            Proceso de verificación en curso
+                            {{ 'auth.shelter_verification.pending.status'|trans }}
                         </h3>
                         <div class="mt-2 text-sm text-yellow-700">
                             <p>
-                                Nuestro equipo está revisando la información de tu protectora.
-                                Este proceso puede tomar entre 24-48 horas hábiles.
+                                {{ 'auth.shelter_verification.pending.description'|trans }}
                             </p>
                         </div>
                     </div>
@@ -55,7 +54,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-gray-700">
-                            Recibirás una notificación por email cuando tu cuenta sea verificada
+                            {{ 'auth.shelter_verification.pending.email_notification'|trans }}
                         </p>
                     </div>
                 </div>
@@ -68,7 +67,7 @@
                     </div>
                     <div class="ml-3">
                         <p class="text-sm text-gray-700">
-                            Una vez verificada, podrás publicar mascotas y gestionar tu protectora
+                            {{ 'auth.shelter_verification.pending.verified_access'|trans }}
                         </p>
                     </div>
                 </div>
@@ -81,13 +80,13 @@
                     <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                     </svg>
-                    Cerrar Sesión
+                    {{ 'auth.shelter_verification.pending.logout'|trans }}
                 </a>
 
                 <div class="text-center">
                     <a href="{{ path('app_auth_login') }}"
                        class="text-sm text-blue-600 hover:text-blue-500 transition duration-150 ease-in-out">
-                        ¿Tienes preguntas? Contacta con soporte
+                        {{ 'auth.shelter_verification.pending.support_contact'|trans }}
                     </a>
                 </div>
             </div>

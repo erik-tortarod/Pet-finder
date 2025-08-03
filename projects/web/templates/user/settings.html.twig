@@ -1,7 +1,6 @@
 {% extends 'user/base.html.twig' %}
 
-{% block title %}Configuración del Perfil
-{% endblock %}
+{% block title %}{{ 'user.settings.title'|trans }}{% endblock %}
 
 {% block content %}
 	<div
@@ -10,7 +9,7 @@
 		<div class="bg-white rounded-lg shadow">
 			<h3 class="text-lg font-medium text-gray-900 flex items-center p-6 border-b border-gray-200">
 				{% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-2'} %}
-				Información del Perfil
+				{{ 'user.settings.profile_info'|trans }}
 			</h3>
 		</div>
 
@@ -77,8 +76,8 @@
 			<div class="flex justify-end">
 				<button type="submit" class="btn btn-primary flex items-center" id="save-button">
 					{% include 'components/Icon.html.twig' with {name: 'save', size: 16, class: 'mr-2'} %}
-					<span class="save-text">Guardar Cambios</span>
-					<span class="saving-text hidden">Guardando...</span>
+					<span class="save-text">{{ 'user.settings.save_changes'|trans }}</span>
+					<span class="saving-text hidden">{{ 'user.settings.saving'|trans }}</span>
 				</button>
 			</div>
 			{{ form_end(form) }}

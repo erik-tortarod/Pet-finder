@@ -12,12 +12,20 @@ use App\Repository\FoundAnimalsRepository;
 use App\Form\UserProfileUpdateType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * @method User getUser()
  */
 final class UserController extends AbstractController
 {
+    private TranslatorInterface $translator;
+
+    public function __construct(TranslatorInterface $translator)
+    {
+        $this->translator = $translator;
+    }
+
     #[Route('/user', name: 'app_user')]
     #[IsGranted('ROLE_USER')]
     public function index(): Response
@@ -85,10 +93,10 @@ final class UserController extends AbstractController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                $this->addFlash('success', 'Perfil actualizado correctamente');
+                $this->addFlash('success', $this->translator->trans('user.settings.messages.profile_updated'));
                 return $this->redirectToRoute('app_user_settings');
             } catch (\Exception $e) {
-                $this->addFlash('error', 'Error al actualizar el perfil: ' . $e->getMessage());
+                $this->addFlash('error', $this->translator->trans('user.settings.messages.update_error', ['error' => $e->getMessage()]));
             }
         }
 
@@ -99,7 +107,7 @@ final class UserController extends AbstractController
             'user' => $user,
             'stats' => $stats,
             'activeTab' => 'settings',
-            'form' => $form->createView(),
+            'form' => $form,
         ]);
     }
 

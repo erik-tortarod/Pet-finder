@@ -12,10 +12,10 @@ enum AnimalStatus: string
    public function getLabel(): string
    {
       return match ($this) {
-         self::LOST => 'Perdido',
-         self::FOUND => 'Encontrado',
-         self::CLAIMED => 'Reclamado',
-         self::FILLED => 'Completado',
+         self::LOST => 'Perdida',
+         self::FOUND => 'Encontrada',
+         self::CLAIMED => 'Reclamada',
+         self::FILLED => 'Archivada',
       };
    }
 

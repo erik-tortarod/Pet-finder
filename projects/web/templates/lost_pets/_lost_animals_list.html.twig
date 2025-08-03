@@ -22,7 +22,7 @@
 						<i class="fas {{ iconClass }} text-4xl text-blue-600"></i>
 					</div>
 				{% endif %}
-				<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
+				<div class="absolute top-2 right-2 {% if animal.status == 'LOST' %}bg-red-500{% elseif animal.status == 'FOUND' %}bg-yellow-500{% elseif animal.status == 'CLAIMED' %}bg-green-500{% elseif animal.status == 'FILLED' %}bg-gray-500{% else %}bg-red-500{% endif %} text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
 			</div>
 
 			{# Information #}
@@ -31,7 +31,7 @@
 				<p class="text-sm text-gray-600 mb-2">
 					{{ animal.animalType|capitalize }}
 					•
-					{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
+					{% if animal.gender == 'male' %}{{ 'lost_pets.list.male'|trans }}{% elseif animal.gender == 'female' %}{{ 'lost_pets.list.female'|trans }}{% else %}{{ 'lost_pets.list.unspecified'|trans }}
 					{% endif %}
 
 					{% if animal.age %}
@@ -56,11 +56,7 @@
 					</span>
 					<span class="text-sm text-gray-500">
 						{% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}
-						{% if daysAgo < 1 %}Hoy{% elseif daysAgo < 2 %}Ayer{% elseif daysAgo < 7 %}Hace
-							{{ daysAgo|round(0, 'floor') }}
-							días{% else %}Hace
-							{{ (daysAgo / 7)|round(0, 'floor') }}
-							semanas
+						{% if daysAgo < 1 %}{{ 'lost_pets.list.today'|trans }}{% elseif daysAgo < 2 %}{{ 'lost_pets.list.yesterday'|trans }}{% elseif daysAgo < 7 %}{{ 'lost_pets.list.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}{% else %}{{ 'lost_pets.list.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
 						{% endif %}
 					</span>
 				</div>
@@ -72,12 +68,12 @@
 							data-pet-name="{{ animal.name }}"
 							data-phone="{{ user.phone ?? 'No disponible' }}"
 							data-email="{{ user.email }}">
-						{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}Contactar
+						{% include 'components/Icon.html.twig' with {name: 'phone', size: 16, class: 'inline mr-2'} %}{{ 'lost_pets.list.contact'|trans }}
 					</button>
 					<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
 							data-action="click->pet-card#copyLink"
 							data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}">
-						{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}Compartir
+						{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}{{ 'lost_pets.list.share'|trans }}
 					</button>
 				</div>
 			</div>

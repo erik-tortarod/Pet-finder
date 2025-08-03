@@ -30,7 +30,7 @@
 					{% endif %}
 					{{ animal.animalType|capitalize }}
 					•
-					{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
+					{% if animal.gender == 'male' %}{{ 'found_pets.list.male'|trans }}{% elseif animal.gender == 'female' %}{{ 'found_pets.list.female'|trans }}{% else %}{{ 'found_pets.list.unspecified'|trans }}
 					{% endif %}
 					{% if animal.age %}
 						•
@@ -52,11 +52,7 @@
 					</span>
 					<span class="text-sm text-gray-500">
 						{% set daysAgo = (date()|date('U') - foundAnimal.createdAt|date('U')) / 86400 %}
-						{% if daysAgo < 1 %}Hoy{% elseif daysAgo < 2 %}Ayer{% elseif daysAgo < 7 %}Hace
-							{{ daysAgo|round(0, 'floor') }}
-							días{% else %}Hace
-							{{ (daysAgo / 7)|round(0, 'floor') }}
-							semanas
+						{% if daysAgo < 1 %}{{ 'found_pets.list.today'|trans }}{% elseif daysAgo < 2 %}{{ 'found_pets.list.yesterday'|trans }}{% elseif daysAgo < 7 %}{{ 'found_pets.list.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}{% else %}{{ 'found_pets.list.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
 						{% endif %}
 					</span>
 				</div>
@@ -67,12 +63,12 @@
 							data-pet-name="{% if animal.name %}{{ animal.name }}{% else %}{{ animal.description }}{% endif %}"
 							data-phone="{{ user.phone ?? 'No disponible' }}"
 							data-email="{{ user.email }}">
-						{% include 'components/Icon.html.twig' with {name: 'whatsapp', size: 16, class: 'inline mr-2'} %}Contactar
+						{% include 'components/Icon.html.twig' with {name: 'whatsapp', size: 16, class: 'inline mr-2'} %}{{ 'found_pets.list.contact'|trans }}
 					</button>
 					<button class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
 							data-action="click->pet-card#copyLink"
 							data-url="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}">
-						{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}Compartir
+						{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'inline mr-2'} %}{{ 'found_pets.list.share'|trans }}
 					</button>
 				</div>
 			</div>

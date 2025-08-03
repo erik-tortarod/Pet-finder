@@ -14,135 +14,138 @@ use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class UserProfileUpdateType extends AbstractType
 {
-   private UserRepository $userRepository;
+    private UserRepository $userRepository;
+    private TranslatorInterface $translator;
 
-   public function __construct(UserRepository $userRepository)
-   {
-      $this->userRepository = $userRepository;
-   }
+    public function __construct(UserRepository $userRepository, TranslatorInterface $translator)
+    {
+        $this->userRepository = $userRepository;
+        $this->translator = $translator;
+    }
 
-   public function buildForm(FormBuilderInterface $builder, array $options): void
-   {
-      $builder
-         ->add('firstName', TextType::class, [
-            'label' => 'Nombre',
-            'required' => true,
-            'attr' => [
-               'placeholder' => 'Ingresa tu nombre',
-               'maxlength' => 255,
-            ],
-            'constraints' => [
-               new Assert\NotBlank([
-                  'message' => 'El nombre es obligatorio',
-               ]),
-               new Assert\Length([
-                  'min' => 2,
-                  'max' => 255,
-                  'minMessage' => 'El nombre debe tener al menos {{ limit }} caracteres',
-                  'maxMessage' => 'El nombre no puede tener más de {{ limit }} caracteres',
-               ]),
-               new Assert\Regex([
-                  'pattern' => '/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-                  'message' => 'El nombre solo puede contener letras y espacios',
-               ]),
-            ],
-         ])
-         ->add('lastName', TextType::class, [
-            'label' => 'Apellido',
-            'required' => true,
-            'attr' => [
-               'placeholder' => 'Ingresa tu apellido',
-               'maxlength' => 255,
-            ],
-            'constraints' => [
-               new Assert\NotBlank([
-                  'message' => 'El apellido es obligatorio',
-               ]),
-               new Assert\Length([
-                  'min' => 2,
-                  'max' => 255,
-                  'minMessage' => 'El apellido debe tener al menos {{ limit }} caracteres',
-                  'maxMessage' => 'El apellido no puede tener más de {{ limit }} caracteres',
-               ]),
-               new Assert\Regex([
-                  'pattern' => '/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
-                  'message' => 'El apellido solo puede contener letras y espacios',
-               ]),
-            ],
-         ])
-         ->add('email', EmailType::class, [
-            'label' => 'Email',
-            'required' => true,
-            'attr' => [
-               'placeholder' => 'ejemplo@correo.com',
-               'maxlength' => 180,
-            ],
-            'constraints' => [
-               new Assert\NotBlank([
-                  'message' => 'El email es obligatorio',
-               ]),
-               new Assert\Email([
-                  'message' => 'El email "{{ value }}" no es válido',
-                  'mode' => Assert\Email::VALIDATION_MODE_STRICT,
-               ]),
-               new Assert\Length([
-                  'max' => 180,
-                  'maxMessage' => 'El email no puede tener más de {{ limit }} caracteres',
-               ]),
-            ],
-         ])
-         ->add('phone', TelType::class, [
-            'label' => 'Teléfono',
-            'required' => false,
-            'attr' => [
-               'placeholder' => '+34 123 456 789',
-               'maxlength' => 20,
-            ],
-            'constraints' => [
-               new Assert\Length([
-                  'max' => 20,
-                  'maxMessage' => 'El teléfono no puede tener más de {{ limit }} caracteres',
-               ]),
-               new Assert\Regex([
-                  'pattern' => '/^[\+]?[0-9\s\-\(\)]+$/',
-                  'message' => 'El teléfono solo puede contener números, espacios, guiones y paréntesis',
-               ]),
-            ],
-         ])
-      ;
+    public function buildForm(FormBuilderInterface $builder, array $options): void
+    {
+        $builder
+            ->add('firstName', TextType::class, [
+                'label' => $this->translator->trans('user.settings.form.first_name'),
+                'required' => true,
+                'attr' => [
+                    'placeholder' => $this->translator->trans('user.settings.form.first_name_placeholder'),
+                    'maxlength' => 255,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => $this->translator->trans('user.settings.validation.first_name_required'),
+                    ]),
+                    new Assert\Length([
+                        'min' => 2,
+                        'max' => 255,
+                        'minMessage' => $this->translator->trans('user.settings.validation.first_name_min_length'),
+                        'maxMessage' => $this->translator->trans('user.settings.validation.first_name_max_length'),
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+                        'message' => $this->translator->trans('user.settings.validation.first_name_invalid'),
+                    ]),
+                ],
+            ])
+            ->add('lastName', TextType::class, [
+                'label' => $this->translator->trans('user.settings.form.last_name'),
+                'required' => true,
+                'attr' => [
+                    'placeholder' => $this->translator->trans('user.settings.form.last_name_placeholder'),
+                    'maxlength' => 255,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => $this->translator->trans('user.settings.validation.last_name_required'),
+                    ]),
+                    new Assert\Length([
+                        'min' => 2,
+                        'max' => 255,
+                        'minMessage' => $this->translator->trans('user.settings.validation.last_name_min_length'),
+                        'maxMessage' => $this->translator->trans('user.settings.validation.last_name_max_length'),
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/',
+                        'message' => $this->translator->trans('user.settings.validation.last_name_invalid'),
+                    ]),
+                ],
+            ])
+            ->add('email', EmailType::class, [
+                'label' => $this->translator->trans('user.settings.form.email'),
+                'required' => true,
+                'attr' => [
+                    'placeholder' => $this->translator->trans('user.settings.form.email_placeholder'),
+                    'maxlength' => 180,
+                ],
+                'constraints' => [
+                    new Assert\NotBlank([
+                        'message' => $this->translator->trans('user.settings.validation.email_required'),
+                    ]),
+                    new Assert\Email([
+                        'message' => $this->translator->trans('user.settings.validation.email_invalid'),
+                        'mode' => Assert\Email::VALIDATION_MODE_STRICT,
+                    ]),
+                    new Assert\Length([
+                        'max' => 180,
+                        'maxMessage' => $this->translator->trans('user.settings.validation.email_max_length'),
+                    ]),
+                ],
+            ])
+            ->add('phone', TelType::class, [
+                'label' => $this->translator->trans('user.settings.form.phone'),
+                'required' => false,
+                'attr' => [
+                    'placeholder' => $this->translator->trans('user.settings.form.phone_placeholder'),
+                    'maxlength' => 20,
+                ],
+                'constraints' => [
+                    new Assert\Length([
+                        'max' => 20,
+                        'maxMessage' => $this->translator->trans('user.settings.validation.phone_max_length'),
+                    ]),
+                    new Assert\Regex([
+                        'pattern' => '/^[\+]?[0-9\s\-\(\)]+$/',
+                        'message' => $this->translator->trans('user.settings.validation.phone_invalid'),
+                    ]),
+                ],
+            ])
+        ;
 
-      // Agregar validación personalizada para email único
-      $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-         $form = $event->getForm();
-         $user = $event->getData();
+        // Agregar validación personalizada para email único
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+            $user = $event->getData();
 
-         if (!$user instanceof User) {
-            return;
-         }
-
-         $email = $form->get('email')->getData();
-         $currentUser = $form->getData();
-
-         // Solo validar si el email ha cambiado
-         if ($email && $currentUser && $email !== $currentUser->getEmail()) {
-            $existingUser = $this->userRepository->findOneBy(['email' => $email]);
-            if ($existingUser && $existingUser->getId() !== $currentUser->getId()) {
-               $form->get('email')->addError(new \Symfony\Component\Form\FormError('Este email ya está en uso por otro usuario'));
+            if (!$user instanceof User) {
+                return;
             }
-         }
-      });
-   }
 
-   public function configureOptions(OptionsResolver $resolver): void
-   {
-      $resolver->setDefaults([
-         'data_class' => User::class,
-         'csrf_protection' => true,
-         'csrf_field_name' => '_token',
-         'csrf_token_id' => 'user_profile_update',
-      ]);
-   }
+            $email = $form->get('email')->getData();
+            $currentUser = $form->getData();
+
+            // Solo validar si el email ha cambiado
+            if ($email && $currentUser && $email !== $currentUser->getEmail()) {
+                $existingUser = $this->userRepository->findOneBy(['email' => $email]);
+                if ($existingUser && $existingUser->getId() !== $currentUser->getId()) {
+                    $form->get('email')->addError(new \Symfony\Component\Form\FormError($this->translator->trans('user.settings.validation.email_already_used')));
+                }
+            }
+        });
+    }
+
+    public function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults([
+            'data_class' => User::class,
+            'csrf_protection' => true,
+            'csrf_field_name' => '_token',
+            'csrf_token_id' => 'user_profile_update',
+        ]);
+    }
 }

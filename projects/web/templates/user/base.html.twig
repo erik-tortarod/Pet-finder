@@ -10,16 +10,16 @@
 		<div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
 			<div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
 				<div>
-					<h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Mi Cuenta</h1>
-					<p class="mt-2 text-sm sm:text-base text-gray-600">Gestiona tus publicaciones y configuración</p>
+					<h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 'user.title'|trans }}</h1>
+					<p class="mt-2 text-sm sm:text-base text-gray-600">{{ 'user.subtitle'|trans }}</p>
 				</div>
 				<div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
-					<span class="text-sm text-gray-500">Bienvenido,
+					<span class="text-sm text-gray-500">{{ 'user.welcome'|trans }},
 						<strong>{{ user.firstName }}
 							{{ user.lastName|default("") }}</strong>
 					</span>
 					<a href="{{ path('app_auth_logout') }}" class="btn btn-danger flex items-center space-x-2">
-						{% include 'components/Icon.html.twig' with {name: 'log-out', size: 16, class: 'mr-2'} %}Cerrar Sesión
+						{% include 'components/Icon.html.twig' with {name: 'log-out', size: 16, class: 'mr-2'} %}{{ 'user.logout'|trans }}
 					</a>
 				</div>
 			</div>
@@ -34,18 +34,18 @@
 			<nav class="-mb-px flex flex-wrap sm:flex-nowrap space-x-2 sm:space-x-8 overflow-x-auto">
 				<a href="{{ path('app_user_lost_pets') }}" class="whitespace-nowrap py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 flex items-center transition-colors {{ activeTab == 'lost_pets' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
 					{% include 'components/Icon.html.twig' with {name: 'search', size: 16, class: 'mr-2'} %}
-					<span class="hidden sm:inline">Mascotas Perdidas</span>
-					<span class="sm:hidden">Perdidas</span>
+					<span class="hidden sm:inline">{{ 'user.navigation.lost_pets'|trans }}</span>
+					<span class="sm:hidden">{{ 'user.navigation.lost_pets_mobile'|trans }}</span>
 				</a>
 				<a href="{{ path('app_user_found_pets') }}" class="whitespace-nowrap py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 flex items-center transition-colors {{ activeTab == 'found_pets' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
 					{% include 'components/Icon.html.twig' with {name: 'heart', size: 16, class: 'mr-2'} %}
-					<span class="hidden sm:inline">Animales Avistados</span>
-					<span class="sm:hidden">Avistados</span>
+					<span class="hidden sm:inline">{{ 'user.navigation.found_pets'|trans }}</span>
+					<span class="sm:hidden">{{ 'user.navigation.found_pets_mobile'|trans }}</span>
 				</a>
 				<a href="{{ path('app_user_settings') }}" class="whitespace-nowrap py-2 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm flex-shrink-0 flex items-center transition-colors {{ activeTab == 'settings' ? 'border-blue-500 text-blue-600' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300' }}">
 					{% include 'components/Icon.html.twig' with {name: 'settings', size: 16, class: 'mr-2'} %}
-					<span class="hidden sm:inline">Configuración</span>
-					<span class="sm:hidden">Config</span>
+					<span class="hidden sm:inline">{{ 'user.navigation.settings'|trans }}</span>
+					<span class="sm:hidden">{{ 'user.navigation.settings_mobile'|trans }}</span>
 				</a>
 			</nav>
 		</section>

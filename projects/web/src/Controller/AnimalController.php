@@ -18,9 +18,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 final class AnimalController extends AbstractController
 {
+    public function __construct(
+        private TranslatorInterface $translator
+    ) {
+        ControllerUtils::setTranslator($this->translator);
+    }
+
     #[Route('/animal', name: 'app_animal')]
     public function index(): Response
     {
@@ -121,13 +128,13 @@ final class AnimalController extends AbstractController
             $userRepository,
             fn() => $this->getUser(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'Debes iniciar sesión para editar una publicación'
+            $this->translator->trans('flash.auth.login_required_edit')
         );
         if (!$user) {
             return ControllerUtils::redirectToLogin(
                 fn($type, $message) => $this->addFlash($type, $message),
                 fn($route) => $this->redirectToRoute($route),
-                'Debes iniciar sesión para editar una publicación'
+                $this->translator->trans('flash.auth.login_required_edit')
             );
         }
 
@@ -135,15 +142,23 @@ final class AnimalController extends AbstractController
         $animal = $animalsRepository->find($id);
 
         if (!$animal) {
-            throw $this->createNotFoundException('Animal no encontrado');
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception($this->translator->trans('flash.animal.not_found'))
+            );
+            return $this->redirectToRoute('app_home');
         }
 
-        // Buscar si es un animal perdido o encontrado
+        // Determinar si es un animal perdido o encontrado
         $lostPet = $lostPetsRepository->findByAnimal($animal);
         $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
 
         if (!$lostPet && !$foundAnimal) {
-            throw $this->createNotFoundException('Publicación no encontrada');
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception($this->translator->trans('flash.animal.publication_not_found'))
+            );
+            return $this->redirectToRoute('app_home');
         }
 
         // Verificar que el usuario sea el propietario de la publicación
@@ -152,7 +167,7 @@ final class AnimalController extends AbstractController
             $user,
             $entityToCheck->getUserId(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'No tienes permisos para editar esta publicación'
+            $this->translator->trans('flash.auth.no_permissions_edit')
         )) {
             return $this->redirectToRoute('app_home');
         }
@@ -207,13 +222,13 @@ final class AnimalController extends AbstractController
             $userRepository,
             fn() => $this->getUser(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'Debes iniciar sesión para editar una publicación'
+            $this->translator->trans('flash.auth.login_required_edit')
         );
         if (!$user) {
             return ControllerUtils::redirectToLogin(
                 fn($type, $message) => $this->addFlash($type, $message),
                 fn($route) => $this->redirectToRoute($route),
-                'Debes iniciar sesión para editar una publicación'
+                $this->translator->trans('flash.auth.login_required_edit')
             );
         }
 
@@ -238,7 +253,7 @@ final class AnimalController extends AbstractController
             $user,
             $entityToCheck->getUserId(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'No tienes permisos para editar esta publicación'
+            $this->translator->trans('flash.auth.no_permissions_edit')
         )) {
             return $this->redirectToRoute('app_home');
         }
@@ -275,7 +290,7 @@ final class AnimalController extends AbstractController
                         ControllerUtils::handleError(
                             fn($type, $message) => $this->addFlash($type, $message),
                             $e,
-                            'Error al procesar la imagen'
+                            $this->translator->trans('flash.animal.image_error')
                         );
                         throw $e;
                     }
@@ -305,7 +320,7 @@ final class AnimalController extends AbstractController
 
                 ControllerUtils::handleSuccess(
                     fn($type, $message) => $this->addFlash($type, $message),
-                    'Animal actualizado correctamente'
+                    $this->translator->trans('flash.animal.updated_success')
                 );
 
                 return $this->redirectToRoute('app_animal_show_slug', [
@@ -316,7 +331,7 @@ final class AnimalController extends AbstractController
                 ControllerUtils::handleError(
                     fn($type, $message) => $this->addFlash($type, $message),
                     $e,
-                    'Error al actualizar el animal'
+                    $this->translator->trans('flash.animal.update_error')
                 );
             }
         }
@@ -339,13 +354,13 @@ final class AnimalController extends AbstractController
             $userRepository,
             fn() => $this->getUser(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'Debes iniciar sesión para eliminar una publicación'
+            $this->translator->trans('flash.auth.login_required_delete')
         );
         if (!$user) {
             return ControllerUtils::redirectToLogin(
                 fn($type, $message) => $this->addFlash($type, $message),
                 fn($route) => $this->redirectToRoute($route),
-                'Debes iniciar sesión para eliminar una publicación'
+                $this->translator->trans('flash.auth.login_required_delete')
             );
         }
 
@@ -355,8 +370,7 @@ final class AnimalController extends AbstractController
         if (!$animal) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Animal no encontrado'),
-                'Error'
+                new \Exception($this->translator->trans('flash.animal.not_found'))
             );
             return $this->redirectToRoute('app_home');
         }
@@ -378,7 +392,7 @@ final class AnimalController extends AbstractController
             $user,
             $entityToDelete->getUserId(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'No tienes permisos para eliminar esta publicación'
+            $this->translator->trans('flash.auth.no_permissions_delete')
         )) {
             return $this->redirectToRoute('app_home');
         }
@@ -390,13 +404,13 @@ final class AnimalController extends AbstractController
 
             ControllerUtils::handleSuccess(
                 fn($type, $message) => $this->addFlash($type, $message),
-                'Animal eliminado correctamente'
+                $this->translator->trans('flash.animal.deleted_success')
             );
         } catch (\Exception $e) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
                 $e,
-                'Error al eliminar el animal'
+                $this->translator->trans('flash.animal.delete_error')
             );
         }
 
@@ -419,13 +433,13 @@ final class AnimalController extends AbstractController
             $userRepository,
             fn() => $this->getUser(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'Debes iniciar sesión para archivar una publicación'
+            $this->translator->trans('flash.auth.login_required_archive')
         );
         if (!$user) {
             return ControllerUtils::redirectToLogin(
                 fn($type, $message) => $this->addFlash($type, $message),
                 fn($route) => $this->redirectToRoute($route),
-                'Debes iniciar sesión para archivar una publicación'
+                $this->translator->trans('flash.auth.login_required_archive')
             );
         }
 
@@ -435,8 +449,7 @@ final class AnimalController extends AbstractController
         if (!$animal) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Animal no encontrado'),
-                'Error'
+                new \Exception($this->translator->trans('flash.animal.not_found'))
             );
             return $this->redirectToRoute('app_home');
         }
@@ -448,8 +461,7 @@ final class AnimalController extends AbstractController
         if (!$lostPet && !$foundAnimal) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Publicación no encontrada'),
-                'Error'
+                new \Exception($this->translator->trans('flash.animal.publication_not_found'))
             );
             return $this->redirectToRoute('app_home');
         }
@@ -460,7 +472,7 @@ final class AnimalController extends AbstractController
             $user,
             $entityToCheck->getUserId(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'No tienes permisos para archivar esta publicación'
+            $this->translator->trans('flash.auth.no_permissions_archive')
         )) {
             return $this->redirectToRoute('app_home');
         }
@@ -477,13 +489,13 @@ final class AnimalController extends AbstractController
 
             ControllerUtils::handleSuccess(
                 fn($type, $message) => $this->addFlash($type, $message),
-                'Animal archivado correctamente'
+                $this->translator->trans('flash.animal.archived_success')
             );
         } catch (\Exception $e) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
                 $e,
-                'Error al archivar el animal: ' . $e->getMessage()
+                $this->translator->trans('flash.animal.archive_error')
             );
         }
 
@@ -506,13 +518,13 @@ final class AnimalController extends AbstractController
             $userRepository,
             fn() => $this->getUser(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'Debes iniciar sesión para restaurar una publicación'
+            $this->translator->trans('flash.auth.login_required_restore')
         );
         if (!$user) {
             return ControllerUtils::redirectToLogin(
                 fn($type, $message) => $this->addFlash($type, $message),
                 fn($route) => $this->redirectToRoute($route),
-                'Debes iniciar sesión para restaurar una publicación'
+                $this->translator->trans('flash.auth.login_required_restore')
             );
         }
 
@@ -522,8 +534,7 @@ final class AnimalController extends AbstractController
         if (!$animal) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Animal no encontrado'),
-                'Error'
+                new \Exception($this->translator->trans('flash.animal.not_found'))
             );
             return $this->redirectToRoute('app_home');
         }
@@ -532,8 +543,7 @@ final class AnimalController extends AbstractController
         if ($animal->getStatus() !== 'ARCHIVED') {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('El animal no está archivado'),
-                'Error'
+                new \Exception($this->translator->trans('flash.animal.not_archived'))
             );
             return $this->redirectToRoute('app_home');
         }
@@ -545,8 +555,7 @@ final class AnimalController extends AbstractController
         if (!$lostPet && !$foundAnimal) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
-                new \Exception('Publicación no encontrada'),
-                'Error'
+                new \Exception($this->translator->trans('flash.animal.publication_not_found'))
             );
             return $this->redirectToRoute('app_home');
         }
@@ -557,7 +566,7 @@ final class AnimalController extends AbstractController
             $user,
             $entityToCheck->getUserId(),
             fn($type, $message) => $this->addFlash($type, $message),
-            'No tienes permisos para restaurar esta publicación'
+            $this->translator->trans('flash.auth.no_permissions_restore')
         )) {
             return $this->redirectToRoute('app_home');
         }
@@ -572,13 +581,13 @@ final class AnimalController extends AbstractController
 
             ControllerUtils::handleSuccess(
                 fn($type, $message) => $this->addFlash($type, $message),
-                'Animal restaurado correctamente'
+                $this->translator->trans('flash.animal.restored_success')
             );
         } catch (\Exception $e) {
             ControllerUtils::handleError(
                 fn($type, $message) => $this->addFlash($type, $message),
                 $e,
-                'Error al restaurar el animal'
+                $this->translator->trans('flash.animal.restore_error')
             );
         }
 

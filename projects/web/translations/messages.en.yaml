@@ -22,9 +22,472 @@ common:
     back: "Back"
     next: "Next"
     previous: "Previous"
+    error: "Error"
 
 footer:
     tagline: "Connecting families with their lost pets since 2025"
+
+lost_pets:
+    title: "Lost Pets"
+    header:
+        title: "Lost Pets"
+        subtitle: "Find lost pets in your area"
+
+    filters:
+        search_placeholder: "Search by name, description, type, age, tags..."
+        animal_type: "Animal type"
+        animal_types:
+            dog: "Dog"
+            cat: "Cat"
+            bird: "Bird"
+            rabbit: "Rabbit"
+            other: "Other"
+        location_search: "Search by location"
+        clear_location: "Clear location"
+        quick_filters: "Quick filters:"
+        search_button: "Search"
+        clear_filters: "Clear filters"
+
+    proximity_indicator:
+        title: "Showing lost pets sorted by proximity to your location"
+
+    no_results:
+        title: "No lost pets"
+        title_with_location: "No lost pets found near your location."
+        description: "No lost pets found with the applied filters."
+        description_with_location: "Try expanding your search or changing the location."
+
+    contact_modal:
+        title: "Contact Information"
+        pet_lost: "Lost pet"
+        phone: "Phone"
+        email: "Email"
+        whatsapp: "WhatsApp"
+        info_text: "Click on WhatsApp or Email to contact directly"
+
+    list:
+        contact: "Contact"
+        share: "Share"
+        male: "Male"
+        female: "Female"
+        unspecified: "Unspecified"
+        today: "Today"
+        yesterday: "Yesterday"
+        days_ago: "%days% days ago"
+        weeks_ago: "%weeks% weeks ago"
+
+    create:
+        title: "Register Lost Animal"
+        header:
+            title: "Publish Lost Pet"
+            subtitle: "Help others find your lost pet"
+
+        steps:
+            step: "Step"
+            of: "of"
+            basic_info: "Basic Information"
+            description: "Description"
+            location: "Location"
+            reward: "Reward"
+            photo: "Photo"
+            finalize: "Finalize"
+            basic: "Basic"
+
+        step1:
+            title: "Basic Information"
+            animal_name: "Pet name *"
+            animal_name_placeholder: "Ex: Luna, Rocky, Mittens"
+            animal_type: "Animal type *"
+            animal_gender: "Gender"
+            animal_age: "Approximate age"
+            animal_age_placeholder: "Ex: 3 years, 6 months"
+
+        step2:
+            title: "Physical Description"
+            animal_size: "Size"
+            animal_color: "Main color"
+            animal_description: "Detailed description *"
+            animal_description_placeholder: "Describe the unique characteristics of your pet: marks, spots, behavior, etc."
+            animal_tags: "Tags"
+            animal_tags_placeholder: "Separate tags with commas (ex: friendly, playful, calm)"
+            animal_tags_help: "Enter tags separated by commas (ex: friendly, playful, calm)"
+
+        step3:
+            title: "Location Information"
+            location_search_label: "Search location where the pet was lost *"
+            location_search_placeholder: "Search place..."
+            my_location: "My location"
+            map_help: "Click on the map to select a specific location or use the search above"
+            edit_manual: "Edit address manually"
+            lost_date: "Loss date *"
+            lost_time: "Approximate time"
+            lost_zone: "Area where lost *"
+            lost_zone_placeholder: "Ex: Center, North, Malasaña, etc."
+            lost_zone_help: "Write the area or neighborhood where your pet was lost"
+            lost_address: "Specific address"
+            lost_address_placeholder: "Will be completed automatically when selecting location"
+            lost_address_help: "Auto-detected from map location"
+            lost_circumstances: "Loss circumstances"
+            lost_circumstances_placeholder: "Describe how your pet was lost: escaped through the door, got loose from the leash, etc."
+
+        step4:
+            title: "Reward Information"
+            reward_amount: "Reward amount"
+            reward_amount_placeholder: "Ex: 100"
+            reward_amount_help: "Enter the amount in euros (optional)"
+            reward_description: "Reward description"
+            reward_description_placeholder: "Describe any additional reward or special details"
+
+        step5:
+            title: "Pet Photos"
+            photo_label: "Select multiple photos of your pet"
+            photo_help: "Upload several photos of your pet from different angles. The first photo will be the main one."
+            photo_formats: "PNG, JPG, GIF, WebP, AVIF up to 2MB each (maximum 5 photos)"
+
+        step6:
+            title: "Review and Finalize"
+            review_text: "Please review all information before publishing. Once published, you can edit the information if necessary."
+            what_happens_next:
+                title: "What happens next?"
+                description: "Your publication will be visible to the entire community. We'll notify you by email if someone reports seeing your pet."
+
+        navigation:
+            previous: "Previous"
+            cancel: "Cancel"
+            next: "Next"
+            submit: "Publish Pet"
+
+found_pets:
+    title: "Found Pets"
+    header:
+        title: "Found Pets"
+        subtitle: "Find found pets in your area"
+
+    filters:
+        search_placeholder: "Search by name, description, type, age, tags..."
+        animal_type: "Animal type"
+        animal_types:
+            dog: "Dog"
+            cat: "Cat"
+            bird: "Bird"
+            rabbit: "Rabbit"
+            other: "Other"
+        location_search: "Search by location"
+        clear_location: "Clear location"
+        quick_filters: "Quick filters:"
+        search_button: "Search"
+        clear_filters: "Clear filters"
+
+    proximity_indicator:
+        title: "Showing found pets sorted by proximity to your location"
+
+    no_results:
+        title: "No found pets"
+        title_with_location: "No found pets found near your location."
+        description: "No found pets found with the applied filters."
+        description_with_location: "Try expanding your search or changing the location."
+
+    contact_modal:
+        title: "Contact Information"
+        pet_found: "Found pet"
+        phone: "Phone"
+        email: "Email"
+        whatsapp: "WhatsApp"
+        info_text: "Click on WhatsApp or Email to contact directly"
+
+    list:
+        contact: "Contact"
+        share: "Share"
+        male: "Male"
+        female: "Female"
+        unspecified: "Unspecified"
+        today: "Today"
+        yesterday: "Yesterday"
+        days_ago: "%days% days ago"
+        weeks_ago: "%weeks% weeks ago"
+
+    create:
+        title: "Register Found Animal"
+        header:
+            title: "Publish Found Animal"
+            subtitle: "Help reunite a pet with its family"
+
+        steps:
+            step: "Step"
+            of: "of"
+            basic_info: "Basic Information"
+            description: "Description"
+            location: "Location"
+            photo: "Photo"
+            finalize: "Finalize"
+            basic: "Basic"
+
+        step1:
+            title: "Basic Information"
+            animal_name: "Animal name (if known)"
+            animal_name_placeholder: "Ex: Luna, Rocky (optional)"
+            animal_type: "Animal type *"
+            animal_gender: "Gender *"
+            animal_size: "Size *"
+
+        step2:
+            title: "Physical Description"
+            animal_color: "Color"
+            animal_color_placeholder: "Ex: Brown, Black, White"
+            animal_age: "Approximate age"
+            animal_age_placeholder: "Ex: 3 years, 6 months, puppy"
+            animal_description: "Animal description"
+            animal_description_placeholder: "Describe the physical characteristics and behavior of the found animal"
+            animal_tags: "Tags"
+            animal_tags_placeholder: "Separate tags with commas (ex: friendly, scared, injured)"
+            animal_tags_help: "Describe the animal's condition and behavior (ex: friendly, scared, injured)"
+
+        step3:
+            title: "Location Information"
+            location_search_label: "Search location where the animal was found *"
+            location_search_placeholder: "Search place..."
+            my_location: "My location"
+            map_help: "Click on the map to select the specific location where you found the animal"
+            edit_manual: "Edit address manually"
+            found_date: "Found date *"
+            found_time: "Approximate time"
+            found_zone: "Area where found *"
+            found_zone_placeholder: "Ex: Center, North, Malasaña, etc."
+            found_zone_help: "Write the area or neighborhood where you found the animal"
+            found_address: "Specific address"
+            found_address_placeholder: "Will be completed automatically when selecting location"
+            found_address_help: "Auto-detected from map location"
+            found_circumstances: "Found circumstances"
+            found_circumstances_placeholder: "Describe how and where you found the animal, in what conditions, etc."
+            additional_notes: "Additional notes"
+            additional_notes_placeholder: "Additional information about the animal or the finding"
+
+        step4:
+            title: "Found Animal Photos"
+            photo_label: "Select multiple photos of the found animal"
+            photo_help: "Upload several photos of the animal from different angles. The first photo will be the main one."
+            photo_formats: "PNG, JPG, GIF, WebP, AVIF up to 2MB each (maximum 5 photos)"
+
+        step5:
+            title: "Review and Finalize"
+            review_text: "Please review all information before publishing. Once published, owners can contact you if they recognize their pet."
+            thank_you:
+                title: "Thank you for helping!"
+                description: "Your publication will help reunite this animal with its family. We'll notify you if someone claims the pet."
+
+        navigation:
+            previous: "Previous"
+            cancel: "Cancel"
+            next: "Next"
+            submit: "Publish Found Animal"
+
+animal:
+    show:
+        title_suffix: "- Details"
+        breadcrumb:
+            home: "Home"
+            lost_pets: "Lost Pets"
+            found_pets: "Found Pets"
+
+        status:
+            lost: "Lost"
+            found: "Found"
+            claimed: "Claimed"
+            filled: "Archived"
+
+        gender:
+            male: "Male"
+            female: "Female"
+            unspecified: "Unspecified"
+
+        size:
+            small: "Small"
+            medium: "Medium"
+            large: "Large"
+            extra_large: "Extra Large"
+            unspecified: "Unspecified"
+
+        quick_info:
+            title: "Quick Information"
+            type: "Type:"
+            gender: "Gender:"
+            size: "Size:"
+            age: "Age:"
+            color: "Color:"
+
+        no_photo: "No photo available"
+        more_photos: "More photos"
+        additional_photo: "Additional photo"
+
+        tabs:
+            general:
+                title: "General Information"
+                title_mobile: "General"
+                animal_info: "Animal Information"
+                description: "Description"
+                characteristics: "Characteristics"
+                published: "Published:"
+                updated: "Updated:"
+
+            details:
+                lost:
+                    title: "Loss Details"
+                    title_mobile: "Loss"
+                    info_title: "Loss Information"
+                    lost_date: "Loss date"
+                    lost_time: "Approximate time"
+                    lost_zone: "Area where lost"
+                    lost_address: "Specific address"
+                    lost_circumstances: "Loss circumstances"
+                    reward: "Reward"
+                    reward_amount: "Amount:"
+                    reward_description: "Description:"
+
+                found:
+                    title: "Found Details"
+                    title_mobile: "Found"
+                    info_title: "Found Information"
+                    found_date: "Found date"
+                    found_time: "Approximate time"
+                    found_zone: "Area where found"
+                    found_address: "Specific address"
+                    found_circumstances: "Found circumstances"
+                    additional_notes: "Additional notes"
+
+            contact:
+                title: "Contact"
+                title_mobile: "Contact"
+                info_title: "Contact Information"
+                published_by: "Published by"
+                found_by: "Found by"
+                phone: "Phone"
+                email: "Email"
+                no_contact: "Contact information not available"
+                no_contact_desc: "No contact information has been provided for this animal."
+
+        actions:
+            back_to_lost: "Back to Lost Pets"
+            back_to_found: "Back to Found Pets"
+            share: "Share"
+
+        modal:
+            title: "Animal photo"
+            close: "Close"
+
+auth:
+    login:
+        title: "Login"
+        subtitle: "Access your Pet Finder account"
+        email: "Email"
+        email_placeholder: "your@email.com"
+        password: "Password"
+        password_placeholder: "Your password"
+        forgot_password: "Forgot your password?"
+        login_button: "Login"
+        no_account: "Don't have an account?"
+        register_link: "Sign up here"
+        oauth_continue: "Continue with"
+        or_divider: "or"
+
+    register:
+        title: "User Registration"
+        subtitle: "Create your Pet Finder account"
+        toggle:
+            regular_user: "Regular User"
+            shelter: "Shelter"
+        oauth_continue: "Continue with"
+        or_divider: "or"
+
+        form:
+            first_name: "First Name"
+            first_name_placeholder: "Your first name"
+            last_name: "Last Name"
+            last_name_placeholder: "Your last name"
+            email: "Email"
+            email_placeholder: "your@email.com"
+            phone: "Phone"
+            phone_placeholder: "Your phone number"
+            password: "Password"
+            password_placeholder: "Your password"
+            confirm_password: "Confirm Password"
+            confirm_password_placeholder: "Confirm your password"
+            email_notifications: "Receive email notifications"
+            create_account: "Create Account"
+
+        shelter:
+            title: "Shelter Information"
+            subtitle: "Complete your organization details"
+            name: "Shelter Name"
+            name_placeholder: "Ex: Happy Animals Shelter"
+            description: "Description"
+            description_placeholder: "Describe your mission, values and how you help animals..."
+            address: "Address"
+            address_placeholder: "Complete shelter address"
+            phone: "Phone"
+            phone_placeholder: "Contact phone"
+            website: "Website"
+            website_placeholder: "https://your-site.com"
+            facebook: "Facebook"
+            facebook_placeholder: "https://facebook.com/your-shelter"
+
+        footer:
+            has_account: "Already have an account?"
+            login_link: "Login here"
+
+    forgot_password:
+        title: "Forgot My Password"
+        subtitle: "Enter your email to receive a reset link"
+        how_it_works:
+            title: "How does it work?"
+            description: "We'll send you a secure link to your email that will allow you to create a new password. The link will expire in 1 hour for security."
+        email: "Email"
+        email_placeholder: "your@email.com"
+        send_reset_link: "Send Reset Link"
+        remembered_password: "Remembered your password?"
+        login_link: "Login"
+        no_account: "Don't have an account?"
+        register_link: "Sign up here"
+
+    reset_password:
+        title: "Reset Password"
+        subtitle: "Create a new password for your account"
+        valid_link:
+            title: "Valid link"
+            description: "Your reset link is valid. Please create a new secure password."
+        requirements:
+            title: "Password requirements:"
+            min_length: "Minimum 6 characters"
+            recommended: "It's recommended to use letters, numbers and symbols"
+            personal_info: "Don't use easily guessable personal information"
+        new_password: "New Password"
+        new_password_placeholder: "Your new password"
+        confirm_password: "Confirm Password"
+        confirm_password_placeholder: "Confirm your new password"
+        reset_button: "Reset Password"
+        remembered_password: "Remembered your password?"
+        login_link: "Login"
+
+    shelter_verification:
+        pending:
+            title: "Verification Pending"
+            subtitle: "Your shelter account is being reviewed"
+            status: "Verification process in progress"
+            description: "Our team is reviewing your shelter information. This process may take 24-48 business hours."
+            email_notification: "You'll receive an email notification when your account is verified"
+            verified_access: "Once verified, you'll be able to post pets and manage your shelter"
+            logout: "Logout"
+            support_contact: "Have questions? Contact support"
+
+        rejected:
+            title: "Request Rejected"
+            subtitle: "Your shelter registration request was not approved"
+            status: "Request not approved"
+            description: "We regret to inform you that your request to register as a shelter did not meet our verification criteria."
+            support_info: "You can contact our support team for more information about the reasons for rejection"
+            retry_info: "If you believe this is an error, you can request registration again with updated information"
+            logout: "Logout"
+            contact_support: "Contact Support"
+            try_again: "Try Again"
 
 home:
     title: "Home - Pet Finder"
@@ -83,7 +546,7 @@ home:
         share: "Share"
         zone_not_specified: "Zone not specified"
         today: "Today"
-        days_ago: "{days} days ago"
+        days_ago: "%days% days ago"
         one_day_ago: "1 day ago"
         unnamed_pet: "Unnamed"
         found_animal: "found"
@@ -95,3 +558,115 @@ home:
         email: "Email"
         whatsapp: "WhatsApp"
         info_text: "Click on WhatsApp or Email to contact directly"
+
+user:
+    title: "My Account"
+    subtitle: "Manage your publications and settings"
+    welcome: "Welcome"
+    logout: "Logout"
+
+    navigation:
+        lost_pets: "Lost Pets"
+        lost_pets_mobile: "Lost"
+        found_pets: "Found Animals"
+        found_pets_mobile: "Found"
+        settings: "Settings"
+        settings_mobile: "Settings"
+
+    stats:
+        lost_pets: "Lost Pets"
+        found_animals: "Found Animals"
+        total_publications: "Total Publications"
+
+    pages:
+        lost_pets:
+            title: "My Lost Pets"
+            header: "My Lost Pets"
+        found_pets:
+            title: "My Found Animals"
+            header: "My Found Animals"
+
+    actions:
+        edit: "Edit"
+        found: "Found"
+        archive: "Archive"
+        restore: "Restore"
+        delete: "Delete"
+
+    dates:
+        published: "Published"
+        today: "Today"
+        yesterday: "Yesterday"
+        days_ago: "%days% days ago"
+        weeks_ago: "%weeks% weeks ago"
+
+    confirmations:
+        delete: 'Are you sure you want to delete the publication of "{name}"? This action cannot be undone.'
+        archive: 'Are you sure you want to archive the publication of "{name}"? The publication will be hidden but you can restore it later.'
+        restore: 'Are you sure you want to restore the publication of "{name}"? The publication will become active again.'
+
+    settings:
+        title: "Profile Settings"
+        profile_info: "Profile Information"
+        save_changes: "Save Changes"
+        saving: "Saving..."
+
+        form:
+            first_name: "First Name"
+            first_name_placeholder: "Enter your first name"
+            last_name: "Last Name"
+            last_name_placeholder: "Enter your last name"
+            email: "Email"
+            email_placeholder: "example@email.com"
+            phone: "Phone"
+            phone_placeholder: "+1 123 456 7890"
+
+        validation:
+            first_name_required: "First name is required"
+            first_name_min_length: "First name must be at least {{ limit }} characters long"
+            first_name_max_length: "First name cannot be longer than {{ limit }} characters"
+            first_name_invalid: "First name can only contain letters and spaces"
+            last_name_required: "Last name is required"
+            last_name_min_length: "Last name must be at least {{ limit }} characters long"
+            last_name_max_length: "Last name cannot be longer than {{ limit }} characters"
+            last_name_invalid: "Last name can only contain letters and spaces"
+            email_required: "Email is required"
+            email_invalid: 'The email "{{ value }}" is not valid'
+            email_max_length: "Email cannot be longer than {{ limit }} characters"
+            email_already_used: "This email is already in use by another user"
+            phone_max_length: "Phone number cannot be longer than {{ limit }} characters"
+            phone_invalid: "Phone number can only contain numbers, spaces, hyphens and parentheses"
+
+        messages:
+            profile_updated: "Profile updated successfully"
+            update_error: "Error updating profile: {error}"
+
+# Flash Messages
+flash:
+    auth:
+        login_required: "You must be logged in to access this page"
+        login_required_edit: "You must be logged in to edit a publication"
+        login_required_archive: "You must be logged in to archive a publication"
+        login_required_restore: "You must be logged in to restore a publication"
+        login_required_delete: "You must be logged in to delete a publication"
+        user_not_found: "User not found"
+        account_disabled: "Your account is disabled"
+        no_permissions: "You don't have permission to perform this action"
+        no_permissions_edit: "You don't have permission to edit this publication"
+        no_permissions_archive: "You don't have permission to archive this publication"
+        no_permissions_restore: "You don't have permission to restore this publication"
+        no_permissions_delete: "You don't have permission to delete this publication"
+
+    animal:
+        not_found: "Animal not found"
+        publication_not_found: "Publication not found"
+        not_archived: "The animal is not archived"
+        archived_success: "Animal archived successfully"
+        restored_success: "Animal restored successfully"
+        deleted_success: "Animal deleted successfully"
+        updated_success: "Animal updated successfully"
+        archive_error: "Error archiving the animal"
+        restore_error: "Error restoring the animal"
+        delete_error: "Error deleting the animal"
+        update_error: "Error updating the animal"
+        image_error: "Error processing the image"

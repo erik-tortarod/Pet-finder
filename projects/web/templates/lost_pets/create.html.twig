@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registrar Animal Perdido
-{% endblock %}
+{% block title %}{{ 'lost_pets.create.title'|trans }}{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -21,8 +20,8 @@
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
-               <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Publicar Mascota Perdida</h1>
-               <p class="mt-2 text-sm sm:text-base text-gray-600">Ayuda a otros a encontrar a tu mascota perdida</p>
+               <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 'lost_pets.create.header.title'|trans }}</h1>
+               <p class="mt-2 text-sm sm:text-base text-gray-600">{{ 'lost_pets.create.header.subtitle'|trans }}</p>
             </div>
          </div>
       </div>
@@ -33,20 +32,20 @@
          <!-- Progress Bar -->
          <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
-               <h2 class="text-lg font-semibold text-gray-900">Paso <span id="current-step">1</span> de 6</h2>
-               <span class="text-sm text-gray-500" id="step-title">Información Básica</span>
+               <h2 class="text-lg font-semibold text-gray-900">{{ 'lost_pets.create.steps.step'|trans }} <span id="current-step">1</span> {{ 'lost_pets.create.steps.of'|trans }} 6</h2>
+               <span class="text-sm text-gray-500" id="step-title">{{ 'lost_pets.create.steps.basic_info'|trans }}</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
                <div class="bg-blue-600 h-2 rounded-full transition-all duration-300" id="progress-bar"
                   style="width: 16.67%"></div>
             </div>
             <div class="flex justify-between mt-2 text-xs text-gray-500">
-               <span>Básica</span>
-               <span>Descripción</span>
-               <span>Ubicación</span>
-               <span>Recompensa</span>
-               <span>Foto</span>
-               <span>Finalizar</span>
+               <span>{{ 'lost_pets.create.steps.basic'|trans }}</span>
+               <span>{{ 'lost_pets.create.steps.description'|trans }}</span>
+               <span>{{ 'lost_pets.create.steps.location'|trans }}</span>
+               <span>{{ 'lost_pets.create.steps.reward'|trans }}</span>
+               <span>{{ 'lost_pets.create.steps.photo'|trans }}</span>
+               <span>{{ 'lost_pets.create.steps.finalize'|trans }}</span>
             </div>
          </div>
 
@@ -54,27 +53,27 @@
             <!-- Step 1: Basic Information -->
             <div class="step-content" id="step-1">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-info-circle mr-2 text-blue-600"></i>Información Básica
+                  <i class="fas fa-info-circle mr-2 text-blue-600"></i>{{ 'lost_pets.create.step1.title'|trans }}
                </h2>
                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     {{ form_label(form.animalName, 'Nombre de la mascota *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'Ej: Luna, Rocky, Mittens'}}) }}
+                     {{ form_label(form.animalName, 'lost_pets.create.step1.animal_name'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'lost_pets.create.step1.animal_name_placeholder'|trans}}) }}
                      {{ form_errors(form.animalName) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalType, 'Tipo de animal *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalType, 'lost_pets.create.step1.animal_type'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalType, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.animalType) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalGender, 'Género', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalGender, 'lost_pets.create.step1.animal_gender'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalGender, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.animalGender) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalAge, 'Edad aproximada', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalAge, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'Ej: 3 años, 6 meses'}}) }}
+                     {{ form_label(form.animalAge, 'lost_pets.create.step1.animal_age'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalAge, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'lost_pets.create.step1.animal_age_placeholder'|trans}}) }}
                      {{ form_errors(form.animalAge) }}
                   </div>
                </div>
@@ -83,29 +82,29 @@
             <!-- Step 2: Physical Description -->
             <div class="step-content hidden" id="step-2">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-palette mr-2 text-blue-600"></i>Descripción Física
+                  <i class="fas fa-palette mr-2 text-blue-600"></i>{{ 'lost_pets.create.step2.title'|trans }}
                </h2>
                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     {{ form_label(form.animalSize, 'Tamaño', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalSize, 'lost_pets.create.step2.animal_size'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalSize, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.animalSize) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalColor, 'Color principal', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalColor, 'lost_pets.create.step2.animal_color'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalColor, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.animalColor) }}
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.animalDescription, 'Descripción detallada *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'rows': 4, 'placeholder': 'Describe las características únicas de tu mascota: marcas, manchas, comportamiento, etc.'}}) }}
+                     {{ form_label(form.animalDescription, 'lost_pets.create.step2.animal_description'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'rows': 4, 'placeholder': 'lost_pets.create.step2.animal_description_placeholder'|trans}}) }}
                      {{ form_errors(form.animalDescription) }}
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.animalTags, 'Etiquetas', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalTags, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'Separa las etiquetas con comas (ej: amigable, juguetón, tranquilo)'}}) }}
+                     {{ form_label(form.animalTags, 'lost_pets.create.step2.animal_tags'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalTags, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'lost_pets.create.step2.animal_tags_placeholder'|trans}}) }}
                      {{ form_errors(form.animalTags) }}
-                     <small class="text-sm text-gray-500">Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)</small>
+                     <small class="text-sm text-gray-500">{{ 'lost_pets.create.step2.animal_tags_help'|trans }}</small>
                   </div>
                </div>
             </div>
@@ -113,21 +112,21 @@
             <!-- Step 3: Location Information -->
             <div class="step-content hidden" id="step-3">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>Información de Ubicación
+                  <i class="fas fa-map-marker-alt mr-2 text-blue-600"></i>{{ 'lost_pets.create.step3.title'|trans }}
                </h2>
 
                <!-- Map and Location Search -->
                <div class="mb-6">
                   <div class="search-container relative mb-4">
                      <label for="location-search" class="block text-sm font-medium text-gray-700 mb-2">
-                        Buscar ubicación donde se perdió la mascota *
+                        {{ 'lost_pets.create.step3.location_search_label'|trans }}
                      </label>
                      <div class="flex gap-2">
-                        <input type="text" id="location-search" placeholder="Buscar lugar..."
+                        <input type="text" id="location-search" placeholder="{{ 'lost_pets.create.step3.location_search_placeholder'|trans }}"
                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500">
                         <button type="button" id="current-location-btn"
                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors text-sm font-medium">
-                           <i class="fas fa-crosshairs mr-1"></i>Mi ubicación
+                           <i class="fas fa-crosshairs mr-1"></i>{{ 'lost_pets.create.step3.my_location'|trans }}
                         </button>
                      </div>
                      <div id="location-suggestions"
@@ -138,7 +137,7 @@
                   <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
                   <p class="mt-2 text-sm text-gray-600">
                      <i class="fas fa-info-circle mr-1"></i>
-                     Haz clic en el mapa para seleccionar una ubicación específica o usa la búsqueda arriba
+                     {{ 'lost_pets.create.step3.map_help'|trans }}
                   </p>
                </div>
 
@@ -147,45 +146,45 @@
                   <button type="button" id="toggle-manual-edit" onclick="toggleManualEdit()"
                      class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                      <i class="fas fa-edit mr-1"></i>
-                     <span id="edit-button-text">Editar dirección manualmente</span>
+                     <span id="edit-button-text">{{ 'lost_pets.create.step3.edit_manual'|trans }}</span>
                   </button>
                </div>
 
                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     {{ form_label(form.lostDate, 'Fecha de pérdida *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.lostDate, 'lost_pets.create.step3.lost_date'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.lostDate, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.lostDate) }}
                   </div>
                   <div>
-                     {{ form_label(form.lostTime, 'Hora aproximada', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.lostTime, 'lost_pets.create.step3.lost_time'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.lostTime, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.lostTime) }}
                   </div>
                   <div>
-                     {{ form_label(form.lostZone, 'Zona donde se perdió *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.lostZone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'Ej: Centro, Norte, Malasaña, etc.'}}) }}
+                     {{ form_label(form.lostZone, 'lost_pets.create.step3.lost_zone'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.lostZone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'lost_pets.create.step3.lost_zone_placeholder'|trans}}) }}
                      {{ form_errors(form.lostZone) }}
                      <small class="text-xs text-gray-600 mt-1 block">
-                        <i class="fas fa-edit mr-1"></i>Escribe la zona o barrio donde se perdió tu mascota
+                        <i class="fas fa-edit mr-1"></i>{{ 'lost_pets.create.step3.lost_zone_help'|trans }}
                      </small>
                   </div>
                   <div>
-                     {{ form_label(form.lostAddress, 'Dirección específica', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.lostAddress, 'lost_pets.create.step3.lost_address'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      <div class="relative">
-                        {{ form_widget(form.lostAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'readonly': true, 'placeholder': 'Se completará automáticamente al seleccionar ubicación'}}) }}
+                        {{ form_widget(form.lostAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'readonly': true, 'placeholder': 'lost_pets.create.step3.lost_address_placeholder'|trans}}) }}
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                            <i class="fas fa-map-marker-alt text-gray-400 text-sm" title="Auto-detectado desde el mapa"></i>
                         </div>
                      </div>
                      {{ form_errors(form.lostAddress) }}
                      <small class="text-xs text-blue-600 mt-1 block">
-                        <i class="fas fa-info-circle mr-1"></i>Auto-detectado desde la ubicación del mapa
+                        <i class="fas fa-info-circle mr-1"></i>{{ 'lost_pets.create.step3.lost_address_help'|trans }}
                      </small>
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.lostCircumstances, 'Circunstancias de la pérdida', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.lostCircumstances, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'rows': 3, 'placeholder': 'Describe cómo se perdió tu mascota: se escapó por la puerta, se soltó de la correa, etc.'}}) }}
+                     {{ form_label(form.lostCircumstances, 'lost_pets.create.step3.lost_circumstances'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.lostCircumstances, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'rows': 3, 'placeholder': 'lost_pets.create.step3.lost_circumstances_placeholder'|trans}}) }}
                      {{ form_errors(form.lostCircumstances) }}
                   </div>
                </div>
@@ -194,18 +193,18 @@
             <!-- Step 4: Reward Information -->
             <div class="step-content hidden" id="step-4">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-gift mr-2 text-blue-600"></i>Información de Recompensa
+                  <i class="fas fa-gift mr-2 text-blue-600"></i>{{ 'lost_pets.create.step4.title'|trans }}
                </h2>
                <div class="grid grid-cols-1 gap-6">
                   <div>
-                     {{ form_label(form.rewardAmount, 'Monto de la recompensa', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.rewardAmount, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'Ej: 100'}}) }}
+                     {{ form_label(form.rewardAmount, 'lost_pets.create.step4.reward_amount'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.rewardAmount, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'lost_pets.create.step4.reward_amount_placeholder'|trans}}) }}
                      {{ form_errors(form.rewardAmount) }}
-                     <small class="text-sm text-gray-500">Ingresa el monto en euros (opcional)</small>
+                     <small class="text-sm text-gray-500">{{ 'lost_pets.create.step4.reward_amount_help'|trans }}</small>
                   </div>
                   <div>
-                     {{ form_label(form.rewardDescription, 'Descripción de la recompensa', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.rewardDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'rows': 3, 'placeholder': 'Describe cualquier recompensa adicional o detalles especiales'}}) }}
+                     {{ form_label(form.rewardDescription, 'lost_pets.create.step4.reward_description'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.rewardDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'rows': 3, 'placeholder': 'lost_pets.create.step4.reward_description_placeholder'|trans}}) }}
                      {{ form_errors(form.rewardDescription) }}
                   </div>
                </div>
@@ -214,7 +213,7 @@
             <!-- Step 5: Photo -->
             <div class="step-content hidden" id="step-5">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-camera mr-2 text-blue-600"></i>Fotos de la Mascota
+                  <i class="fas fa-camera mr-2 text-blue-600"></i>{{ 'lost_pets.create.step5.title'|trans }}
                </h2>
 
                <!-- Photo Upload -->
@@ -224,7 +223,7 @@
                      <div class="space-y-2">
                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
                         <div>
-                           {{ form_label(form.animalPhoto, 'Selecciona múltiples fotos de tu mascota', {'attr': {'class': 'cursor-pointer text-blue-600 hover:text-blue-500 font-medium'}}) }}
+                           {{ form_label(form.animalPhoto, 'lost_pets.create.step5.photo_label'|trans, {'attr': {'class': 'cursor-pointer text-blue-600 hover:text-blue-500 font-medium'}}) }}
                         </div>
                         {{ form_widget(form.animalPhoto, {
                            'attr': {
@@ -233,11 +232,11 @@
                               'accept': 'image/*'
                            }
                         }) }}
-                        <p class="text-sm text-gray-500">PNG, JPG, GIF, WebP, AVIF hasta 2MB cada una (máximo 5 fotos)</p>
+                        <p class="text-sm text-gray-500">{{ 'lost_pets.create.step5.photo_formats'|trans }}</p>
                      </div>
                   </div>
                   {{ form_errors(form.animalPhoto) }}
-                  <small class="text-sm text-gray-600">Sube varias fotos de tu mascota desde diferentes ángulos. La primera foto será la principal.</small>
+                  <small class="text-sm text-gray-600">{{ 'lost_pets.create.step5.photo_help'|trans }}</small>
 
                   <!-- Photo Preview Area -->
                   <div id="photo-preview-container" class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 hidden">
@@ -249,19 +248,19 @@
             <!-- Step 6: Summary -->
             <div class="step-content hidden" id="step-6">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-check-circle mr-2 text-blue-600"></i>Revisar y Finalizar
+                  <i class="fas fa-check-circle mr-2 text-blue-600"></i>{{ 'lost_pets.create.step6.title'|trans }}
                </h2>
                <div class="bg-gray-50 rounded-lg p-6">
                   <p class="text-gray-700 mb-4">
-                     Por favor, revisa toda la información antes de publicar. Una vez publicado, podrás editar la información si es necesario.
+                     {{ 'lost_pets.create.step6.review_text'|trans }}
                   </p>
                   <div class="bg-blue-50 border border-blue-200 rounded-md p-4">
                      <div class="flex">
                         <i class="fas fa-info-circle text-blue-600 mt-1 mr-2"></i>
                         <div>
-                           <h3 class="text-sm font-medium text-blue-800">¿Qué sucede después?</h3>
+                           <h3 class="text-sm font-medium text-blue-800">{{ 'lost_pets.create.step6.what_happens_next.title'|trans }}</h3>
                            <p class="text-sm text-blue-700 mt-1">
-                              Tu publicación será visible para toda la comunidad. Te notificaremos por email si alguien reporta haber visto a tu mascota.
+                              {{ 'lost_pets.create.step6.what_happens_next.description'|trans }}
                            </p>
                         </div>
                      </div>
@@ -273,20 +272,20 @@
             <div class="flex justify-between pt-6 border-t">
                <button type="button" id="prev-btn" onclick="previousStep()"
                   class="bg-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-400 transition-colors font-medium hidden">
-                  <i class="fas fa-arrow-left mr-2"></i>Anterior
+                  <i class="fas fa-arrow-left mr-2"></i>{{ 'lost_pets.create.navigation.previous'|trans }}
                </button>
                <div class="flex gap-4">
                   <button type="button" onclick="window.history.back()"
                      class="bg-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-400 transition-colors font-medium">
-                     <i class="fas fa-times mr-2"></i>Cancelar
+                     <i class="fas fa-times mr-2"></i>{{ 'lost_pets.create.navigation.cancel'|trans }}
                   </button>
                   <button type="button" id="next-btn" onclick="nextStep()"
                      class="bg-blue-600 text-white py-3 px-6 rounded-md hover:bg-blue-700 transition-colors font-medium">
-                     <i class="fas fa-arrow-right mr-2"></i>Siguiente
+                     <i class="fas fa-arrow-right mr-2"></i>{{ 'lost_pets.create.navigation.next'|trans }}
                   </button>
                   <button type="submit" id="submit-btn"
                      class="hidden bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors font-medium">
-                     <i class="fas fa-paper-plane mr-2"></i>Publicar Mascota
+                     <i class="fas fa-paper-plane mr-2"></i>{{ 'lost_pets.create.navigation.submit'|trans }}
                   </button>
                </div>
             </div>

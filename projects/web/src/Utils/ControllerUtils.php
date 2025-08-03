@@ -6,9 +6,25 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 class ControllerUtils
 {
+    private static ?TranslatorInterface $translator = null;
+
+    public static function setTranslator(TranslatorInterface $translator): void
+    {
+        self::$translator = $translator;
+    }
+
+    private static function trans(string $key): string
+    {
+        if (self::$translator) {
+            return self::$translator->trans($key);
+        }
+        return $key;
+    }
+
     /**
      * Obtiene el usuario desde la sesión manual
      */
@@ -34,12 +50,13 @@ class ControllerUtils
     /**
      * Verifica si el usuario está autenticado y redirige si no lo está
      */
-    public static function requireAuthentication(Request $request, UserRepository $userRepository, callable $getUserCallback, callable $addFlashCallback, string $errorMessage = 'Debes iniciar sesión para acceder a esta página'): ?User
+    public static function requireAuthentication(Request $request, UserRepository $userRepository, callable $getUserCallback, callable $addFlashCallback, string $errorMessage = null): ?User
     {
         $user = self::getUserFromSession($request, $userRepository, $getUserCallback);
 
         if (!$user) {
-            $addFlashCallback('error', $errorMessage);
+            $message = $errorMessage ?: self::trans('flash.auth.login_required');
+            $addFlashCallback('error', $message);
             return null;
         }
 
@@ -49,27 +66,28 @@ class ControllerUtils
     /**
      * Verifica si el usuario está autenticado con validaciones adicionales (activo, etc.)
      */
-    public static function requireValidatedAuthentication(Request $request, UserRepository $userRepository, callable $addFlashCallback, string $errorMessage = 'Debes iniciar sesión para acceder a esta página'): ?User
+    public static function requireValidatedAuthentication(Request $request, UserRepository $userRepository, callable $addFlashCallback, string $errorMessage = null): ?User
     {
         $session = $request->getSession();
         $userId = $session->get('user_id');
 
         if (!$userId) {
-            $addFlashCallback('error', $errorMessage);
+            $message = $errorMessage ?: self::trans('flash.auth.login_required');
+            $addFlashCallback('error', $message);
             return null;
         }
 
         $user = $userRepository->find($userId);
 
         if (!$user) {
-            $addFlashCallback('error', 'Usuario no encontrado');
+            $addFlashCallback('error', self::trans('flash.auth.user_not_found'));
             $session->clear();
             $session->invalidate();
             return null;
         }
 
         if (!$user->isActive()) {
-            $addFlashCallback('error', 'Tu cuenta está desactivada');
+            $addFlashCallback('error', self::trans('flash.auth.account_disabled'));
             $session->clear();
             $session->invalidate();
             return null;
@@ -81,19 +99,21 @@ class ControllerUtils
     /**
      * Redirige al login con mensaje de error
      */
-    public static function redirectToLogin(callable $addFlashCallback, callable $redirectCallback, string $errorMessage = 'Debes iniciar sesión para acceder a esta página'): RedirectResponse
+    public static function redirectToLogin(callable $addFlashCallback, callable $redirectCallback, string $errorMessage = null): RedirectResponse
     {
-        $addFlashCallback('error', $errorMessage);
+        $message = $errorMessage ?: self::trans('flash.auth.login_required');
+        $addFlashCallback('error', $message);
         return $redirectCallback('app_auth_login');
     }
 
     /**
      * Verifica si el usuario es propietario de un recurso
      */
-    public static function checkOwnership(User $user, User $resourceOwner, callable $addFlashCallback, string $errorMessage = 'No tienes permisos para realizar esta acción'): bool
+    public static function checkOwnership(User $user, User $resourceOwner, callable $addFlashCallback, string $errorMessage = null): bool
     {
         if ($resourceOwner !== $user) {
-            $addFlashCallback('error', $errorMessage);
+            $message = $errorMessage ?: self::trans('flash.auth.no_permissions');
+            $addFlashCallback('error', $message);
             return false;
         }
 
@@ -103,9 +123,10 @@ class ControllerUtils
     /**
      * Maneja errores de forma consistente
      */
-    public static function handleError(callable $addFlashCallback, \Exception $e, string $contextMessage = 'Error'): void
+    public static function handleError(callable $addFlashCallback, \Exception $e, string $contextMessage = null): void
     {
-        $addFlashCallback('error', $contextMessage . ': ' . $e->getMessage());
+        $message = $contextMessage ?: self::trans('common.error');
+        $addFlashCallback('error', $message . ': ' . $e->getMessage());
     }
 
     /**

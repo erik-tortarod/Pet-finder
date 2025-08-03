@@ -6,7 +6,7 @@
 	{% else %}
 		{{ animal.description }}
 	{% endif %}
-	- Detalles
+	{{ 'animal.show.title_suffix'|trans }}
 {% endblock %}
 
 {% block stylesheets %}
@@ -27,16 +27,16 @@
 						<li class="inline-flex items-center">
 							<a href="{{ path('app_home') }}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
 								{% include 'components/Icon.html.twig' with {name: 'home', size: 16, class: 'mr-2'} %}
-								Inicio
+								{{ 'animal.show.breadcrumb.home'|trans }}
 							</a>
 						</li>
 						<li>
 							<div class="flex items-center">
 								{% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 24, class: 'text-gray-400'} %}
 								{% if lostPet %}
-									<a href="{{ path('app_lost_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Mascotas Perdidas</a>
+									<a href="{{ path('app_lost_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">{{ 'animal.show.breadcrumb.lost_pets'|trans }}</a>
 								{% elseif foundAnimal %}
-									<a href="{{ path('app_found_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">Mascotas Encontradas</a>
+									<a href="{{ path('app_found_pets') }}" class="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2">{{ 'animal.show.breadcrumb.found_pets'|trans }}</a>
 								{% endif %}
 							</div>
 						</li>
@@ -67,7 +67,7 @@
 						</h1>
 						<p class="mt-1 text-lg text-gray-600">{{ animal.animalType|title }}
 							•
-							{% if animal.gender == 'male' %}Macho{% elseif animal.gender == 'female' %}Hembra{% else %}No especificado
+							{% if animal.gender == 'male' %}{{ 'animal.show.gender.male'|trans }}{% elseif animal.gender == 'female' %}{{ 'animal.show.gender.female'|trans }}{% else %}{{ 'animal.show.gender.unspecified'|trans }}
 							{% endif %}
 							{% if animal.age %}
 								•
@@ -90,7 +90,7 @@
                             size: 14,
                             class: 'mr-1'
                         } %}
-							{{ animal_status_label(animal.status) }}
+							{% if animal.status == 'LOST' %}{{ 'animal.show.status.lost'|trans }}{% elseif animal.status == 'FOUND' %}{{ 'animal.show.status.found'|trans }}{% elseif animal.status == 'CLAIMED' %}{{ 'animal.show.status.claimed'|trans }}{% elseif animal.status == 'FILLED' %}{{ 'animal.show.status.filled'|trans }}{% else %}{{ animal.status }}{% endif %}
 						</span>
 					</div>
 				</div>
@@ -112,7 +112,7 @@
 							<div class="w-full h-80 bg-gray-200 flex items-center justify-center">
 								<div class="text-center">
 									{% include 'components/Icon.html.twig' with {name: 'image', size: 96, class: 'text-gray-400 mb-4'} %}
-									<p class="text-gray-500 text-lg">Sin foto disponible</p>
+									<p class="text-gray-500 text-lg">{{ 'animal.show.no_photo'|trans }}</p>
 								</div>
 							</div>
 						{% endif %}
@@ -121,12 +121,12 @@
 					{# Thumbnail Gallery - Only visible on mobile #}
 					{% if animal.animalPhotos|length > 1 %}
 						<div class="sm:hidden bg-white rounded-lg shadow-sm p-4">
-							<h3 class="text-lg font-semibold text-gray-900 mb-3">Más fotos</h3>
+							<h3 class="text-lg font-semibold text-gray-900 mb-3">{{ 'animal.show.more_photos'|trans }}</h3>
 							<div class="grid grid-cols-3 gap-2">
 								{% for photo in animal.animalPhotos %}
 									{% if photo != primaryPhoto %}
 										<div class="aspect-square overflow-hidden rounded-lg">
-											<img src="{{ path('app_image_animal', {'id': photo.id}) }}" class="w-full h-full object-cover gallery-thumbnail cursor-pointer" alt="Foto adicional" onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
+											<img src="{{ path('app_image_animal', {'id': photo.id}) }}" class="w-full h-full object-cover gallery-thumbnail cursor-pointer" alt="{{ 'animal.show.additional_photo'|trans }}" onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
 										</div>
 									{% endif %}
 								{% endfor %}
@@ -136,41 +136,41 @@
 
 					{# Quick Info Card #}
 					<div class="bg-white rounded-lg shadow-sm p-4">
-						<h3 class="text-lg font-semibold text-gray-900 mb-3">Información Rápida</h3>
+						<h3 class="text-lg font-semibold text-gray-900 mb-3">{{ 'animal.show.quick_info.title'|trans }}</h3>
 						<div class="space-y-2 text-sm">
 							<div class="flex justify-between">
-								<span class="text-gray-500">Tipo:</span>
+								<span class="text-gray-500">{{ 'animal.show.quick_info.type'|trans }}</span>
 								<span class="font-medium">{{ animal.animalType|title }}</span>
 							</div>
 							<div class="flex justify-between">
-								<span class="text-gray-500">Género:</span>
+								<span class="text-gray-500">{{ 'animal.show.quick_info.gender'|trans }}</span>
 								<span class="font-medium">
-									{% if animal.gender == 'male' %}Macho
-										{% elseif animal.gender == 'female' %}Hembra
-										{% else %}No especificado
+									{% if animal.gender == 'male' %}{{ 'animal.show.gender.male'|trans }}
+										{% elseif animal.gender == 'female' %}{{ 'animal.show.gender.female'|trans }}
+										{% else %}{{ 'animal.show.gender.unspecified'|trans }}
 									{% endif %}
 								</span>
 							</div>
 							<div class="flex justify-between">
-								<span class="text-gray-500">Tamaño:</span>
+								<span class="text-gray-500">{{ 'animal.show.quick_info.size'|trans }}</span>
 								<span class="font-medium">
-									{% if animal.size == 'small' %}Pequeño
-										{% elseif animal.size == 'medium' %}Mediano
-										{% elseif animal.size == 'large' %}Grande
-										{% elseif animal.size == 'extra_large' %}Extra Grande
-										{% else %}No especificado
+									{% if animal.size == 'small' %}{{ 'animal.show.size.small'|trans }}
+										{% elseif animal.size == 'medium' %}{{ 'animal.show.size.medium'|trans }}
+										{% elseif animal.size == 'large' %}{{ 'animal.show.size.large'|trans }}
+										{% elseif animal.size == 'extra_large' %}{{ 'animal.show.size.extra_large'|trans }}
+										{% else %}{{ 'animal.show.size.unspecified'|trans }}
 									{% endif %}
 								</span>
 							</div>
 							{% if animal.age %}
 								<div class="flex justify-between">
-									<span class="text-gray-500">Edad:</span>
+									<span class="text-gray-500">{{ 'animal.show.quick_info.age'|trans }}</span>
 									<span class="font-medium">{{ animal.age }}</span>
 								</div>
 							{% endif %}
 							{% if animal.color %}
 								<div class="flex justify-between">
-									<span class="text-gray-500">Color:</span>
+									<span class="text-gray-500">{{ 'animal.show.quick_info.color'|trans }}</span>
 									<span class="font-medium">{{ animal.color }}</span>
 								</div>
 							{% endif %}
@@ -187,19 +187,19 @@
 							<nav class="-mb-px flex flex-wrap sm:flex-nowrap space-x-0 sm:space-x-8 px-4 sm:px-6" aria-label="Tabs">
 								<button onclick="showTab('general')" class="tab-button active py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
 									{% include 'components/Icon.html.twig' with {name: 'info', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
-									<span class="hidden sm:inline">Información General</span>
-									<span class="sm:hidden">General</span>
+									<span class="hidden sm:inline">{{ 'animal.show.tabs.general.title'|trans }}</span>
+									<span class="sm:hidden">{{ 'animal.show.tabs.general.title_mobile'|trans }}</span>
 								</button>
 
 								{% if lostPet or foundAnimal %}
 									<button onclick="showTab('details')" class="tab-button py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
 										{% include 'components/Icon.html.twig' with {name: 'list', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
 										<span class="hidden sm:inline">
-											{% if lostPet %}Detalles de Pérdida{% else %}Detalles de Hallazgo
+											{% if lostPet %}{{ 'animal.show.tabs.details.lost.title'|trans }}{% else %}{{ 'animal.show.tabs.details.found.title'|trans }}
 											{% endif %}
 										</span>
 										<span class="sm:hidden">
-											{% if lostPet %}Pérdida{% else %}Hallazgo
+											{% if lostPet %}{{ 'animal.show.tabs.details.lost.title_mobile'|trans }}{% else %}{{ 'animal.show.tabs.details.found.title_mobile'|trans }}
 											{% endif %}
 										</span>
 									</button>
@@ -207,8 +207,8 @@
 
 								<button onclick="showTab('contact')" class="tab-button py-3 sm:py-4 px-2 sm:px-1 border-b-2 font-medium text-xs sm:text-sm whitespace-nowrap flex-1 sm:flex-none">
 									{% include 'components/Icon.html.twig' with {name: 'mail', size: 14, class: 'mr-1 sm:mr-2 inline'} %}
-									<span class="hidden sm:inline">Contacto</span>
-									<span class="sm:hidden">Contacto</span>
+									<span class="hidden sm:inline">{{ 'animal.show.tabs.contact.title'|trans }}</span>
+									<span class="sm:hidden">{{ 'animal.show.tabs.contact.title_mobile'|trans }}</span>
 								</button>
 							</nav>
 						</div>
@@ -220,11 +220,11 @@
 						{# General Information Tab #}
 						<div id="tab-general" class="tab-content active">
 							<div class="bg-white rounded-lg shadow-sm p-6">
-								<h2 class="text-xl font-semibold text-gray-900 mb-4">Información del Animal</h2>
+								<h2 class="text-xl font-semibold text-gray-900 mb-4">{{ 'animal.show.tabs.general.animal_info'|trans }}</h2>
 
 								{% if animal.description %}
 									<div class="mb-6">
-										<dt class="text-sm font-medium text-gray-500 mb-2">Descripción</dt>
+										<dt class="text-sm font-medium text-gray-500 mb-2">{{ 'animal.show.tabs.general.description'|trans }}</dt>
 										<dd class="text-sm text-gray-900 leading-relaxed">{{ animal.description }}</dd>
 									</div>
 								{% endif %}
@@ -232,7 +232,7 @@
 								{# Tags #}
 								{% if animal.animalTags|length > 0 %}
 									<div class="mb-6">
-										<dt class="text-sm font-medium text-gray-500 mb-3">Características</dt>
+										<dt class="text-sm font-medium text-gray-500 mb-3">{{ 'animal.show.tabs.general.characteristics'|trans }}</dt>
 										<dd class="flex flex-wrap gap-2">
 											{% for animalTag in animal.animalTags %}
 												<span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800">
@@ -247,11 +247,11 @@
 								<div class="border-t pt-4">
 									<div class="text-sm text-gray-500">
 										<p>
-											<strong>Publicado:</strong>
+											<strong>{{ 'animal.show.tabs.general.published'|trans }}</strong>
 											{{ animal.createdAt|date('d/m/Y H:i') }}</p>
 										{% if animal.updatedAt != animal.createdAt %}
 											<p class="mt-1">
-												<strong>Actualizado:</strong>
+												<strong>{{ 'animal.show.tabs.general.updated'|trans }}</strong>
 												{{ animal.updatedAt|date('d/m/Y H:i') }}</p>
 										{% endif %}
 									</div>
@@ -264,25 +264,25 @@
 							<div id="tab-details" class="tab-content">
 								<div class="bg-white rounded-lg shadow-sm p-6">
 									{% if lostPet %}
-										<h2 class="text-xl font-semibold text-gray-900 mb-4">Información de la Pérdida</h2>
+										<h2 class="text-xl font-semibold text-gray-900 mb-4">{{ 'animal.show.tabs.details.lost.info_title'|trans }}</h2>
 										<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 											<div>
-												<dt class="text-sm font-medium text-gray-500">Fecha de pérdida</dt>
+												<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.lost.lost_date'|trans }}</dt>
 												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostDate|date('d/m/Y') }}</dd>
 											</div>
 											{% if lostPet.lostTime %}
 												<div>
-													<dt class="text-sm font-medium text-gray-500">Hora aproximada</dt>
+													<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.lost.lost_time'|trans }}</dt>
 													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostTime|date('H:i') }}</dd>
 												</div>
 											{% endif %}
 											<div class="md:col-span-2">
-												<dt class="text-sm font-medium text-gray-500">Zona donde se perdió</dt>
+												<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.lost.lost_zone'|trans }}</dt>
 												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostZone }}</dd>
 											</div>
 											{% if lostPet.lostAddress %}
 												<div class="md:col-span-2">
-													<dt class="text-sm font-medium text-gray-500">Dirección específica</dt>
+													<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.lost.lost_address'|trans }}</dt>
 													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ lostPet.lostAddress }}</dd>
 												</div>
 											{% endif %}
@@ -290,7 +290,7 @@
 
 										{% if lostPet.lostCircumstances %}
 											<div class="mt-6">
-												<dt class="text-sm font-medium text-gray-500 mb-2">Circunstancias de la pérdida</dt>
+												<dt class="text-sm font-medium text-gray-500 mb-2">{{ 'animal.show.tabs.details.lost.lost_circumstances'|trans }}</dt>
 												<dd class="text-sm text-gray-900 leading-relaxed">{{ lostPet.lostCircumstances }}</dd>
 											</div>
 										{% endif %}
@@ -302,16 +302,16 @@
 														{% include 'components/Icon.html.twig' with {name: 'gift', size: 20, class: 'text-yellow-400'} %}
 													</div>
 													<div class="ml-3">
-														<h3 class="text-sm font-medium text-yellow-800">Recompensa</h3>
+														<h3 class="text-sm font-medium text-yellow-800">{{ 'animal.show.tabs.details.lost.reward'|trans }}</h3>
 														<div class="mt-2 text-sm text-yellow-700">
 															{% if lostPet.rewardAmount %}
 																<p>
-																	<strong>Monto:</strong>
+																	<strong>{{ 'animal.show.tabs.details.lost.reward_amount'|trans }}</strong>
 																	{{ lostPet.rewardAmount }}</p>
 															{% endif %}
 															{% if lostPet.rewardDescription %}
 																<p>
-																	<strong>Descripción:</strong>
+																	<strong>{{ 'animal.show.tabs.details.lost.reward_description'|trans }}</strong>
 																	{{ lostPet.rewardDescription }}</p>
 															{% endif %}
 														</div>
@@ -321,25 +321,25 @@
 										{% endif %}
 
 									{% elseif foundAnimal %}
-										<h2 class="text-xl font-semibold text-gray-900 mb-4">Información del Hallazgo</h2>
+										<h2 class="text-xl font-semibold text-gray-900 mb-4">{{ 'animal.show.tabs.details.found.info_title'|trans }}</h2>
 										<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 											<div>
-												<dt class="text-sm font-medium text-gray-500">Fecha de hallazgo</dt>
+												<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.found.found_date'|trans }}</dt>
 												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundDate|date('d/m/Y') }}</dd>
 											</div>
 											{% if foundAnimal.foundTime %}
 												<div>
-													<dt class="text-sm font-medium text-gray-500">Hora aproximada</dt>
+													<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.found.found_time'|trans }}</dt>
 													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundTime|date('H:i') }}</dd>
 												</div>
 											{% endif %}
 											<div class="md:col-span-2">
-												<dt class="text-sm font-medium text-gray-500">Zona donde se encontró</dt>
+												<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.found.found_zone'|trans }}</dt>
 												<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundZone }}</dd>
 											</div>
 											{% if foundAnimal.foundAddress %}
 												<div class="md:col-span-2">
-													<dt class="text-sm font-medium text-gray-500">Dirección específica</dt>
+													<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.details.found.found_address'|trans }}</dt>
 													<dd class="mt-1 text-sm text-gray-900 font-medium">{{ foundAnimal.foundAddress }}</dd>
 												</div>
 											{% endif %}
@@ -347,14 +347,14 @@
 
 										{% if foundAnimal.foundCircumstances %}
 											<div class="mt-6">
-												<dt class="text-sm font-medium text-gray-500 mb-2">Circunstancias del hallazgo</dt>
+												<dt class="text-sm font-medium text-gray-500 mb-2">{{ 'animal.show.tabs.details.found.found_circumstances'|trans }}</dt>
 												<dd class="text-sm text-gray-900 leading-relaxed">{{ foundAnimal.foundCircumstances }}</dd>
 											</div>
 										{% endif %}
 
 										{% if foundAnimal.additionalNotes %}
 											<div class="mt-6">
-												<dt class="text-sm font-medium text-gray-500 mb-2">Notas adicionales</dt>
+												<dt class="text-sm font-medium text-gray-500 mb-2">{{ 'animal.show.tabs.details.found.additional_notes'|trans }}</dt>
 												<dd class="text-sm text-gray-900 leading-relaxed">{{ foundAnimal.additionalNotes }}</dd>
 											</div>
 										{% endif %}
@@ -367,7 +367,7 @@
 						<div id="tab-contact" class="tab-content">
 							<div class="bg-white rounded-lg shadow-sm p-6">
 								{% if (lostPet and lostPet.userId) or (foundAnimal and foundAnimal.userId) %}
-									<h2 class="text-xl font-semibold text-gray-900 mb-4">Información de Contacto</h2>
+									<h2 class="text-xl font-semibold text-gray-900 mb-4">{{ 'animal.show.tabs.contact.info_title'|trans }}</h2>
 									{% set user = lostPet ? lostPet.userId : foundAnimal.userId %}
 									<div class="space-y-4">
 										<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
@@ -376,7 +376,7 @@
 											</div>
 											<div class="flex-1 min-w-0">
 												<dt class="text-sm font-medium text-gray-500">
-													{% if lostPet %}Publicado por{% else %}Encontrado por
+													{% if lostPet %}{{ 'animal.show.tabs.contact.published_by'|trans }}{% else %}{{ 'animal.show.tabs.contact.found_by'|trans }}
 													{% endif %}
 												</dt>
 												<dd class="text-sm text-gray-900 font-medium break-words">{{ user.firstName }}
@@ -390,7 +390,7 @@
 													{% include 'components/Icon.html.twig' with {name: 'phone', size: 24, class: 'text-gray-400'} %}
 												</div>
 												<div class="flex-1 min-w-0">
-													<dt class="text-sm font-medium text-gray-500">Teléfono</dt>
+													<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.contact.phone'|trans }}</dt>
 													<dd class="text-sm text-gray-900 font-medium break-all">
 														<a href="tel:{{ user.phone }}" class="hover:text-blue-600 transition-colors">{{ user.phone }}</a>
 													</dd>
@@ -403,7 +403,7 @@
 												{% include 'components/Icon.html.twig' with {name: 'mail', size: 24, class: 'text-gray-400'} %}
 											</div>
 											<div class="flex-1 min-w-0">
-												<dt class="text-sm font-medium text-gray-500">Email</dt>
+												<dt class="text-sm font-medium text-gray-500">{{ 'animal.show.tabs.contact.email'|trans }}</dt>
 												<dd class="text-sm text-gray-900 font-medium break-all">
 													<a href="mailto:{{ user.email }}" class="hover:text-blue-600 transition-colors">{{ user.email }}</a>
 												</dd>
@@ -413,8 +413,8 @@
 								{% else %}
 									<div class="text-center py-8">
 										{% include 'components/Icon.html.twig' with {name: 'info', size: 48, class: 'text-gray-400 mx-auto mb-4'} %}
-										<h3 class="text-lg font-medium text-gray-900 mb-2">Información de contacto no disponible</h3>
-										<p class="text-gray-500">No se ha proporcionado información de contacto para este animal.</p>
+										<h3 class="text-lg font-medium text-gray-900 mb-2">{{ 'animal.show.tabs.contact.no_contact'|trans }}</h3>
+										<p class="text-gray-500">{{ 'animal.show.tabs.contact.no_contact_desc'|trans }}</p>
 									</div>
 								{% endif %}
 							</div>
@@ -424,12 +424,12 @@
 					{# Additional Photos - Only visible on PC, below tabs #}
 					{% if animal.animalPhotos|length > 1 %}
 						<div class="hidden md:block bg-white rounded-lg shadow-sm p-6">
-							<h3 class="text-lg font-semibold text-gray-900 mb-4">Más fotos</h3>
+							<h3 class="text-lg font-semibold text-gray-900 mb-4">{{ 'animal.show.more_photos'|trans }}</h3>
 							<div class="grid grid-cols-4 gap-4">
 								{% for photo in animal.animalPhotos %}
 									{% if photo != primaryPhoto %}
 										<div class="aspect-square overflow-hidden rounded-lg">
-											<img src="{{ path('app_image_animal', {'id': photo.id}) }}" class="w-full h-full object-cover gallery-thumbnail cursor-pointer" alt="Foto adicional" onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
+											<img src="{{ path('app_image_animal', {'id': photo.id}) }}" class="w-full h-full object-cover gallery-thumbnail cursor-pointer" alt="{{ 'animal.show.additional_photo'|trans }}" onclick="showImageModal('{{ path('app_image_animal', {'id': photo.id}) }}')">
 										</div>
 									{% endif %}
 								{% endfor %}
@@ -444,18 +444,18 @@
 				{% if lostPet %}
 					<a href="{{ path('app_lost_pets') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
 						{% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
-						Volver a Mascotas Perdidas
+						{{ 'animal.show.actions.back_to_lost'|trans }}
 					</a>
 				{% elseif foundAnimal %}
 					<a href="{{ path('app_found_pets') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
 						{% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
-						Volver a Mascotas Encontradas
+						{{ 'animal.show.actions.back_to_found'|trans }}
 					</a>
 				{% endif %}
 
 				<button onclick="shareAnimal()" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
 					{% include 'components/Icon.html.twig' with {name: 'share', size: 16, class: 'mr-2'} %}
-					Compartir
+					{{ 'animal.show.actions.share'|trans }}
 				</button>
 			</div>
 		</div>
@@ -465,13 +465,13 @@
 	<div id="imageModal" class="custom-modal">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h5 class="modal-title">Foto del animal</h5>
-				<button type="button" class="modal-close" onclick="closeImageModal()" aria-label="Close">
+				<h5 class="modal-title">{{ 'animal.show.modal.title'|trans }}</h5>
+				<button type="button" class="modal-close" onclick="closeImageModal()" aria-label="{{ 'animal.show.modal.close'|trans }}">
 					&times;
 				</button>
 			</div>
 			<div class="modal-body">
-				<img id="modalImage" src="" class="modal-image" alt="Foto del animal">
+				<img id="modalImage" src="" class="modal-image" alt="{{ 'animal.show.modal.title'|trans }}">
 			</div>
 		</div>
 	</div>

@@ -22,9 +22,472 @@ common:
     back: "Volver"
     next: "Siguiente"
     previous: "Anterior"
+    error: "Error"
 
 footer:
     tagline: "Conectando familias con sus mascotas perdidas desde 2025"
+
+lost_pets:
+    title: "Mascotas Perdidas"
+    header:
+        title: "Mascotas Buscadas"
+        subtitle: "Encuentra mascotas perdidas en tu zona"
+
+    filters:
+        search_placeholder: "Buscar por nombre, descripción, tipo, edad, etiquetas..."
+        animal_type: "Tipo de animal"
+        animal_types:
+            dog: "Perro"
+            cat: "Gato"
+            bird: "Ave"
+            rabbit: "Conejo"
+            other: "Otro"
+        location_search: "Buscar por ubicación"
+        clear_location: "Limpiar ubicación"
+        quick_filters: "Filtros rápidos:"
+        search_button: "Buscar"
+        clear_filters: "Limpiar filtros"
+
+    proximity_indicator:
+        title: "Mostrando mascotas perdidas ordenadas por cercanía a tu ubicación"
+
+    no_results:
+        title: "No hay mascotas perdidas"
+        title_with_location: "No se encontraron mascotas perdidas cerca de tu ubicación."
+        description: "No se encontraron mascotas perdidas con los filtros aplicados."
+        description_with_location: "Intenta ampliar tu búsqueda o cambiar la ubicación."
+
+    contact_modal:
+        title: "Información de Contacto"
+        pet_lost: "Mascota perdida"
+        phone: "Teléfono"
+        email: "Email"
+        whatsapp: "WhatsApp"
+        info_text: "Haz clic en WhatsApp o Email para contactar directamente"
+
+    list:
+        contact: "Contactar"
+        share: "Compartir"
+        male: "Macho"
+        female: "Hembra"
+        unspecified: "No especificado"
+        today: "Hoy"
+        yesterday: "Ayer"
+        days_ago: "Hace %days% días"
+        weeks_ago: "Hace %weeks% semanas"
+
+    create:
+        title: "Registrar Animal Perdido"
+        header:
+            title: "Publicar Mascota Perdida"
+            subtitle: "Ayuda a otros a encontrar a tu mascota perdida"
+
+        steps:
+            step: "Paso"
+            of: "de"
+            basic_info: "Información Básica"
+            description: "Descripción"
+            location: "Ubicación"
+            reward: "Recompensa"
+            photo: "Foto"
+            finalize: "Finalizar"
+            basic: "Básica"
+
+        step1:
+            title: "Información Básica"
+            animal_name: "Nombre de la mascota *"
+            animal_name_placeholder: "Ej: Luna, Rocky, Mittens"
+            animal_type: "Tipo de animal *"
+            animal_gender: "Género"
+            animal_age: "Edad aproximada"
+            animal_age_placeholder: "Ej: 3 años, 6 meses"
+
+        step2:
+            title: "Descripción Física"
+            animal_size: "Tamaño"
+            animal_color: "Color principal"
+            animal_description: "Descripción detallada *"
+            animal_description_placeholder: "Describe las características únicas de tu mascota: marcas, manchas, comportamiento, etc."
+            animal_tags: "Etiquetas"
+            animal_tags_placeholder: "Separa las etiquetas con comas (ej: amigable, juguetón, tranquilo)"
+            animal_tags_help: "Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)"
+
+        step3:
+            title: "Información de Ubicación"
+            location_search_label: "Buscar ubicación donde se perdió la mascota *"
+            location_search_placeholder: "Buscar lugar..."
+            my_location: "Mi ubicación"
+            map_help: "Haz clic en el mapa para seleccionar una ubicación específica o usa la búsqueda arriba"
+            edit_manual: "Editar dirección manualmente"
+            lost_date: "Fecha de pérdida *"
+            lost_time: "Hora aproximada"
+            lost_zone: "Zona donde se perdió *"
+            lost_zone_placeholder: "Ej: Centro, Norte, Malasaña, etc."
+            lost_zone_help: "Escribe la zona o barrio donde se perdió tu mascota"
+            lost_address: "Dirección específica"
+            lost_address_placeholder: "Se completará automáticamente al seleccionar ubicación"
+            lost_address_help: "Auto-detectado desde la ubicación del mapa"
+            lost_circumstances: "Circunstancias de la pérdida"
+            lost_circumstances_placeholder: "Describe cómo se perdió tu mascota: se escapó por la puerta, se soltó de la correa, etc."
+
+        step4:
+            title: "Información de Recompensa"
+            reward_amount: "Monto de la recompensa"
+            reward_amount_placeholder: "Ej: 100"
+            reward_amount_help: "Ingresa el monto en euros (opcional)"
+            reward_description: "Descripción de la recompensa"
+            reward_description_placeholder: "Describe cualquier recompensa adicional o detalles especiales"
+
+        step5:
+            title: "Fotos de la Mascota"
+            photo_label: "Selecciona múltiples fotos de tu mascota"
+            photo_help: "Sube varias fotos de tu mascota desde diferentes ángulos. La primera foto será la principal."
+            photo_formats: "PNG, JPG, GIF, WebP, AVIF hasta 2MB cada una (máximo 5 fotos)"
+
+        step6:
+            title: "Revisar y Finalizar"
+            review_text: "Por favor, revisa toda la información antes de publicar. Una vez publicado, podrás editar la información si es necesario."
+            what_happens_next:
+                title: "¿Qué sucede después?"
+                description: "Tu publicación será visible para toda la comunidad. Te notificaremos por email si alguien reporta haber visto a tu mascota."
+
+        navigation:
+            previous: "Anterior"
+            cancel: "Cancelar"
+            next: "Siguiente"
+            submit: "Publicar Mascota"
+
+found_pets:
+    title: "Mascotas Encontradas"
+    header:
+        title: "Mascotas Encontradas"
+        subtitle: "Encuentra mascotas encontradas en tu zona"
+
+    filters:
+        search_placeholder: "Buscar por nombre, descripción, tipo, edad, etiquetas..."
+        animal_type: "Tipo de animal"
+        animal_types:
+            dog: "Perro"
+            cat: "Gato"
+            bird: "Ave"
+            rabbit: "Conejo"
+            other: "Otro"
+        location_search: "Buscar por ubicación"
+        clear_location: "Limpiar ubicación"
+        quick_filters: "Filtros rápidos:"
+        search_button: "Buscar"
+        clear_filters: "Limpiar filtros"
+
+    proximity_indicator:
+        title: "Mostrando mascotas encontradas ordenadas por cercanía a tu ubicación"
+
+    no_results:
+        title: "No hay mascotas encontradas"
+        title_with_location: "No se encontraron mascotas encontradas cerca de tu ubicación."
+        description: "No se encontraron mascotas encontradas con los filtros aplicados."
+        description_with_location: "Intenta ampliar tu búsqueda o cambiar la ubicación."
+
+    contact_modal:
+        title: "Información de Contacto"
+        pet_found: "Mascota encontrada"
+        phone: "Teléfono"
+        email: "Email"
+        whatsapp: "WhatsApp"
+        info_text: "Haz clic en WhatsApp o Email para contactar directamente"
+
+    list:
+        contact: "Contactar"
+        share: "Compartir"
+        male: "Macho"
+        female: "Hembra"
+        unspecified: "No especificado"
+        today: "Hoy"
+        yesterday: "Ayer"
+        days_ago: "Hace %days% días"
+        weeks_ago: "Hace %weeks% semanas"
+
+    create:
+        title: "Registrar Animal Encontrado"
+        header:
+            title: "Publicar Animal Encontrado"
+            subtitle: "Ayuda a reunir una mascota con su familia"
+
+        steps:
+            step: "Paso"
+            of: "de"
+            basic_info: "Información Básica"
+            description: "Descripción"
+            location: "Ubicación"
+            photo: "Foto"
+            finalize: "Finalizar"
+            basic: "Básica"
+
+        step1:
+            title: "Información Básica"
+            animal_name: "Nombre del animal (si se conoce)"
+            animal_name_placeholder: "Ej: Luna, Rocky (opcional)"
+            animal_type: "Tipo de animal *"
+            animal_gender: "Género *"
+            animal_size: "Tamaño *"
+
+        step2:
+            title: "Descripción Física"
+            animal_color: "Color"
+            animal_color_placeholder: "Ej: Marrón, Negro, Blanco"
+            animal_age: "Edad aproximada"
+            animal_age_placeholder: "Ej: 3 años, 6 meses, cachorro"
+            animal_description: "Descripción del animal"
+            animal_description_placeholder: "Describe las características físicas y comportamiento del animal encontrado"
+            animal_tags: "Etiquetas"
+            animal_tags_placeholder: "Separa las etiquetas con comas (ej: amigable, asustado, herido)"
+            animal_tags_help: "Describe el estado y comportamiento del animal (ej: amigable, asustado, herido)"
+
+        step3:
+            title: "Información de Ubicación"
+            location_search_label: "Buscar ubicación donde se encontró el animal *"
+            location_search_placeholder: "Buscar lugar..."
+            my_location: "Mi ubicación"
+            map_help: "Haz clic en el mapa para seleccionar la ubicación específica donde encontraste el animal"
+            edit_manual: "Editar dirección manualmente"
+            found_date: "Fecha de hallazgo *"
+            found_time: "Hora aproximada"
+            found_zone: "Zona donde se encontró *"
+            found_zone_placeholder: "Ej: Centro, Norte, Malasaña, etc."
+            found_zone_help: "Escribe la zona o barrio donde encontraste el animal"
+            found_address: "Dirección específica"
+            found_address_placeholder: "Se completará automáticamente al seleccionar ubicación"
+            found_address_help: "Auto-detectado desde la ubicación del mapa"
+            found_circumstances: "Circunstancias del hallazgo"
+            found_circumstances_placeholder: "Describe cómo y dónde encontraste al animal, en qué condiciones, etc."
+            additional_notes: "Notas adicionales"
+            additional_notes_placeholder: "Información adicional sobre el animal o el hallazgo"
+
+        step4:
+            title: "Fotos del Animal Encontrado"
+            photo_label: "Selecciona múltiples fotos del animal encontrado"
+            photo_help: "Sube varias fotos del animal desde diferentes ángulos. La primera foto será la principal."
+            photo_formats: "PNG, JPG, GIF, WebP, AVIF hasta 2MB cada una (máximo 5 fotos)"
+
+        step5:
+            title: "Revisar y Finalizar"
+            review_text: "Por favor, revisa toda la información antes de publicar. Una vez publicado, los dueños podrán contactarte si reconocen a su mascota."
+            thank_you:
+                title: "¡Gracias por ayudar!"
+                description: "Tu publicación ayudará a reunir este animal con su familia. Te notificaremos si alguien reclama a la mascota."
+
+        navigation:
+            previous: "Anterior"
+            cancel: "Cancelar"
+            next: "Siguiente"
+            submit: "Publicar Animal Encontrado"
+
+animal:
+    show:
+        title_suffix: "- Detalles"
+        breadcrumb:
+            home: "Inicio"
+            lost_pets: "Mascotas Perdidas"
+            found_pets: "Mascotas Encontradas"
+
+        status:
+            lost: "Perdida"
+            found: "Encontrada"
+            claimed: "Reclamada"
+            filled: "Archivada"
+
+        gender:
+            male: "Macho"
+            female: "Hembra"
+            unspecified: "No especificado"
+
+        size:
+            small: "Pequeño"
+            medium: "Mediano"
+            large: "Grande"
+            extra_large: "Extra Grande"
+            unspecified: "No especificado"
+
+        quick_info:
+            title: "Información Rápida"
+            type: "Tipo:"
+            gender: "Género:"
+            size: "Tamaño:"
+            age: "Edad:"
+            color: "Color:"
+
+        no_photo: "Sin foto disponible"
+        more_photos: "Más fotos"
+        additional_photo: "Foto adicional"
+
+        tabs:
+            general:
+                title: "Información General"
+                title_mobile: "General"
+                animal_info: "Información del Animal"
+                description: "Descripción"
+                characteristics: "Características"
+                published: "Publicado:"
+                updated: "Actualizado:"
+
+            details:
+                lost:
+                    title: "Detalles de Pérdida"
+                    title_mobile: "Pérdida"
+                    info_title: "Información de la Pérdida"
+                    lost_date: "Fecha de pérdida"
+                    lost_time: "Hora aproximada"
+                    lost_zone: "Zona donde se perdió"
+                    lost_address: "Dirección específica"
+                    lost_circumstances: "Circunstancias de la pérdida"
+                    reward: "Recompensa"
+                    reward_amount: "Monto:"
+                    reward_description: "Descripción:"
+
+                found:
+                    title: "Detalles de Hallazgo"
+                    title_mobile: "Hallazgo"
+                    info_title: "Información del Hallazgo"
+                    found_date: "Fecha de hallazgo"
+                    found_time: "Hora aproximada"
+                    found_zone: "Zona donde se encontró"
+                    found_address: "Dirección específica"
+                    found_circumstances: "Circunstancias del hallazgo"
+                    additional_notes: "Notas adicionales"
+
+            contact:
+                title: "Contacto"
+                title_mobile: "Contacto"
+                info_title: "Información de Contacto"
+                published_by: "Publicado por"
+                found_by: "Encontrado por"
+                phone: "Teléfono"
+                email: "Email"
+                no_contact: "Información de contacto no disponible"
+                no_contact_desc: "No se ha proporcionado información de contacto para este animal."
+
+        actions:
+            back_to_lost: "Volver a Mascotas Perdidas"
+            back_to_found: "Volver a Mascotas Encontradas"
+            share: "Compartir"
+
+        modal:
+            title: "Foto del animal"
+            close: "Cerrar"
+
+auth:
+    login:
+        title: "Iniciar Sesión"
+        subtitle: "Accede a tu cuenta de Pet Finder"
+        email: "Email"
+        email_placeholder: "tu@email.com"
+        password: "Contraseña"
+        password_placeholder: "Tu contraseña"
+        forgot_password: "¿Olvidaste tu contraseña?"
+        login_button: "Iniciar Sesión"
+        no_account: "¿No tienes una cuenta?"
+        register_link: "Regístrate aquí"
+        oauth_continue: "Continuar con"
+        or_divider: "o"
+
+    register:
+        title: "Registro de Usuario"
+        subtitle: "Crea tu cuenta en Pet Finder"
+        toggle:
+            regular_user: "Usuario Regular"
+            shelter: "Protectora"
+        oauth_continue: "Continuar con"
+        or_divider: "o"
+
+        form:
+            first_name: "Nombre"
+            first_name_placeholder: "Tu nombre"
+            last_name: "Apellido"
+            last_name_placeholder: "Tu apellido"
+            email: "Email"
+            email_placeholder: "tu@email.com"
+            phone: "Teléfono"
+            phone_placeholder: "Tu número de teléfono"
+            password: "Contraseña"
+            password_placeholder: "Tu contraseña"
+            confirm_password: "Confirmar Contraseña"
+            confirm_password_placeholder: "Confirma tu contraseña"
+            email_notifications: "Recibir notificaciones por email"
+            create_account: "Crear Cuenta"
+
+        shelter:
+            title: "Información de la Protectora"
+            subtitle: "Completa los datos de tu organización"
+            name: "Nombre de la Protectora"
+            name_placeholder: "Ej: Protectora Animales Felices"
+            description: "Descripción"
+            description_placeholder: "Describe tu misión, valores y cómo ayudas a los animales..."
+            address: "Dirección"
+            address_placeholder: "Dirección completa de la protectora"
+            phone: "Teléfono"
+            phone_placeholder: "Teléfono de contacto"
+            website: "Sitio Web"
+            website_placeholder: "https://tu-sitio.com"
+            facebook: "Facebook"
+            facebook_placeholder: "https://facebook.com/tu-protectora"
+
+        footer:
+            has_account: "¿Ya tienes una cuenta?"
+            login_link: "Inicia sesión aquí"
+
+    forgot_password:
+        title: "Olvidé mi Contraseña"
+        subtitle: "Ingresa tu email para recibir un enlace de restablecimiento"
+        how_it_works:
+            title: "¿Cómo funciona?"
+            description: "Te enviaremos un enlace seguro a tu email que te permitirá crear una nueva contraseña. El enlace expirará en 1 hora por seguridad."
+        email: "Email"
+        email_placeholder: "tu@email.com"
+        send_reset_link: "Enviar Enlace de Restablecimiento"
+        remembered_password: "¿Recordaste tu contraseña?"
+        login_link: "Iniciar Sesión"
+        no_account: "¿No tienes una cuenta?"
+        register_link: "Regístrate aquí"
+
+    reset_password:
+        title: "Restablecer Contraseña"
+        subtitle: "Crea una nueva contraseña para tu cuenta"
+        valid_link:
+            title: "Enlace válido"
+            description: "Tu enlace de restablecimiento es válido. Por favor, crea una nueva contraseña segura."
+        requirements:
+            title: "Requisitos de la contraseña:"
+            min_length: "Mínimo 6 caracteres"
+            recommended: "Se recomienda usar letras, números y símbolos"
+            personal_info: "No uses información personal fácil de adivinar"
+        new_password: "Nueva Contraseña"
+        new_password_placeholder: "Tu nueva contraseña"
+        confirm_password: "Confirmar Contraseña"
+        confirm_password_placeholder: "Confirma tu nueva contraseña"
+        reset_button: "Restablecer Contraseña"
+        remembered_password: "¿Recordaste tu contraseña?"
+        login_link: "Iniciar Sesión"
+
+    shelter_verification:
+        pending:
+            title: "Verificación Pendiente"
+            subtitle: "Tu cuenta de protectora está siendo revisada"
+            status: "Proceso de verificación en curso"
+            description: "Nuestro equipo está revisando la información de tu protectora. Este proceso puede tomar entre 24-48 horas hábiles."
+            email_notification: "Recibirás una notificación por email cuando tu cuenta sea verificada"
+            verified_access: "Una vez verificada, podrás publicar mascotas y gestionar tu protectora"
+            logout: "Cerrar Sesión"
+            support_contact: "¿Tienes preguntas? Contacta con soporte"
+
+        rejected:
+            title: "Solicitud Rechazada"
+            subtitle: "Tu solicitud de registro como protectora no fue aprobada"
+            status: "Solicitud no aprobada"
+            description: "Lamentamos informarte que tu solicitud para registrarte como protectora no cumplió con nuestros criterios de verificación."
+            support_info: "Puedes contactar con nuestro equipo de soporte para obtener más información sobre los motivos del rechazo"
+            retry_info: "Si consideras que esto es un error, puedes volver a solicitar el registro con información actualizada"
+            logout: "Cerrar Sesión"
+            contact_support: "Contactar Soporte"
+            try_again: "Intentar de Nuevo"
 
 home:
     title: "Inicio - Pet Finder"
@@ -95,3 +558,115 @@ home:
         email: "Email"
         whatsapp: "WhatsApp"
         info_text: "Haz clic en WhatsApp o Email para contactar directamente"
+
+user:
+    title: "Mi Cuenta"
+    subtitle: "Gestiona tus publicaciones y configuración"
+    welcome: "Bienvenido"
+    logout: "Cerrar Sesión"
+
+    navigation:
+        lost_pets: "Mascotas Perdidas"
+        lost_pets_mobile: "Perdidas"
+        found_pets: "Animales Avistados"
+        found_pets_mobile: "Avistados"
+        settings: "Configuración"
+        settings_mobile: "Config"
+
+    stats:
+        lost_pets: "Mascotas Perdidas"
+        found_animals: "Animales Avistados"
+        total_publications: "Total Publicaciones"
+
+    pages:
+        lost_pets:
+            title: "Mis Mascotas Perdidas"
+            header: "Mis Mascotas Perdidas"
+        found_pets:
+            title: "Mis Animales Avistados"
+            header: "Mis Animales Encontrados"
+
+    actions:
+        edit: "Editar"
+        found: "Encontrada"
+        archive: "Archivar"
+        restore: "Restaurar"
+        delete: "Eliminar"
+
+    dates:
+        published: "Publicado"
+        today: "Hoy"
+        yesterday: "Ayer"
+        days_ago: "Hace {days} días"
+        weeks_ago: "Hace {weeks} semanas"
+
+    confirmations:
+        delete: '¿Estás seguro de que quieres eliminar la publicación de "{name}"? Esta acción no se puede deshacer.'
+        archive: '¿Estás seguro de que quieres archivar la publicación de "{name}"? La publicación se ocultará pero podrás restaurarla más tarde.'
+        restore: '¿Estás seguro de que quieres restaurar la publicación de "{name}"? La publicación volverá a estar activa.'
+
+    settings:
+        title: "Configuración del Perfil"
+        profile_info: "Información del Perfil"
+        save_changes: "Guardar Cambios"
+        saving: "Guardando..."
+
+        form:
+            first_name: "Nombre"
+            first_name_placeholder: "Ingresa tu nombre"
+            last_name: "Apellido"
+            last_name_placeholder: "Ingresa tu apellido"
+            email: "Email"
+            email_placeholder: "ejemplo@correo.com"
+            phone: "Teléfono"
+            phone_placeholder: "+34 123 456 789"
+
+        validation:
+            first_name_required: "El nombre es obligatorio"
+            first_name_min_length: "El nombre debe tener al menos {{ limit }} caracteres"
+            first_name_max_length: "El nombre no puede tener más de {{ limit }} caracteres"
+            first_name_invalid: "El nombre solo puede contener letras y espacios"
+            last_name_required: "El apellido es obligatorio"
+            last_name_min_length: "El apellido debe tener al menos {{ limit }} caracteres"
+            last_name_max_length: "El apellido no puede tener más de {{ limit }} caracteres"
+            last_name_invalid: "El apellido solo puede contener letras y espacios"
+            email_required: "El email es obligatorio"
+            email_invalid: 'El email "{{ value }}" no es válido'
+            email_max_length: "El email no puede tener más de {{ limit }} caracteres"
+            email_already_used: "Este email ya está en uso por otro usuario"
+            phone_max_length: "El teléfono no puede tener más de {{ limit }} caracteres"
+            phone_invalid: "El teléfono solo puede contener números, espacios, guiones y paréntesis"
+
+        messages:
+            profile_updated: "Perfil actualizado correctamente"
+            update_error: "Error al actualizar el perfil: {error}"
+
+# Flash Messages
+flash:
+    auth:
+        login_required: "Debes iniciar sesión para acceder a esta página"
+        login_required_edit: "Debes iniciar sesión para editar una publicación"
+        login_required_archive: "Debes iniciar sesión para archivar una publicación"
+        login_required_restore: "Debes iniciar sesión para restaurar una publicación"
+        login_required_delete: "Debes iniciar sesión para eliminar una publicación"
+        user_not_found: "Usuario no encontrado"
+        account_disabled: "Tu cuenta está desactivada"
+        no_permissions: "No tienes permisos para realizar esta acción"
+        no_permissions_edit: "No tienes permisos para editar esta publicación"
+        no_permissions_archive: "No tienes permisos para archivar esta publicación"
+        no_permissions_restore: "No tienes permisos para restaurar esta publicación"
+        no_permissions_delete: "No tienes permisos para eliminar esta publicación"
+
+    animal:
+        not_found: "Animal no encontrado"
+        publication_not_found: "Publicación no encontrada"
+        not_archived: "El animal no está archivado"
+        archived_success: "Animal archivado correctamente"
+        restored_success: "Animal restaurado correctamente"
+        deleted_success: "Animal eliminado correctamente"
+        updated_success: "Animal actualizado correctamente"
+        archive_error: "Error al archivar el animal"
+        restore_error: "Error al restaurar el animal"
+        delete_error: "Error al eliminar el animal"
+        update_error: "Error al actualizar el animal"
+        image_error: "Error al procesar la imagen"

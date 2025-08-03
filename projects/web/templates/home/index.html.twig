@@ -253,14 +253,8 @@
                               <i class="fas fa-map-marker-alt mr-1"></i>
                               <span>
                                  {{ lostPet.lostZone ?: 'home.recent_animals.zone_not_specified'|trans }} •
-                                 {% set daysDiff = 'now'|date('U') - lostPet.createdAt.timestamp %}
-                                 {% set days = (daysDiff / 86400)|round %}
-                                 {% if days == 0 %}
-                                    {{ 'home.recent_animals.today'|trans }}
-                                 {% elseif days == 1 %}
-                                    {{ 'home.recent_animals.one_day_ago'|trans }}
-                                 {% else %}
-                                    {{ 'home.recent_animals.days_ago'|trans({'days': days}) }}
+                                 {% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}
+                                 {% if daysAgo < 1 %}{{ 'home.recent_animals.today'|trans }}{% elseif daysAgo < 2 %}{{ 'home.recent_animals.one_day_ago'|trans }}{% else %}{{ 'home.recent_animals.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
                                  {% endif %}
                               </span>
                            </div>
@@ -332,14 +326,8 @@
                               <i class="fas fa-map-marker-alt mr-1"></i>
                               <span>
                                  {{ foundAnimal.foundZone ?: 'home.recent_animals.zone_not_specified'|trans }} •
-                                 {% set daysDiff = 'now'|date('U') - foundAnimal.createdAt.timestamp %}
-                                 {% set days = (daysDiff / 86400)|round %}
-                                 {% if days == 0 %}
-                                    {{ 'home.recent_animals.today'|trans }}
-                                 {% elseif days == 1 %}
-                                    {{ 'home.recent_animals.one_day_ago'|trans }}
-                                 {% else %}
-                                    {{ 'home.recent_animals.days_ago'|trans({'days': days}) }}
+                                 {% set daysAgo = (date()|date('U') - foundAnimal.createdAt|date('U')) / 86400 %}
+                                 {% if daysAgo < 1 %}{{ 'home.recent_animals.today'|trans }}{% elseif daysAgo < 2 %}{{ 'home.recent_animals.one_day_ago'|trans }}{% else %}{{ 'home.recent_animals.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
                                  {% endif %}
                               </span>
                            </div>

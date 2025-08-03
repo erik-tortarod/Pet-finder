@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registrar Animal Encontrado
-{% endblock %}
+{% block title %}{{ 'found_pets.create.title'|trans }}{% endblock %}
 
 {% block javascripts %}
     {{ parent() }}
@@ -21,8 +20,8 @@
       <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
             <div>
-               <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Publicar Animal Encontrado</h1>
-               <p class="mt-2 text-sm sm:text-base text-gray-600">Ayuda a reunir una mascota con su familia</p>
+               <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">{{ 'found_pets.create.header.title'|trans }}</h1>
+               <p class="mt-2 text-sm sm:text-base text-gray-600">{{ 'found_pets.create.header.subtitle'|trans }}</p>
             </div>
          </div>
       </div>
@@ -33,19 +32,19 @@
          <!-- Progress Bar -->
          <div class="mb-8">
             <div class="flex items-center justify-between mb-4">
-               <h2 class="text-lg font-semibold text-gray-900">Paso <span id="current-step">1</span> de 5</h2>
-               <span class="text-sm text-gray-500" id="step-title">Información Básica</span>
+               <h2 class="text-lg font-semibold text-gray-900">{{ 'found_pets.create.steps.step'|trans }} <span id="current-step">1</span> {{ 'found_pets.create.steps.of'|trans }} 5</h2>
+               <span class="text-sm text-gray-500" id="step-title">{{ 'found_pets.create.steps.basic_info'|trans }}</span>
             </div>
             <div class="w-full bg-gray-200 rounded-full h-2">
                <div class="bg-green-600 h-2 rounded-full transition-all duration-300" id="progress-bar"
                   style="width: 20%"></div>
             </div>
             <div class="flex justify-between mt-2 text-xs text-gray-500">
-               <span>Básica</span>
-               <span>Descripción</span>
-               <span>Ubicación</span>
-               <span>Foto</span>
-               <span>Finalizar</span>
+               <span>{{ 'found_pets.create.steps.basic'|trans }}</span>
+               <span>{{ 'found_pets.create.steps.description'|trans }}</span>
+               <span>{{ 'found_pets.create.steps.location'|trans }}</span>
+               <span>{{ 'found_pets.create.steps.photo'|trans }}</span>
+               <span>{{ 'found_pets.create.steps.finalize'|trans }}</span>
             </div>
          </div>
 
@@ -53,26 +52,26 @@
             <!-- Step 1: Basic Information -->
             <div class="step-content" id="step-1">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-info-circle mr-2 text-green-600"></i>Información Básica
+                  <i class="fas fa-info-circle mr-2 text-green-600"></i>{{ 'found_pets.create.step1.title'|trans }}
                </h2>
                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     {{ form_label(form.animalName, 'Nombre del animal (si se conoce)', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'Ej: Luna, Rocky (opcional)'}}) }}
+                     {{ form_label(form.animalName, 'found_pets.create.step1.animal_name'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'found_pets.create.step1.animal_name_placeholder'|trans}}) }}
                      {{ form_errors(form.animalName) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalType, 'Tipo de animal *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalType, 'found_pets.create.step1.animal_type'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalType, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500'}}) }}
                      {{ form_errors(form.animalType) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalGender, 'Género *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalGender, 'found_pets.create.step1.animal_gender'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalGender, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500'}}) }}
                      {{ form_errors(form.animalGender) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalSize, 'Tamaño *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.animalSize, 'found_pets.create.step1.animal_size'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalSize, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500'}}) }}
                      {{ form_errors(form.animalSize) }}
                   </div>
@@ -82,29 +81,29 @@
             <!-- Step 2: Physical Description -->
             <div class="step-content hidden" id="step-2">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-palette mr-2 text-green-600"></i>Descripción Física
+                  <i class="fas fa-palette mr-2 text-green-600"></i>{{ 'found_pets.create.step2.title'|trans }}
                </h2>
                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     {{ form_label(form.animalColor, 'Color', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalColor, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'Ej: Marrón, Negro, Blanco'}}) }}
+                     {{ form_label(form.animalColor, 'found_pets.create.step2.animal_color'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalColor, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'found_pets.create.step2.animal_color_placeholder'|trans}}) }}
                      {{ form_errors(form.animalColor) }}
                   </div>
                   <div>
-                     {{ form_label(form.animalAge, 'Edad aproximada', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalAge, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'Ej: 3 años, 6 meses, cachorro'}}) }}
+                     {{ form_label(form.animalAge, 'found_pets.create.step2.animal_age'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalAge, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'found_pets.create.step2.animal_age_placeholder'|trans}}) }}
                      {{ form_errors(form.animalAge) }}
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.animalDescription, 'Descripción del animal', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'rows': 4, 'placeholder': 'Describe las características físicas y comportamiento del animal encontrado'}}) }}
+                     {{ form_label(form.animalDescription, 'found_pets.create.step2.animal_description'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'rows': 4, 'placeholder': 'found_pets.create.step2.animal_description_placeholder'|trans}}) }}
                      {{ form_errors(form.animalDescription) }}
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.animalTags, 'Etiquetas', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.animalTags, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'Separa las etiquetas con comas (ej: amigable, asustado, herido)'}}) }}
+                     {{ form_label(form.animalTags, 'found_pets.create.step2.animal_tags'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalTags, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'found_pets.create.step2.animal_tags_placeholder'|trans}}) }}
                      {{ form_errors(form.animalTags) }}
-                     <small class="text-sm text-gray-500">Describe el estado y comportamiento del animal (ej: amigable, asustado, herido)</small>
+                     <small class="text-sm text-gray-500">{{ 'found_pets.create.step2.animal_tags_help'|trans }}</small>
                   </div>
                </div>
             </div>
@@ -112,21 +111,21 @@
             <!-- Step 3: Location Information -->
             <div class="step-content hidden" id="step-3">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-map-marker-alt mr-2 text-green-600"></i>Información de Ubicación
+                  <i class="fas fa-map-marker-alt mr-2 text-green-600"></i>{{ 'found_pets.create.step3.title'|trans }}
                </h2>
 
                <!-- Map and Location Search -->
                <div class="mb-6">
                   <div class="search-container relative mb-4">
                      <label for="location-search" class="block text-sm font-medium text-gray-700 mb-2">
-                        Buscar ubicación donde se encontró el animal *
+                        {{ 'found_pets.create.step3.location_search_label'|trans }}
                      </label>
                      <div class="flex gap-2">
-                        <input type="text" id="location-search" placeholder="Buscar lugar..."
+                        <input type="text" id="location-search" placeholder="{{ 'found_pets.create.step3.location_search_placeholder'|trans }}"
                            class="flex-1 px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500">
                         <button type="button" id="current-location-btn"
                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm font-medium">
-                           <i class="fas fa-crosshairs mr-1"></i>Mi ubicación
+                           <i class="fas fa-crosshairs mr-1"></i>{{ 'found_pets.create.step3.my_location'|trans }}
                         </button>
                      </div>
                      <div id="location-suggestions"
@@ -137,7 +136,7 @@
                   <div id="map" class="w-full h-64 rounded-lg border border-gray-300"></div>
                   <p class="mt-2 text-sm text-gray-600">
                      <i class="fas fa-info-circle mr-1"></i>
-                     Haz clic en el mapa para seleccionar la ubicación específica donde encontraste el animal
+                     {{ 'found_pets.create.step3.map_help'|trans }}
                   </p>
                </div>
 
@@ -146,50 +145,50 @@
                   <button type="button" id="toggle-manual-edit" onclick="toggleManualEdit()"
                      class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                      <i class="fas fa-edit mr-1"></i>
-                     <span id="edit-button-text">Editar dirección manualmente</span>
+                     <span id="edit-button-text">{{ 'found_pets.create.step3.edit_manual'|trans }}</span>
                   </button>
                </div>
 
                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                     {{ form_label(form.foundDate, 'Fecha de hallazgo *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.foundDate, 'found_pets.create.step3.found_date'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.foundDate, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500'}}) }}
                      {{ form_errors(form.foundDate) }}
                   </div>
                   <div>
-                     {{ form_label(form.foundTime, 'Hora aproximada', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.foundTime, 'found_pets.create.step3.found_time'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.foundTime, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500'}}) }}
                      {{ form_errors(form.foundTime) }}
                   </div>
                   <div>
-                     {{ form_label(form.foundZone, 'Zona donde se encontró *', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.foundZone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'Ej: Centro, Norte, Malasaña, etc.'}}) }}
+                     {{ form_label(form.foundZone, 'found_pets.create.step3.found_zone'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.foundZone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white text-gray-900 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'placeholder': 'found_pets.create.step3.found_zone_placeholder'|trans}}) }}
                      {{ form_errors(form.foundZone) }}
                      <small class="text-xs text-gray-600 mt-1 block">
-                        <i class="fas fa-edit mr-1"></i>Escribe la zona o barrio donde encontraste el animal
+                        <i class="fas fa-edit mr-1"></i>{{ 'found_pets.create.step3.found_zone_help'|trans }}
                      </small>
                   </div>
                   <div>
-                     {{ form_label(form.foundAddress, 'Dirección específica', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_label(form.foundAddress, 'found_pets.create.step3.found_address'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      <div class="relative">
-                        {{ form_widget(form.foundAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 text-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'readonly': true, 'placeholder': 'Se completará automáticamente al seleccionar ubicación'}}) }}
+                        {{ form_widget(form.foundAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-gray-50 text-gray-600 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'readonly': true, 'placeholder': 'found_pets.create.step3.found_address_placeholder'|trans}}) }}
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
                            <i class="fas fa-map-marker-alt text-gray-400 text-sm" title="Auto-detectado desde el mapa"></i>
                         </div>
                      </div>
                      {{ form_errors(form.foundAddress) }}
                      <small class="text-xs text-blue-600 mt-1 block">
-                        <i class="fas fa-info-circle mr-1"></i>Auto-detectado desde la ubicación del mapa
+                        <i class="fas fa-info-circle mr-1"></i>{{ 'found_pets.create.step3.found_address_help'|trans }}
                      </small>
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.foundCircumstances, 'Circunstancias del hallazgo', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.foundCircumstances, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'rows': 3, 'placeholder': 'Describe cómo y dónde encontraste al animal, en qué condiciones, etc.'}}) }}
+                     {{ form_label(form.foundCircumstances, 'found_pets.create.step3.found_circumstances'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.foundCircumstances, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'rows': 3, 'placeholder': 'found_pets.create.step3.found_circumstances_placeholder'|trans}}) }}
                      {{ form_errors(form.foundCircumstances) }}
                   </div>
                   <div class="md:col-span-2">
-                     {{ form_label(form.additionalNotes, 'Notas adicionales', {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-                     {{ form_widget(form.additionalNotes, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'rows': 3, 'placeholder': 'Información adicional sobre el animal o el hallazgo'}}) }}
+                     {{ form_label(form.additionalNotes, 'found_pets.create.step3.additional_notes'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.additionalNotes, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-green-500 focus:border-green-500', 'rows': 3, 'placeholder': 'found_pets.create.step3.additional_notes_placeholder'|trans}}) }}
                      {{ form_errors(form.additionalNotes) }}
                   </div>
                </div>
@@ -198,7 +197,7 @@
             <!-- Step 4: Photo -->
             <div class="step-content hidden" id="step-4">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-camera mr-2 text-green-600"></i>Fotos del Animal Encontrado
+                  <i class="fas fa-camera mr-2 text-green-600"></i>{{ 'found_pets.create.step4.title'|trans }}
                </h2>
 
                <!-- Photo Upload -->
@@ -208,7 +207,7 @@
                      <div class="space-y-2">
                         <i class="fas fa-cloud-upload-alt text-4xl text-gray-400"></i>
                         <div>
-                           {{ form_label(form.animalPhoto, 'Selecciona múltiples fotos del animal encontrado', {'attr': {'class': 'cursor-pointer text-green-600 hover:text-green-500 font-medium'}}) }}
+                           {{ form_label(form.animalPhoto, 'found_pets.create.step4.photo_label'|trans, {'attr': {'class': 'cursor-pointer text-green-600 hover:text-green-500 font-medium'}}) }}
                         </div>
                         {{ form_widget(form.animalPhoto, {
                            'attr': {
@@ -217,11 +216,11 @@
                               'accept': 'image/*'
                            }
                         }) }}
-                        <p class="text-sm text-gray-500">PNG, JPG, GIF, WebP, AVIF hasta 2MB cada una (máximo 5 fotos)</p>
+                        <p class="text-sm text-gray-500">{{ 'found_pets.create.step4.photo_formats'|trans }}</p>
                      </div>
                   </div>
                   {{ form_errors(form.animalPhoto) }}
-                  <small class="text-sm text-gray-600">Sube varias fotos del animal desde diferentes ángulos. La primera foto será la principal.</small>
+                  <small class="text-sm text-gray-600">{{ 'found_pets.create.step4.photo_help'|trans }}</small>
 
                   <!-- Photo Preview Area -->
                   <div id="photo-preview-container" class="mt-4 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 hidden">
@@ -233,19 +232,19 @@
             <!-- Step 5: Summary -->
             <div class="step-content hidden" id="step-5">
                <h2 class="text-xl font-semibold text-gray-900 mb-4">
-                  <i class="fas fa-check-circle mr-2 text-green-600"></i>Revisar y Finalizar
+                  <i class="fas fa-check-circle mr-2 text-green-600"></i>{{ 'found_pets.create.step5.title'|trans }}
                </h2>
                <div class="bg-gray-50 rounded-lg p-6">
                   <p class="text-gray-700 mb-4">
-                     Por favor, revisa toda la información antes de publicar. Una vez publicado, los dueños podrán contactarte si reconocen a su mascota.
+                     {{ 'found_pets.create.step5.review_text'|trans }}
                   </p>
                   <div class="bg-green-50 border border-green-200 rounded-md p-4">
                      <div class="flex">
                         <i class="fas fa-heart text-green-600 mt-1 mr-2"></i>
                         <div>
-                           <h3 class="text-sm font-medium text-green-800">¡Gracias por ayudar!</h3>
+                           <h3 class="text-sm font-medium text-green-800">{{ 'found_pets.create.step5.thank_you.title'|trans }}</h3>
                            <p class="text-sm text-green-700 mt-1">
-                              Tu publicación ayudará a reunir este animal con su familia. Te notificaremos si alguien reclama a la mascota.
+                              {{ 'found_pets.create.step5.thank_you.description'|trans }}
                            </p>
                         </div>
                      </div>
@@ -257,20 +256,20 @@
             <div class="flex justify-between pt-6 border-t">
                <button type="button" id="prev-btn" onclick="previousStep()"
                   class="bg-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-400 transition-colors font-medium hidden">
-                  <i class="fas fa-arrow-left mr-2"></i>Anterior
+                  <i class="fas fa-arrow-left mr-2"></i>{{ 'found_pets.create.navigation.previous'|trans }}
                </button>
                <div class="flex gap-4">
                   <button type="button" onclick="window.history.back()"
                      class="bg-gray-300 text-gray-700 py-3 px-6 rounded-md hover:bg-gray-400 transition-colors font-medium">
-                     <i class="fas fa-times mr-2"></i>Cancelar
+                     <i class="fas fa-times mr-2"></i>{{ 'found_pets.create.navigation.cancel'|trans }}
                   </button>
                   <button type="button" id="next-btn" onclick="nextStep()"
                      class="bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors font-medium">
-                     <i class="fas fa-arrow-right mr-2"></i>Siguiente
+                     <i class="fas fa-arrow-right mr-2"></i>{{ 'found_pets.create.navigation.next'|trans }}
                   </button>
                   <button type="submit" id="submit-btn"
                      class="hidden bg-green-600 text-white py-3 px-6 rounded-md hover:bg-green-700 transition-colors font-medium">
-                     <i class="fas fa-paper-plane mr-2"></i>Publicar Animal Encontrado
+                     <i class="fas fa-paper-plane mr-2"></i>{{ 'found_pets.create.navigation.submit'|trans }}
                   </button>
                </div>
             </div>

@@ -8,16 +8,16 @@ class AnimalStatusTranslationService
 {
    private const TRANSLATIONS = [
       'es' => [
-         AnimalStatus::LOST->value => 'Perdido',
-         AnimalStatus::FOUND->value => 'Avistado',
-         AnimalStatus::CLAIMED->value => 'Reclamado',
-         AnimalStatus::FILLED->value => 'Completado',
+         AnimalStatus::LOST->value => 'Perdida',
+         AnimalStatus::FOUND->value => 'Encontrada',
+         AnimalStatus::CLAIMED->value => 'Reclamada',
+         AnimalStatus::FILLED->value => 'Archivada',
       ],
       'en' => [
          AnimalStatus::LOST->value => 'Lost',
          AnimalStatus::FOUND->value => 'Found',
          AnimalStatus::CLAIMED->value => 'Claimed',
-         AnimalStatus::FILLED->value => 'Filled',
+         AnimalStatus::FILLED->value => 'Archived',
       ]
    ];
 

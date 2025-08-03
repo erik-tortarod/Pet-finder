@@ -1,7 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Registro de Usuario
-{% endblock %}
+{% block title %}{{ 'auth.register.title'|trans }}{% endblock %}
 
 {% block stylesheets %}
 	{{ parent() }}
@@ -11,18 +10,18 @@
 
 	<div class="max-w-lg mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
 		<div class="text-center mb-10">
-			<h1 class="text-3xl font-bold text-gray-800 mb-3">Registro de Usuario</h1>
-			<p class="text-gray-600">Crea tu cuenta en Pet Finder</p>
+			<h1 class="text-3xl font-bold text-gray-800 mb-3">{{ 'auth.register.title'|trans }}</h1>
+			<p class="text-gray-600">{{ 'auth.register.subtitle'|trans }}</p>
 		</div>
 
 		<!-- Toggle Switch para tipo de registro -->
 		<div class="mb-10">
 			<div class="bg-gray-100 p-1 rounded-lg flex">
 				<button type="button" id="user-toggle" class="flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200">
-					<i class="fas fa-user mr-2"></i>Usuario Regular
+					<i class="fas fa-user mr-2"></i>{{ 'auth.register.toggle.regular_user'|trans }}
 				</button>
 				<button type="button" id="shelter-toggle" class="flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700">
-					<i class="fas fa-home mr-2"></i>Protectora
+					<i class="fas fa-home mr-2"></i>{{ 'auth.register.toggle.shelter'|trans }}
 				</button>
 			</div>
 			<input type="hidden" name="isShelter" id="isShelter" value="0">
@@ -31,7 +30,7 @@
 		<div class="mb-10 text-center">
 			{% for owner in hwi_oauth_resource_owners() %}
 				<a href="{{ hwi_oauth_login_url(owner) }}" class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 m-2">
-					<i class="fab fa-google mr-2"></i>Continuar con
+					<i class="fab fa-google mr-2"></i>{{ 'auth.register.oauth_continue'|trans }}
 					{{ owner | trans({}, 'HWIOAuthBundle') }}
 				</a>
 			{% endfor %}
@@ -42,7 +41,7 @@
 				<div class="w-full border-t border-gray-300"></div>
 			</div>
 			<div class="relative flex justify-center text-sm">
-				<span class="px-2 bg-white text-gray-500">o</span>
+				<span class="px-2 bg-white text-gray-500">{{ 'auth.register.or_divider'|trans }}</span>
 			</div>
 		</div>
 
@@ -50,51 +49,51 @@
 			<div class="grid grid-cols-2 gap-6 mb-6">
 				<div>
 					<label for="firstName" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-user mr-1"></i>Nombre <span class="text-red-500">*</span>
+						<i class="fas fa-user mr-1"></i>{{ 'auth.register.form.first_name'|trans }} <span class="text-red-500">*</span>
 					</label>
-					<input type="text" name="firstName" id="firstName" placeholder="Tu nombre" required
+					<input type="text" name="firstName" id="firstName" placeholder="{{ 'auth.register.form.first_name_placeholder'|trans }}" required
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
 				<div>
 					<label for="lastName" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-user mr-1"></i>Apellido <span class="text-red-500">*</span>
+						<i class="fas fa-user mr-1"></i>{{ 'auth.register.form.last_name'|trans }} <span class="text-red-500">*</span>
 					</label>
-					<input type="text" name="lastName" id="lastName" placeholder="Tu apellido" required
+					<input type="text" name="lastName" id="lastName" placeholder="{{ 'auth.register.form.last_name_placeholder'|trans }}" required
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 			</div>
 
 			<div class="mb-6">
 				<label for="email" class="block text-sm font-medium text-gray-700 mb-3">
-					<i class="fas fa-envelope mr-1"></i>Email <span class="text-red-500">*</span>
+					<i class="fas fa-envelope mr-1"></i>{{ 'auth.register.form.email'|trans }} <span class="text-red-500">*</span>
 				</label>
-				<input type="email" name="email" id="email" placeholder="tu@email.com" required
+				<input type="email" name="email" id="email" placeholder="{{ 'auth.register.form.email_placeholder'|trans }}" required
 					   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
 			<div class="mb-6">
 				<label for="phone" class="block text-sm font-medium text-gray-700 mb-3">
-					<i class="fas fa-phone mr-1"></i>Teléfono
+					<i class="fas fa-phone mr-1"></i>{{ 'auth.register.form.phone'|trans }}
 				</label>
-				<input type="tel" name="phone" id="phone" placeholder="Tu número de teléfono"
+				<input type="tel" name="phone" id="phone" placeholder="{{ 'auth.register.form.phone_placeholder'|trans }}"
 					   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
 			<div class="grid grid-cols-2 gap-6 mb-6">
 				<div>
 					<label for="password" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-lock mr-1"></i>Contraseña <span class="text-red-500">*</span>
+						<i class="fas fa-lock mr-1"></i>{{ 'auth.register.form.password'|trans }} <span class="text-red-500">*</span>
 					</label>
-					<input type="password" name="password" id="password" placeholder="Tu contraseña" required
+					<input type="password" name="password" id="password" placeholder="{{ 'auth.register.form.password_placeholder'|trans }}" required
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
 				<div>
 					<label for="confirm_password" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-lock mr-1"></i>Confirmar Contraseña <span class="text-red-500">*</span>
+						<i class="fas fa-lock mr-1"></i>{{ 'auth.register.form.confirm_password'|trans }} <span class="text-red-500">*</span>
 					</label>
-					<input type="password" name="confirm_password" id="confirm_password" placeholder="Confirma tu contraseña" required
+					<input type="password" name="confirm_password" id="confirm_password" placeholder="{{ 'auth.register.form.confirm_password_placeholder'|trans }}" required
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 			</div>
@@ -103,7 +102,7 @@
 				<input type="checkbox" name="emailNotifications" id="emailNotifications"
 					   class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
 				<label for="emailNotifications" class="ml-3 block text-sm text-gray-700">
-					<i class="fas fa-bell mr-1"></i>Recibir notificaciones por email
+					<i class="fas fa-bell mr-1"></i>{{ 'auth.register.form.email_notifications'|trans }}
 				</label>
 			</div>
 
@@ -116,71 +115,71 @@
 						</div>
 					</div>
 					<div class="ml-4">
-						<h3 class="text-xl font-semibold text-gray-800">Información de la Protectora</h3>
-						<p class="text-sm text-gray-600">Completa los datos de tu organización</p>
+						<h3 class="text-xl font-semibold text-gray-800">{{ 'auth.register.shelter.title'|trans }}</h3>
+						<p class="text-sm text-gray-600">{{ 'auth.register.shelter.subtitle'|trans }}</p>
 					</div>
 				</div>
 
 				<div class="mb-6">
 					<label for="shelterName" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-building mr-1"></i><span class="text-red-500">*</span> Nombre de la Protectora
+						<i class="fas fa-building mr-1"></i><span class="text-red-500">*</span> {{ 'auth.register.shelter.name'|trans }}
 					</label>
-					<input type="text" name="shelterName" id="shelterName" placeholder="Ej: Protectora Animales Felices"
+					<input type="text" name="shelterName" id="shelterName" placeholder="{{ 'auth.register.shelter.name_placeholder'|trans }}"
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
 				<div class="mb-6">
 					<label for="shelterDescription" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-info-circle mr-1"></i>Descripción
+						<i class="fas fa-info-circle mr-1"></i>{{ 'auth.register.shelter.description'|trans }}
 					</label>
-					<textarea name="shelterDescription" id="shelterDescription" placeholder="Describe tu misión, valores y cómo ayudas a los animales..." rows="4"
+					<textarea name="shelterDescription" id="shelterDescription" placeholder="{{ 'auth.register.shelter.description_placeholder'|trans }}" rows="4"
 							  class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y min-h-24 transition-all duration-200"></textarea>
 				</div>
 
 				<div class="mb-6">
 					<label for="shelterAddress" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fas fa-map-marker-alt mr-1"></i><span class="text-red-500">*</span> Dirección
+						<i class="fas fa-map-marker-alt mr-1"></i><span class="text-red-500">*</span> {{ 'auth.register.shelter.address'|trans }}
 					</label>
-					<input type="text" name="shelterAddress" id="shelterAddress" placeholder="Dirección completa de la protectora"
+					<input type="text" name="shelterAddress" id="shelterAddress" placeholder="{{ 'auth.register.shelter.address_placeholder'|trans }}"
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 					<div>
 						<label for="shelterPhone" class="block text-sm font-medium text-gray-700 mb-3">
-							<i class="fas fa-phone mr-1"></i>Teléfono
+							<i class="fas fa-phone mr-1"></i>{{ 'auth.register.shelter.phone'|trans }}
 						</label>
-						<input type="tel" name="shelterPhone" id="shelterPhone" placeholder="Teléfono de contacto"
+						<input type="tel" name="shelterPhone" id="shelterPhone" placeholder="{{ 'auth.register.shelter.phone_placeholder'|trans }}"
 							   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 					</div>
 					<div>
 						<label for="shelterWebsite" class="block text-sm font-medium text-gray-700 mb-3">
-							<i class="fas fa-globe mr-1"></i>Sitio Web
+							<i class="fas fa-globe mr-1"></i>{{ 'auth.register.shelter.website'|trans }}
 						</label>
-						<input type="url" name="shelterWebsite" id="shelterWebsite" placeholder="https://tu-sitio.com"
+						<input type="url" name="shelterWebsite" id="shelterWebsite" placeholder="{{ 'auth.register.shelter.website_placeholder'|trans }}"
 							   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 					</div>
 				</div>
 
 				<div class="mb-6">
 					<label for="shelterFacebook" class="block text-sm font-medium text-gray-700 mb-3">
-						<i class="fab fa-facebook mr-1"></i>Facebook
+						<i class="fab fa-facebook mr-1"></i>{{ 'auth.register.shelter.facebook'|trans }}
 					</label>
-					<input type="url" name="shelterFacebook" id="shelterFacebook" placeholder="https://facebook.com/tu-protectora"
+					<input type="url" name="shelterFacebook" id="shelterFacebook" placeholder="{{ 'auth.register.shelter.facebook_placeholder'|trans }}"
 						   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 			</div>
 
 			<button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 font-medium shadow-lg text-lg">
-				<i class="fas fa-user-plus mr-2"></i>Crear Cuenta
+				<i class="fas fa-user-plus mr-2"></i>{{ 'auth.register.form.create_account'|trans }}
 			</button>
 		</form>
 
 		<div class="text-center mt-8 pt-8 border-t border-gray-200">
 			<p class="text-gray-600">
-				¿Ya tienes una cuenta?
+				{{ 'auth.register.footer.has_account'|trans }}
 				<a href="{{ path('app_auth_login') }}" class="text-blue-600 hover:text-blue-800 hover:underline">
-					<i class="fas fa-sign-in-alt mr-1"></i>Inicia sesión aquí
+					<i class="fas fa-sign-in-alt mr-1"></i>{{ 'auth.register.footer.login_link'|trans }}
 				</a>
 			</p>
 		</div>
