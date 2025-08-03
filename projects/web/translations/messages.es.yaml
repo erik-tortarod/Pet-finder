@@ -382,6 +382,7 @@ auth:
         email_placeholder: "tu@email.com"
         password: "Contraseña"
         password_placeholder: "Tu contraseña"
+        remember_me: "Recordarme"
         forgot_password: "¿Olvidaste tu contraseña?"
         login_button: "Iniciar Sesión"
         no_account: "¿No tienes una cuenta?"

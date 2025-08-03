@@ -4,59 +4,86 @@
 
 {% block stylesheets %}
 	{{ parent() }}
-	<link rel="stylesheet" href="{{ asset('page/auth/login.css') }}">
 {% endblock %}
 
 {% block body %}
 
-	<div class="auth-container">
-		<div class="auth-header">
-			<h1>{{ 'auth.login.title'|trans }}</h1>
-			<p>{{ 'auth.login.subtitle'|trans }}</p>
+	<div class="max-w-lg mx-auto mt-8 p-8 bg-white rounded-lg shadow-lg">
+		<div class="text-center mb-10">
+			<h1 class="text-3xl font-bold text-gray-800 mb-3">{{ 'auth.login.title'|trans }}</h1>
+			<p class="text-gray-600">{{ 'auth.login.subtitle'|trans }}</p>
 		</div>
 
-		<div class="oauth-section">
+		<div class="mb-10 text-center">
 			{% for owner in hwi_oauth_resource_owners() %}
-				<a href="{{ hwi_oauth_login_url(owner) }}" class="oauth-btn">
-					{{ 'auth.login.oauth_continue'|trans }}
+				<a href="{{ hwi_oauth_login_url(owner) }}" class="inline-block px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-300 m-2">
+					<i class="fab fa-google mr-2"></i>{{ 'auth.login.oauth_continue'|trans }}
 					{{ owner | trans({}, 'HWIOAuthBundle') }}
 				</a>
 			{% endfor %}
 		</div>
 
-		<div class="divider">
-			<span>{{ 'auth.login.or_divider'|trans }}</span>
+		<div class="relative my-8">
+			<div class="absolute inset-0 flex items-center">
+				<div class="w-full border-t border-gray-300"></div>
+			</div>
+			<div class="relative flex justify-center text-sm">
+				<span class="px-2 bg-white text-gray-500">{{ 'auth.login.or_divider'|trans }}</span>
+			</div>
 		</div>
 
 		{% if error %}
-			<div class="alert alert-danger">
-				{{ error.messageKey|trans(error.messageData, 'security') }}
+			<div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+				<div class="flex">
+					<div class="flex-shrink-0">
+						<i class="fas fa-exclamation-circle text-red-400"></i>
+					</div>
+					<div class="ml-3">
+						<p class="text-sm text-red-700">
+							{{ error.messageKey|trans(error.messageData, 'security') }}
+						</p>
+					</div>
+				</div>
 			</div>
 		{% endif %}
 
 		<form action="{{ path('app_auth_login') }}" method="post">
-			<div class="form-group">
-				<label for="username">{{ 'auth.login.email'|trans }}</label>
-				<input type="email" name="_username" id="username" value="{{ last_username }}" placeholder="{{ 'auth.login.email_placeholder'|trans }}" required autofocus>
+			<div class="mb-6">
+				<label for="username" class="block text-sm font-medium text-gray-700 mb-3">
+					<i class="fas fa-envelope mr-1"></i>{{ 'auth.login.email'|trans }}
+				</label>
+				<input type="email" name="_username" id="username" value="{{ last_username }}"
+					   placeholder="{{ 'auth.login.email_placeholder'|trans }}" required autofocus
+					   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
-			<div class="form-group">
-				<label for="password">{{ 'auth.login.password'|trans }}</label>
-				<input type="password" name="_password" id="password" placeholder="{{ 'auth.login.password_placeholder'|trans }}" required>
+			<div class="mb-6">
+				<label for="password" class="block text-sm font-medium text-gray-700 mb-3">
+					<i class="fas fa-lock mr-1"></i>{{ 'auth.login.password'|trans }}
+				</label>
+				<input type="password" name="_password" id="password"
+					   placeholder="{{ 'auth.login.password_placeholder'|trans }}" required
+					   class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
-			<div style="text-align: right; margin-bottom: 1rem;">
-				<a href="{{ path('app_auth_forgot_password') }}" style="color: #667eea; text-decoration: none; font-size: 0.875rem;">
+			<div class="flex items-center justify-end mb-8">
+				<a href="{{ path('app_auth_forgot_password') }}"
+				   class="text-sm text-blue-600 hover:text-blue-800 hover:underline transition-colors duration-200">
 					{{ 'auth.login.forgot_password'|trans }}
 				</a>
 			</div>
 
-			<button type="submit" class="btn">{{ 'auth.login.login_button'|trans }}</button>
+			<button type="submit" class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-4 px-6 rounded-lg hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-300 font-medium shadow-lg text-lg">
+				<i class="fas fa-sign-in-alt mr-2"></i>{{ 'auth.login.login_button'|trans }}
+			</button>
 		</form>
 
-		<div class="auth-footer">
-			<p>{{ 'auth.login.no_account'|trans }}
-				<a href="{{ path('app_auth_register') }}">{{ 'auth.login.register_link'|trans }}</a>
+		<div class="text-center mt-8 pt-8 border-t border-gray-200">
+			<p class="text-gray-600">
+				{{ 'auth.login.no_account'|trans }}
+				<a href="{{ path('app_auth_register') }}" class="text-blue-600 hover:text-blue-800 hover:underline">
+					<i class="fas fa-user-plus mr-1"></i>{{ 'auth.login.register_link'|trans }}
+				</a>
 			</p>
 		</div>
 	</div>
