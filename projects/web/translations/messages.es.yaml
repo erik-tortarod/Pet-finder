@@ -593,6 +593,8 @@ user:
         archive: "Archivar"
         restore: "Restaurar"
         delete: "Eliminar"
+        cancel: "Cancelar"
+        mark_as_found: "Marcar como Encontrado"
 
     dates:
         published: "Publicado"
@@ -602,6 +604,10 @@ user:
         weeks_ago: "Hace {weeks} semanas"
 
     confirmations:
+        delete_title: "Eliminar Publicación"
+        archive_title: "Archivar Publicación"
+        restore_title: "Restaurar Publicación"
+        mark_as_found_title: "Marcar como Encontrado"
         delete: '¿Estás seguro de que quieres eliminar la publicación de "{name}"? Esta acción no se puede deshacer.'
         archive: '¿Estás seguro de que quieres archivar la publicación de "{name}"? La publicación se ocultará pero podrás restaurarla más tarde.'
         restore: '¿Estás seguro de que quieres restaurar la publicación de "{name}"? La publicación volverá a estar activa.'

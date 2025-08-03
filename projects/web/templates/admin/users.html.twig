@@ -188,10 +188,9 @@
                                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                                         <div class="flex gap-2">
                                             {% if user.id != app.user.id %}
-                                                <form method="POST" action="{{ path('app_admin_toggle_admin', {'id': user.id}) }}" class="inline">
+                                                <form method="POST" action="{{ path('app_admin_toggle_admin', {'id': user.id}) }}" class="inline toggle-admin-form" data-user-name="{{ user.firstName }} {{ user.lastName }}" data-is-admin="{{ 'ROLE_ADMIN' in user.roles ? 'true' : 'false' }}">
                                                     <button type="submit"
-                                                            class="{% if 'ROLE_ADMIN' in user.roles %}bg-red-600 hover:bg-red-700{% else %}bg-purple-600 hover:bg-purple-700{% endif %} text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200"
-                                                            onclick="return confirm('¿Estás seguro de que quieres {% if 'ROLE_ADMIN' in user.roles %}quitar{% else %}asignar{% endif %} el rol de administrador a este usuario?')">
+                                                            class="{% if 'ROLE_ADMIN' in user.roles %}bg-red-600 hover:bg-red-700{% else %}bg-purple-600 hover:bg-purple-700{% endif %} text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200">
                                                         {% if 'ROLE_ADMIN' in user.roles %}
                                                             <i class="fas fa-user-minus mr-1"></i>Quitar Admin
                                                         {% else %}
@@ -220,4 +219,37 @@
             </div>
         {% endif %}
     </div>
+
+    <script>
+        // Verificar si ya está inicializado para evitar redeclaraciones
+        if (typeof window.confirmModalInitialized === 'undefined') {
+            window.confirmModalInitialized = true;
+
+            // Event listeners para formularios
+            document.addEventListener('DOMContentLoaded', function() {
+                // Formularios de toggle admin
+                document.querySelectorAll('.toggle-admin-form').forEach(form => {
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const userName = this.dataset.userName;
+                        const isAdmin = this.dataset.isAdmin === 'true';
+                        const confirmed = await confirmToggleAdmin(userName, isAdmin);
+                        if (confirmed) {
+                            this.submit();
+                        }
+                    });
+                });
+            });
+
+            async function confirmToggleAdmin(userName, isAdmin) {
+                const controller = await window.ConfirmModalHandler.confirm({
+                    title: 'Cambiar Rol de Administrador',
+                    message: `¿Estás seguro de que quieres ${isAdmin ? 'quitar' : 'asignar'} el rol de administrador a ${userName}?`,
+                    confirmText: isAdmin ? 'Quitar Admin' : 'Hacer Admin',
+                    cancelText: 'Cancelar'
+                });
+                return controller;
+            }
+        }
+    </script>
 {% endblock %}

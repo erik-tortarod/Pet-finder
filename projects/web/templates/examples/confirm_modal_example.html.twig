@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Confirm Modal Example{% endblock %}
+
+{% block body %}
+<div class="max-w-4xl mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold text-gray-800 mb-8">Confirm Modal Component Examples</h1>
+
+    <div class="space-y-8">
+        <!-- Basic Modal Example -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Basic Modal Confirmation</h2>
+            <button id="basic-modal" class="bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded-lg">
+                Test Basic Modal
+            </button>
+        </div>
+
+        <!-- Toast Example -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Toast Notification</h2>
+            <button id="toast-example" class="bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg">
+                Test Toast Notification
+            </button>
+        </div>
+
+        <!-- Form Example -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Form with Confirmation</h2>
+            <form id="test-form" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                    <input type="text" name="name" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                </div>
+                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-lg">
+                    Submit with Confirmation
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Basic modal example
+    document.getElementById('basic-modal').addEventListener('click', async function() {
+        const confirmed = await window.ConfirmModalHandler.confirm({
+            title: 'Confirm Action',
+            message: 'Are you sure you want to proceed?',
+            confirmText: 'Yes, proceed',
+            cancelText: 'Cancel'
+        });
+
+        if (confirmed) {
+            alert('Action confirmed!');
+        } else {
+            alert('Action cancelled!');
+        }
+    });
+
+    // Toast example
+    document.getElementById('toast-example').addEventListener('click', async function() {
+        const confirmed = await window.ConfirmModalHandler.confirmToast({
+            title: 'Success!',
+            message: 'Your action was completed successfully.',
+            type: 'success',
+            position: 'top-right',
+            duration: 5000
+        });
+
+        console.log('Toast result:', confirmed);
+    });
+
+    // Form example
+    document.getElementById('test-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const confirmed = await window.ConfirmModalHandler.confirm({
+            title: 'Submit Form',
+            message: 'Are you sure you want to submit this form?',
+            confirmText: 'Submit',
+            cancelText: 'Cancel'
+        });
+
+        if (confirmed) {
+            alert('Form submitted!');
+        }
+    });
+});
+</script>
+{% endblock %}

@@ -593,6 +593,8 @@ user:
         archive: "Archive"
         restore: "Restore"
         delete: "Delete"
+        cancel: "Cancel"
+        mark_as_found: "Mark as Found"
 
     dates:
         published: "Published"
@@ -602,6 +604,10 @@ user:
         weeks_ago: "%weeks% weeks ago"
 
     confirmations:
+        delete_title: "Delete Publication"
+        archive_title: "Archive Publication"
+        restore_title: "Restore Publication"
+        mark_as_found_title: "Mark as Found"
         delete: 'Are you sure you want to delete the publication of "{name}"? This action cannot be undone.'
         archive: 'Are you sure you want to archive the publication of "{name}"? The publication will be hidden but you can restore it later.'
         restore: 'Are you sure you want to restore the publication of "{name}"? The publication will become active again.'

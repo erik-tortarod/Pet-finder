@@ -137,17 +137,15 @@
                         <div class="flex gap-2 flex-wrap">
                             {% if shelter.shelterVerificationStatus == 'pending' %}
                                 <!-- Botones para shelters pendientes -->
-                                <form method="POST" action="{{ path('app_admin_shelter_approve', {'id': shelter.id}) }}" class="inline">
+                                <form method="POST" action="{{ path('app_admin_shelter_approve', {'id': shelter.id}) }}" class="inline approve-shelter-form" data-shelter-name="{{ shelter.shelterName|default('esta shelter') }}">
                                     <button type="submit"
-                                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-sm font-medium"
-                                            onclick="return confirm('¿Estás seguro de que quieres aprobar esta shelter?')">
+                                            class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-sm font-medium">
                                         <i class="fas fa-check mr-2"></i>Aprobar
                                     </button>
                                 </form>
-                                <form method="POST" action="{{ path('app_admin_shelter_reject', {'id': shelter.id}) }}" class="inline">
+                                <form method="POST" action="{{ path('app_admin_shelter_reject', {'id': shelter.id}) }}" class="inline reject-shelter-form" data-shelter-name="{{ shelter.shelterName|default('esta shelter') }}">
                                     <button type="submit"
-                                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 text-sm font-medium"
-                                            onclick="return confirm('¿Estás seguro de que quieres rechazar esta shelter?')">
+                                            class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
                                         <i class="fas fa-times mr-2"></i>Rechazar
                                     </button>
                                 </form>
@@ -182,4 +180,56 @@
             </div>
         {% endif %}
     </div>
+
+    <script>
+        // Verificar si ya está inicializado para evitar redeclaraciones
+        if (typeof window.confirmModalInitialized === 'undefined') {
+            window.confirmModalInitialized = true;
+
+            // Event listeners para formularios
+            document.addEventListener('DOMContentLoaded', function() {
+                // Formularios de aprobar shelter
+                document.querySelectorAll('.approve-shelter-form').forEach(form => {
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const shelterName = this.dataset.shelterName;
+                        const confirmed = await confirmApproveShelter(shelterName);
+                        if (confirmed) {
+                            this.submit();
+                        }
+                    });
+                });
+
+                // Formularios de rechazar shelter
+                document.querySelectorAll('.reject-shelter-form').forEach(form => {
+                    form.addEventListener('submit', async function(e) {
+                        e.preventDefault();
+                        const shelterName = this.dataset.shelterName;
+                        const confirmed = await confirmRejectShelter(shelterName);
+                        if (confirmed) {
+                            this.submit();
+                        }
+                    });
+                });
+            });
+
+            async function confirmApproveShelter(shelterName) {
+                return await window.ConfirmModalHandler.confirm({
+                    title: 'Aprobar Shelter',
+                    message: `¿Estás seguro de que quieres aprobar ${shelterName}?`,
+                    confirmText: 'Aprobar',
+                    cancelText: 'Cancelar'
+                });
+            }
+
+            async function confirmRejectShelter(shelterName) {
+                return await window.ConfirmModalHandler.confirm({
+                    title: 'Rechazar Shelter',
+                    message: `¿Estás seguro de que quieres rechazar ${shelterName}?`,
+                    confirmText: 'Rechazar',
+                    cancelText: 'Cancelar'
+                });
+            }
+        }
+    </script>
 {% endblock %}
