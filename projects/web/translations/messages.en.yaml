@@ -605,6 +605,7 @@ user:
         delete: 'Are you sure you want to delete the publication of "{name}"? This action cannot be undone.'
         archive: 'Are you sure you want to archive the publication of "{name}"? The publication will be hidden but you can restore it later.'
         restore: 'Are you sure you want to restore the publication of "{name}"? The publication will become active again.'
+        mark_as_found: 'Are you sure you want to mark "{name}" as found/claimed? This action will change the publication status.'
 
     settings:
         title: "Profile Settings"
@@ -650,6 +651,7 @@ flash:
         login_required_archive: "You must be logged in to archive a publication"
         login_required_restore: "You must be logged in to restore a publication"
         login_required_delete: "You must be logged in to delete a publication"
+        login_required_mark_found: "You must be logged in to mark a publication as found"
         user_not_found: "User not found"
         account_disabled: "Your account is disabled"
         no_permissions: "You don't have permission to perform this action"
@@ -657,6 +659,7 @@ flash:
         no_permissions_archive: "You don't have permission to archive this publication"
         no_permissions_restore: "You don't have permission to restore this publication"
         no_permissions_delete: "You don't have permission to delete this publication"
+        no_permissions_mark_found: "You don't have permission to mark this publication as found"
 
     animal:
         not_found: "Animal not found"
@@ -666,8 +669,12 @@ flash:
         restored_success: "Animal restored successfully"
         deleted_success: "Animal deleted successfully"
         updated_success: "Animal updated successfully"
+        marked_as_found_success: "Animal marked as found/claimed successfully"
         archive_error: "Error archiving the animal"
         restore_error: "Error restoring the animal"
         delete_error: "Error deleting the animal"
         update_error: "Error updating the animal"
+        mark_as_found_error: "Error marking the animal as found"
         image_error: "Error processing the image"
+        cannot_mark_archived_found: "Cannot mark an archived animal as found"
+        already_claimed: "The animal has already been claimed"

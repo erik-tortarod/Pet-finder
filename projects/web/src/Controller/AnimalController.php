@@ -601,6 +601,106 @@ final class AnimalController extends AbstractController
         return $this->redirectToRoute('app_home');
     }
 
+    #[Route('/animal/mark-as-found/{id}', name: 'app_animal_mark_as_found', methods: ['POST'], requirements: ['id' => '\d+'])]
+    public function markAsFound(Request $request, int $id, AnimalsRepository $animalsRepository, LostPetsRepository $lostPetsRepository, FoundAnimalsRepository $foundAnimalsRepository, UserRepository $userRepository, EntityManagerInterface $entityManager): Response
+    {
+        // Verificar que el usuario esté autenticado
+        $user = ControllerUtils::requireAuthentication(
+            $request,
+            $userRepository,
+            fn() => $this->getUser(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            $this->translator->trans('flash.auth.login_required_mark_found')
+        );
+        if (!$user) {
+            return ControllerUtils::redirectToLogin(
+                fn($type, $message) => $this->addFlash($type, $message),
+                fn($route) => $this->redirectToRoute($route),
+                $this->translator->trans('flash.auth.login_required_mark_found')
+            );
+        }
+
+        // Buscar el animal
+        $animal = $animalsRepository->find($id);
+
+        if (!$animal) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception($this->translator->trans('flash.animal.not_found'))
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Verificar que el animal no esté archivado
+        if ($animal->getStatus() === 'ARCHIVED') {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception($this->translator->trans('flash.animal.cannot_mark_archived_found'))
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Verificar que el animal no esté ya reclamado
+        if ($animal->getStatus() === 'CLAIMED') {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception($this->translator->trans('flash.animal.already_claimed'))
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Determinar si es un animal perdido o encontrado
+        $lostPet = $lostPetsRepository->findByAnimal($animal);
+        $foundAnimal = $foundAnimalsRepository->findByAnimal($animal);
+
+        if (!$lostPet && !$foundAnimal) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                new \Exception($this->translator->trans('flash.animal.publication_not_found'))
+            );
+            return $this->redirectToRoute('app_home');
+        }
+
+        // Verificar que el usuario sea el propietario de la publicación
+        $entityToCheck = $lostPet ?: $foundAnimal;
+        if (!ControllerUtils::checkOwnership(
+            $user,
+            $entityToCheck->getUserId(),
+            fn($type, $message) => $this->addFlash($type, $message),
+            $this->translator->trans('flash.auth.no_permissions_mark_found')
+        )) {
+            return $this->redirectToRoute('app_home');
+        }
+
+        try {
+            // Marcar el animal como reclamado
+            $animal->setStatus('CLAIMED');
+            $animal->setUpdatedAt(new \DateTimeImmutable());
+
+            $entityManager->flush();
+
+            ControllerUtils::handleSuccess(
+                fn($type, $message) => $this->addFlash($type, $message),
+                $this->translator->trans('flash.animal.marked_as_found_success')
+            );
+        } catch (\Exception $e) {
+            ControllerUtils::handleError(
+                fn($type, $message) => $this->addFlash($type, $message),
+                $e,
+                $this->translator->trans('flash.animal.mark_as_found_error')
+            );
+        }
+
+        // Redirigir a la página anterior
+        $referer = $request->headers->get('referer');
+        if ($referer) {
+            return $this->redirect($referer);
+        }
+
+        // Si no hay referer, ir al home
+        return $this->redirectToRoute('app_home');
+    }
+
     /**
      * Obtiene las etiquetas del animal como string separado por comas
      */

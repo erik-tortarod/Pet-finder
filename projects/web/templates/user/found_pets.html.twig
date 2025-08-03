@@ -10,98 +10,280 @@
 			<h3 class="text-base sm:text-lg font-medium text-gray-900">{{ 'user.pages.found_pets.header'|trans }}</h3>
 		</div>
 
+		{# Active Animals Section #}
 		<div class="divide-y divide-gray-200">
+			{% set hasActiveAnimals = false %}
 			{% for item in foundAnimals %}
-				<article class="p-4 sm:p-6 {% if item.animalId.status == 'ARCHIVED' %}bg-gray-50 opacity-75{% endif %}">
-					<div
-						class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-						{# Animal Data #}
-						<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
-							{% set primaryPhoto = null %}
-							{% if item.animalId.animalPhotos is not empty %}
-								{% for photo in item.animalId.animalPhotos %}
-									{% if photo.isPrimary %}
-										{% set primaryPhoto = photo %}
-									{% endif %}
-								{% endfor %}
-							{% endif %}
+				{% if item.animalId.status != 'ARCHIVED' and item.animalId.status != 'CLAIMED' %}
+					{% set hasActiveAnimals = true %}
+					<article class="p-4 sm:p-6">
+						<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+							{# Animal Data #}
+							<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+								{% set primaryPhoto = null %}
+								{% if item.animalId.animalPhotos is not empty %}
+									{% for photo in item.animalId.animalPhotos %}
+										{% if photo.isPrimary %}
+											{% set primaryPhoto = photo %}
+										{% endif %}
+									{% endfor %}
+								{% endif %}
 
-							<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
+								<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
 
-							<div class="flex-1 min-w-0">
-								<h4 class="text-base sm:text-lg font-semibold text-gray-900">{{ item.animalId.name }}</h4>
-								<p class="text-xs sm:text-sm text-gray-600">
-									{{ item.animalId.animalType }}
-									{{ item.animalId.gender|default("") }}
-									{{ item.animalId.age|default("") }}
-								</p>
-								<p class="text-xs sm:text-sm text-gray-500">
-									{{ 'user.dates.published'|trans }}
-									{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
-									{% if daysAgo < 1 %}
-										{{ 'user.dates.today'|trans }}
-									{% elseif daysAgo < 2 %}
-										{{ 'user.dates.yesterday'|trans }}
-									{% elseif daysAgo < 7 %}
-										{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
-									{% else %}
-										{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
-									{% endif %}
-								</p>
+								<div class="flex-1 min-w-0">
+									<h4 class="text-base sm:text-lg font-semibold text-gray-900">{{ item.animalId.name }}</h4>
+									<p class="text-xs sm:text-sm text-gray-600">
+										{{ item.animalId.animalType }}
+										{{ item.animalId.gender|default("") }}
+										{{ item.animalId.age|default("") }}
+									</p>
+									<p class="text-xs sm:text-sm text-gray-500">
+										{{ 'user.dates.published'|trans }}
+										{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+										{% if daysAgo < 1 %}
+											{{ 'user.dates.today'|trans }}
+										{% elseif daysAgo < 2 %}
+											{{ 'user.dates.yesterday'|trans }}
+										{% elseif daysAgo < 7 %}
+											{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
+										{% else %}
+											{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
+										{% endif %}
+									</p>
 
-								<div class="flex flex-wrap items-center mt-2 gap-2">
-									{% if item.animalId.status == 'ARCHIVED' %}
-										<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 uppercase">
-											{% include 'components/Icon.html.twig' with {name: 'archive', size: 14, class: 'mr-1'} %}
-											{{ item.animalId.status|capitalize }}
-										</span>
-									{% else %}
+									<div class="flex flex-wrap items-center mt-2 gap-2">
 										<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 uppercase">
 											{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 14, class: 'mr-1'} %}
 											{{ item.animalId.status|capitalize }}
 										</span>
-									{% endif %}
+									</div>
 								</div>
 							</div>
-						</div>
 
-						{# Action Buttons #}
-						<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
-							{% if item.animalId.status != 'ARCHIVED' %}
+							{# Action Buttons #}
+							<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
 								<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="flex items-center text-xs sm:text-sm rounded-md btn btn-primary">
 									{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 16, class: 'mr-1'} %}
 									{{ 'user.actions.edit'|trans }}
 								</a>
-								<a class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
-									{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
-									{{ 'user.actions.found'|trans }}
-								</a>
+								<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmMarkAsFound('{{ item.animalId.name }}')">
+									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
+										{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
+										{{ 'user.actions.found'|trans }}
+									</button>
+								</form>
 								<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmArchive('{{ item.animalId.name }}')">
 									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
 										{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
 										{{ 'user.actions.archive'|trans }}
 									</button>
 								</form>
-							{% else %}
-								<form method="POST" action="{{ path('app_animal_restore', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmRestore('{{ item.animalId.name }}')">
-									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
-										{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
-										{{ 'user.actions.restore'|trans }}
+								<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
+									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
+										{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
+										{{ 'user.actions.delete'|trans }}
 									</button>
 								</form>
-							{% endif %}
-							<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
-								<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
-									{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
-									{{ 'user.actions.delete'|trans }}
-								</button>
-							</form>
+							</div>
 						</div>
-
-					</div>
-				</article>
+					</article>
+				{% endif %}
 			{% endfor %}
+
+			{% if not hasActiveAnimals %}
+				<div class="p-8 text-center">
+					<p class="text-gray-500">No tienes animales encontrados activos</p>
+				</div>
+			{% endif %}
 		</div>
+
+		{# Claimed Animals Section #}
+		{% set hasClaimedAnimals = false %}
+		{% for item in foundAnimals %}
+			{% if item.animalId.status == 'CLAIMED' %}
+				{% set hasClaimedAnimals = true %}
+			{% endif %}
+		{% endfor %}
+
+		{% if hasClaimedAnimals %}
+			<div class="border-t border-gray-200">
+				<button onclick="toggleClaimedSection()" class="w-full px-4 sm:px-6 py-3 text-left bg-blue-50 hover:bg-blue-100 transition-colors">
+					<div class="flex items-center justify-between">
+						<h4 class="text-sm font-medium text-blue-900 flex items-center">
+							{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-2'} %}
+							Animales Reclamados ({{ foundAnimals|filter(item => item.animalId.status == 'CLAIMED')|length }})
+						</h4>
+						{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 16, class: 'transform transition-transform', id: 'claimed-chevron'} %}
+					</div>
+				</button>
+				<div id="claimed-section" class="hidden divide-y divide-blue-200 bg-blue-50">
+					{% for item in foundAnimals %}
+						{% if item.animalId.status == 'CLAIMED' %}
+							<article class="p-4 sm:p-6 bg-blue-50">
+								<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+									{# Animal Data #}
+									<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+										{% set primaryPhoto = null %}
+										{% if item.animalId.animalPhotos is not empty %}
+											{% for photo in item.animalId.animalPhotos %}
+												{% if photo.isPrimary %}
+													{% set primaryPhoto = photo %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+
+										<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
+
+										<div class="flex-1 min-w-0">
+											<h4 class="text-base sm:text-lg font-semibold text-blue-900">{{ item.animalId.name }}</h4>
+											<p class="text-xs sm:text-sm text-blue-700">
+												{{ item.animalId.animalType }}
+												{{ item.animalId.gender|default("") }}
+												{{ item.animalId.age|default("") }}
+											</p>
+											<p class="text-xs sm:text-sm text-blue-600">
+												{{ 'user.dates.published'|trans }}
+												{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+												{% if daysAgo < 1 %}
+													{{ 'user.dates.today'|trans }}
+												{% elseif daysAgo < 2 %}
+													{{ 'user.dates.yesterday'|trans }}
+												{% elseif daysAgo < 7 %}
+													{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
+												{% else %}
+													{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
+												{% endif %}
+											</p>
+
+											<div class="mt-2 p-2 bg-blue-100 border border-blue-200 rounded-md">
+												<p class="text-xs text-blue-800 font-medium">
+													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 14, class: 'mr-1 inline'} %}
+													¡Éxito! Este animal ha sido reclamado por su dueño
+												</p>
+											</div>
+
+											<div class="flex flex-wrap items-center mt-2 gap-2">
+												<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 uppercase">
+													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 14, class: 'mr-1'} %}
+													{{ item.animalId.status|capitalize }}
+												</span>
+											</div>
+										</div>
+									</div>
+
+									{# Action Buttons - Limited for claimed animals #}
+									<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
+										<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmArchive('{{ item.animalId.name }}')">
+											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
+												{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
+												{{ 'user.actions.archive'|trans }}
+											</button>
+										</form>
+										<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
+											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
+												{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
+												{{ 'user.actions.delete'|trans }}
+											</button>
+										</form>
+									</div>
+								</div>
+							</article>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
+
+		{# Archived Animals Section (Collapsible) #}
+		{% set hasArchivedAnimals = false %}
+		{% for item in foundAnimals %}
+			{% if item.animalId.status == 'ARCHIVED' %}
+				{% set hasArchivedAnimals = true %}
+			{% endif %}
+		{% endfor %}
+
+		{% if hasArchivedAnimals %}
+			<div class="border-t border-gray-200">
+				<button onclick="toggleArchivedSection()" class="w-full px-4 sm:px-6 py-3 text-left bg-gray-50 hover:bg-gray-100 transition-colors">
+					<div class="flex items-center justify-between">
+						<h4 class="text-sm font-medium text-gray-700 flex items-center">
+							{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-2'} %}
+							Animales Archivados ({{ foundAnimals|filter(item => item.animalId.status == 'ARCHIVED')|length }})
+						</h4>
+						{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 16, class: 'transform transition-transform', id: 'archived-chevron'} %}
+					</div>
+				</button>
+				<div id="archived-section" class="hidden divide-y divide-gray-200 bg-gray-50">
+					{% for item in foundAnimals %}
+						{% if item.animalId.status == 'ARCHIVED' %}
+							<article class="p-4 sm:p-6 bg-gray-50 opacity-75">
+								<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+									{# Animal Data #}
+									<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+										{% set primaryPhoto = null %}
+										{% if item.animalId.animalPhotos is not empty %}
+											{% for photo in item.animalId.animalPhotos %}
+												{% if photo.isPrimary %}
+													{% set primaryPhoto = photo %}
+												{% endif %}
+											{% endfor %}
+										{% endif %}
+
+										<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0 grayscale">
+
+										<div class="flex-1 min-w-0">
+											<h4 class="text-base sm:text-lg font-semibold text-gray-600">{{ item.animalId.name }}</h4>
+											<p class="text-xs sm:text-sm text-gray-500">
+												{{ item.animalId.animalType }}
+												{{ item.animalId.gender|default("") }}
+												{{ item.animalId.age|default("") }}
+											</p>
+											<p class="text-xs sm:text-sm text-gray-400">
+												{{ 'user.dates.published'|trans }}
+												{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+												{% if daysAgo < 1 %}
+													{{ 'user.dates.today'|trans }}
+												{% elseif daysAgo < 2 %}
+													{{ 'user.dates.yesterday'|trans }}
+												{% elseif daysAgo < 7 %}
+													{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
+												{% else %}
+													{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
+												{% endif %}
+											</p>
+
+											<div class="flex flex-wrap items-center mt-2 gap-2">
+												<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 uppercase">
+													{% include 'components/Icon.html.twig' with {name: 'archive', size: 14, class: 'mr-1'} %}
+													{{ item.animalId.status|capitalize }}
+												</span>
+											</div>
+										</div>
+									</div>
+
+									{# Action Buttons - Limited for archived animals #}
+									<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
+										<form method="POST" action="{{ path('app_animal_restore', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmRestore('{{ item.animalId.name }}')">
+											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
+												{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
+												{{ 'user.actions.restore'|trans }}
+											</button>
+										</form>
+										<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline" onsubmit="return confirmDelete('{{ item.animalId.name }}')">
+											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
+												{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
+												{{ 'user.actions.delete'|trans }}
+											</button>
+										</form>
+									</div>
+								</div>
+							</article>
+						{% endif %}
+					{% endfor %}
+				</div>
+			</div>
+		{% endif %}
 	</section>
 
 	<script>
@@ -114,6 +296,34 @@
 		function confirmRestore(animalName) {
 			return confirm(`{{ 'user.confirmations.restore'|trans({'name': '${animalName}'}) }}`);
 		}
-	</script>
+		function confirmMarkAsFound(animalName) {
+			return confirm(`{{ 'user.confirmations.mark_as_found'|trans({'name': '${animalName}'}) }}`);
+		}
 
+		function toggleArchivedSection() {
+			const section = document.getElementById('archived-section');
+			const chevron = document.getElementById('archived-chevron');
+
+			if (section.classList.contains('hidden')) {
+				section.classList.remove('hidden');
+				chevron.classList.add('rotate-180');
+			} else {
+				section.classList.add('hidden');
+				chevron.classList.remove('rotate-180');
+			}
+		}
+
+		function toggleClaimedSection() {
+			const section = document.getElementById('claimed-section');
+			const chevron = document.getElementById('claimed-chevron');
+
+			if (section.classList.contains('hidden')) {
+				section.classList.remove('hidden');
+				chevron.classList.add('rotate-180');
+			} else {
+				section.classList.add('hidden');
+				chevron.classList.remove('rotate-180');
+			}
+		}
+	</script>
 </div></section>{% endblock %}

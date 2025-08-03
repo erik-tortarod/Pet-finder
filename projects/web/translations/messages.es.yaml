@@ -605,6 +605,7 @@ user:
         delete: '¿Estás seguro de que quieres eliminar la publicación de "{name}"? Esta acción no se puede deshacer.'
         archive: '¿Estás seguro de que quieres archivar la publicación de "{name}"? La publicación se ocultará pero podrás restaurarla más tarde.'
         restore: '¿Estás seguro de que quieres restaurar la publicación de "{name}"? La publicación volverá a estar activa.'
+        mark_as_found: '¿Estás seguro de que quieres marcar "{name}" como encontrada/reclamada? Esta acción cambiará el estado de la publicación.'
 
     settings:
         title: "Configuración del Perfil"
@@ -650,6 +651,7 @@ flash:
         login_required_archive: "Debes iniciar sesión para archivar una publicación"
         login_required_restore: "Debes iniciar sesión para restaurar una publicación"
         login_required_delete: "Debes iniciar sesión para eliminar una publicación"
+        login_required_mark_found: "Debes iniciar sesión para marcar como encontrada una publicación"
         user_not_found: "Usuario no encontrado"
         account_disabled: "Tu cuenta está desactivada"
         no_permissions: "No tienes permisos para realizar esta acción"
@@ -657,6 +659,7 @@ flash:
         no_permissions_archive: "No tienes permisos para archivar esta publicación"
         no_permissions_restore: "No tienes permisos para restaurar esta publicación"
         no_permissions_delete: "No tienes permisos para eliminar esta publicación"
+        no_permissions_mark_found: "No tienes permisos para marcar como encontrada esta publicación"
 
     animal:
         not_found: "Animal no encontrado"
@@ -666,8 +669,12 @@ flash:
         restored_success: "Animal restaurado correctamente"
         deleted_success: "Animal eliminado correctamente"
         updated_success: "Animal actualizado correctamente"
+        marked_as_found_success: "Animal marcado como encontrado/reclamado correctamente"
         archive_error: "Error al archivar el animal"
         restore_error: "Error al restaurar el animal"
         delete_error: "Error al eliminar el animal"
         update_error: "Error al actualizar el animal"
+        mark_as_found_error: "Error al marcar como encontrado el animal"
         image_error: "Error al procesar la imagen"
+        cannot_mark_archived_found: "No se puede marcar como encontrado un animal archivado"
+        already_claimed: "El animal ya ha sido reclamado"
