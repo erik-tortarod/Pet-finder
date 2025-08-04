@@ -384,6 +384,81 @@ animal:
             title: "Foto del animal"
             close: "Cerrar"
 
+    edit:
+        lost_title: "Editar Animal Perdido"
+        found_title: "Editar Animal Encontrado"
+        lost_subtitle: "Actualiza la información de tu mascota perdida"
+        found_subtitle: "Actualiza la información del animal encontrado"
+        current_photo: "Foto Actual"
+        current_photo_alt: "Foto actual de {name}"
+        photo_help: "Puedes subir una nueva foto para reemplazar la actual."
+        photo_formats: "Formatos permitidos: JPG, PNG, GIF, WebP, AVIF. Tamaño máximo: 2MB"
+        animal_info_title: "Información del Animal"
+        lost_info_title: "Información de la Pérdida"
+        found_info_title: "Información del Hallazgo"
+        reward_title: "Información de Recompensa"
+        tags_help: "Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)"
+        found_circumstances_help: "Describe las circunstancias en las que encontraste al animal"
+        additional_notes_help: "Información adicional sobre el animal o el hallazgo"
+        update_lost_button: "Actualizar Animal Perdido"
+        update_found_button: "Actualizar Animal Encontrado"
+
+        form:
+            name: "Nombre del animal"
+            name_optional: "Nombre del animal (si se conoce)"
+            animal_type: "Tipo de animal"
+            gender: "Género"
+            size: "Tamaño"
+            color: "Color"
+            age: "Edad (aproximada)"
+            description: "Descripción"
+            animal_tags: "Etiquetas (separadas por comas)"
+            animal_tags_placeholder: "Ej: amigable, juguetón, tranquilo"
+            animal_photo: "Nueva foto del animal (opcional)"
+            lost_date: "Fecha de pérdida"
+            lost_time: "Hora aproximada de pérdida"
+            lost_zone: "Zona donde se perdió"
+            lost_address: "Dirección específica"
+            lost_circumstances: "Circunstancias de la pérdida"
+            reward_amount: "Monto de recompensa"
+            reward_description: "Descripción de la recompensa"
+            found_date: "Fecha de hallazgo"
+            found_time: "Hora aproximada de hallazgo"
+            found_zone: "Zona donde se encontró"
+            found_address: "Dirección específica"
+            found_circumstances: "Circunstancias del hallazgo"
+            additional_notes: "Notas adicionales"
+            additional_notes_placeholder: "Información adicional sobre el animal o el hallazgo"
+
+            animal_types:
+                dog: "Perro"
+                cat: "Gato"
+                bird: "Ave"
+                other: "Otro"
+
+            gender_types:
+                male: "Macho"
+                female: "Hembra"
+                unspecified: "No especificado"
+
+            size_types:
+                small: "Pequeño"
+                medium: "Mediano"
+                large: "Grande"
+                extra_large: "Extra Grande"
+
+        validation:
+            name_required: "El nombre del animal es obligatorio"
+            animal_type_required: "El tipo de animal es obligatorio"
+            gender_required: "El género es obligatorio"
+            size_required: "El tamaño es obligatorio"
+            lost_date_required: "La fecha de pérdida es obligatoria"
+            lost_zone_required: "La zona de pérdida es obligatoria"
+            found_date_required: "La fecha de hallazgo es obligatoria"
+            found_zone_required: "La zona de hallazgo es obligatoria"
+            invalid_image: "Por favor sube una imagen válida (JPG, PNG, GIF, WebP, AVIF)"
+            image_too_large: "La imagen no puede ser mayor a 2MB"
+
 auth:
     login:
         title: "Iniciar Sesión"

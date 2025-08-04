@@ -384,6 +384,81 @@ animal:
             title: "Animal photo"
             close: "Close"
 
+    edit:
+        lost_title: "Edit Lost Animal"
+        found_title: "Edit Found Animal"
+        lost_subtitle: "Update your lost pet information"
+        found_subtitle: "Update the found animal information"
+        current_photo: "Current Photo"
+        current_photo_alt: "Current photo of {name}"
+        photo_help: "You can upload a new photo to replace the current one."
+        photo_formats: "Allowed formats: JPG, PNG, GIF, WebP, AVIF. Maximum size: 2MB"
+        animal_info_title: "Animal Information"
+        lost_info_title: "Loss Information"
+        found_info_title: "Found Information"
+        reward_title: "Reward Information"
+        tags_help: "Enter tags separated by commas (ex: friendly, playful, calm)"
+        found_circumstances_help: "Describe the circumstances in which you found the animal"
+        additional_notes_help: "Additional information about the animal or the finding"
+        update_lost_button: "Update Lost Animal"
+        update_found_button: "Update Found Animal"
+
+        form:
+            name: "Animal name"
+            name_optional: "Animal name (if known)"
+            animal_type: "Animal type"
+            gender: "Gender"
+            size: "Size"
+            color: "Color"
+            age: "Age (approximate)"
+            description: "Description"
+            animal_tags: "Tags (separated by commas)"
+            animal_tags_placeholder: "Ex: friendly, playful, calm"
+            animal_photo: "New animal photo (optional)"
+            lost_date: "Loss date"
+            lost_time: "Approximate loss time"
+            lost_zone: "Area where lost"
+            lost_address: "Specific address"
+            lost_circumstances: "Loss circumstances"
+            reward_amount: "Reward amount"
+            reward_description: "Reward description"
+            found_date: "Found date"
+            found_time: "Approximate found time"
+            found_zone: "Area where found"
+            found_address: "Specific address"
+            found_circumstances: "Found circumstances"
+            additional_notes: "Additional notes"
+            additional_notes_placeholder: "Additional information about the animal or the finding"
+
+            animal_types:
+                dog: "Dog"
+                cat: "Cat"
+                bird: "Bird"
+                other: "Other"
+
+            gender_types:
+                male: "Male"
+                female: "Female"
+                unspecified: "Unspecified"
+
+            size_types:
+                small: "Small"
+                medium: "Medium"
+                large: "Large"
+                extra_large: "Extra Large"
+
+        validation:
+            name_required: "Animal name is required"
+            animal_type_required: "Animal type is required"
+            gender_required: "Gender is required"
+            size_required: "Size is required"
+            lost_date_required: "Loss date is required"
+            lost_zone_required: "Loss zone is required"
+            found_date_required: "Found date is required"
+            found_zone_required: "Found zone is required"
+            invalid_image: "Please upload a valid image (JPG, PNG, GIF, WebP, AVIF)"
+            image_too_large: "Image cannot be larger than 2MB"
+
 auth:
     login:
         title: "Login"

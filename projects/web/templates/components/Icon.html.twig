@@ -67,6 +67,14 @@
 	{% include 'components/icons/archive.html.twig' with {size: size, class: class, color: color} %}
 {% elseif name == 'trash-2' %}
 	{% include 'components/icons/trash-2.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'save' %}
+	{% include 'components/icons/save.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'camera' %}
+	{% include 'components/icons/camera.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'calendar' %}
+	{% include 'components/icons/calendar.html.twig' with {size: size, class: class, color: color} %}
+{% elseif name == 'check' %}
+	{% include 'components/icons/check.html.twig' with {size: size, class: class, color: color} %}
 {% else %}
 	{# Default icon#}
 	<svg xmlns="http://www.w3.org/2000/svg" width="{{ size }}" height="{{ size }}" viewbox="0 0 24 24" fill="none" stroke="{{ color }}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-help-circle {{ class }}">

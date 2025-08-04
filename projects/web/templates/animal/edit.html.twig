@@ -2,241 +2,307 @@
 
 {% block title %}
 	{% if isLostPet %}
-		Editar Animal Perdido
+		{{ 'animal.edit.lost_title'|trans }}
 	{% else %}
-		Editar Animal Encontrado
+		{{ 'animal.edit.found_title'|trans }}
 	{% endif %}
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-4">
-		<div class="row">
-			<div class="col-12">
-				<div class="d-flex justify-content-between align-items-center mb-4">
-					<h1>
-						{% if isLostPet %}
-							Editar Animal Perdido
-						{% else %}
-							Editar Animal Encontrado
-						{% endif %}
-					</h1>
-					<a href="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}" class="btn btn-secondary">
-						<i class="fas fa-arrow-left"></i>
-						Volver
+	<div class="min-h-screen bg-gray-50 py-8">
+		<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+			{# Header #}
+			<div class="mb-8">
+				<div class="flex items-center justify-between">
+					<div>
+						<nav class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+							<a href="{{ path('app_home') }}" class="hover:text-gray-700">{{ 'nav.home'|trans }}</a>
+							{% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 16, class: 'text-gray-400'} %}
+							<a href="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}" class="hover:text-gray-700">{{ animal.name }}</a>
+							{% include 'components/Icon.html.twig' with {name: 'chevron-right', size: 16, class: 'text-gray-400'} %}
+							<span class="text-gray-900 font-medium">
+								{% if isLostPet %}
+									{{ 'animal.edit.lost_title'|trans }}
+								{% else %}
+									{{ 'animal.edit.found_title'|trans }}
+								{% endif %}
+							</span>
+						</nav>
+						<h1 class="text-3xl font-bold text-gray-900">
+							{% if isLostPet %}
+								{{ 'animal.edit.lost_title'|trans }}
+							{% else %}
+								{{ 'animal.edit.found_title'|trans }}
+							{% endif %}
+						</h1>
+						<p class="mt-2 text-gray-600">
+							{% if isLostPet %}
+								{{ 'animal.edit.lost_subtitle'|trans }}
+							{% else %}
+								{{ 'animal.edit.found_subtitle'|trans }}
+							{% endif %}
+						</p>
+					</div>
+					<a href="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}" 
+					   class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+						{% include 'components/Icon.html.twig' with {name: 'arrow-left', size: 16, class: 'mr-2'} %}
+						{{ 'common.back'|trans }}
 					</a>
 				</div>
+			</div>
 
-				{% if animal.animalPhotos is not empty %}
-					<div class="alert alert-info">
-						<strong>Foto actual:</strong>
-						{% set primaryPhoto = null %}
-						{% for photo in animal.animalPhotos %}
-							{% if photo.isPrimary %}
-								{% set primaryPhoto = photo %}
-							{% endif %}
-						{% endfor %}
-						{% if not primaryPhoto and animal.animalPhotos|length > 0 %}
-							{% set primaryPhoto = animal.animalPhotos|first %}
-						{% endif %}
-
-						{% if primaryPhoto %}
-							<div class="mt-2">
-								<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}" alt="Foto actual de {{ animal.name }}" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
-							</div>
-						{% endif %}
-						<small class="d-block mt-2">Puedes subir una nueva foto para reemplazar la actual.</small>
+			{# Current Photo Preview #}
+			{% if animal.animalPhotos is not empty %}
+				<div class="mb-8 bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+					<div class="flex items-center mb-4">
+						{% include 'components/Icon.html.twig' with {name: 'camera', size: 20, class: 'text-blue-600 mr-2'} %}
+						<h3 class="text-lg font-medium text-gray-900">{{ 'animal.edit.current_photo'|trans }}</h3>
 					</div>
-				{% endif %}
+					{% set primaryPhoto = null %}
+					{% for photo in animal.animalPhotos %}
+						{% if photo.isPrimary %}
+							{% set primaryPhoto = photo %}
+						{% endif %}
+					{% endfor %}
+					{% if not primaryPhoto and animal.animalPhotos|length > 0 %}
+						{% set primaryPhoto = animal.animalPhotos|first %}
+					{% endif %}
 
-				{{ form_start(form, {'attr': {'enctype': 'multipart/form-data'}}) }}
-				<div class="row">
-					<div class="col-md-6">
-						<div class="card">
-							<div class="card-header">
-								<h3 class="card-title mb-0">Información del Animal</h3>
-							</div>
-							<div class="card-body">
-								<div class="mb-3">
-									{{ form_label(form.name) }}
-									{{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.name) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.animalType) }}
-									{{ form_widget(form.animalType, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.animalType) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.gender) }}
-									{{ form_widget(form.gender, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.gender) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.size) }}
-									{{ form_widget(form.size, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.size) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.color) }}
-									{{ form_widget(form.color, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.color) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.age) }}
-									{{ form_widget(form.age, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.age) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.description) }}
-									{{ form_widget(form.description, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-									{{ form_errors(form.description) }}
-								</div>
-
-								<div class="mb-3">
-									{{ form_label(form.animalTags) }}
-									{{ form_widget(form.animalTags, {'attr': {'class': 'form-control'}}) }}
-									{{ form_errors(form.animalTags) }}
-									<small class="form-text text-muted">Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)</small>
-								</div>
-
-								<div class="mb-3" data-controller="image-upload" data-image-upload-max-size-value="2097152">
-									{{ form_label(form.animalPhoto) }}
-									{{ form_widget(form.animalPhoto, {
-                                        'attr': {
-                                            'class': 'form-control',
-                                            'data-image-upload-target': 'input',
-                                            'data-action': 'change->image-upload#selectFile'
-                                        }
-                                    }) }}
-									{{ form_errors(form.animalPhoto) }}
-									<small class="form-text text-muted">Formatos permitidos: JPG, PNG, GIF, WebP, AVIF. Tamaño máximo: 2MB</small>
-
-									<div class="mt-2" data-image-upload-target="preview"></div>
-								</div>
+					{% if primaryPhoto %}
+						<div class="flex items-center space-x-4">
+							<img src="{{ path('app_image_animal', {'id': primaryPhoto.id}) }}" 
+								 alt="{{ 'animal.edit.current_photo_alt'|trans({'name': animal.name}) }}" 
+								 class="w-24 h-24 rounded-lg object-cover border border-gray-200">
+							<div class="flex-1">
+								<p class="text-sm text-gray-600">{{ 'animal.edit.photo_help'|trans }}</p>
+								<p class="text-xs text-gray-500 mt-1">{{ 'animal.edit.photo_formats'|trans }}</p>
 							</div>
 						</div>
+					{% endif %}
+				</div>
+			{% endif %}
+
+			{# Form #}
+			{{ form_start(form, {'attr': {'enctype': 'multipart/form-data', 'class': 'space-y-8'}}) }}
+			
+			<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+				{# Animal Information Card #}
+				<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+					<div class="px-6 py-4 border-b border-gray-200">
+						<div class="flex items-center">
+							{% include 'components/Icon.html.twig' with {name: 'paw', size: 20, class: 'text-blue-600 mr-3'} %}
+							<h3 class="text-lg font-medium text-gray-900">{{ 'animal.edit.animal_info_title'|trans }}</h3>
+						</div>
 					</div>
+					<div class="p-6 space-y-6">
+						{# Name #}
+						<div>
+							{{ form_label(form.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.name, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+							{{ form_errors(form.name) }}
+						</div>
 
-					<div class="col-md-6">
-						<div class="card">
-							<div class="card-header">
-								<h3 class="card-title mb-0">
-									{% if isLostPet %}
-										Información de la Pérdida
-									{% else %}
-										Información del Hallazgo
-									{% endif %}
-								</h3>
+						{# Animal Type and Gender #}
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								{{ form_label(form.animalType, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.animalType, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+								{{ form_errors(form.animalType) }}
 							</div>
-							<div class="card-body">
+							<div>
+								{{ form_label(form.gender, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.gender, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+								{{ form_errors(form.gender) }}
+							</div>
+						</div>
+
+						{# Size and Color #}
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								{{ form_label(form.size, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.size, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+								{{ form_errors(form.size) }}
+							</div>
+							<div>
+								{{ form_label(form.color, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.color, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+								{{ form_errors(form.color) }}
+							</div>
+						</div>
+
+						{# Age #}
+						<div>
+							{{ form_label(form.age, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.age, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+							{{ form_errors(form.age) }}
+						</div>
+
+						{# Description #}
+						<div>
+							{{ form_label(form.description, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.description, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm', 'rows': 4}}) }}
+							{{ form_errors(form.description) }}
+						</div>
+
+						{# Tags #}
+						<div>
+							{{ form_label(form.animalTags, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.animalTags, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+							{{ form_errors(form.animalTags) }}
+							<p class="mt-2 text-sm text-gray-500">{{ 'animal.edit.tags_help'|trans }}</p>
+						</div>
+
+						{# Photo Upload #}
+						<div data-controller="image-upload" data-image-upload-max-size-value="2097152">
+							{{ form_label(form.animalPhoto, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.animalPhoto, {
+								'attr': {
+									'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm',
+									'data-image-upload-target': 'input',
+									'data-action': 'change->image-upload#selectFile'
+								}
+							}) }}
+							{{ form_errors(form.animalPhoto) }}
+							<p class="mt-2 text-sm text-gray-500">{{ 'animal.edit.photo_formats'|trans }}</p>
+							<div class="mt-3" data-image-upload-target="preview"></div>
+						</div>
+					</div>
+				</div>
+
+				{# Event Information Card #}
+				<div class="bg-white rounded-lg shadow-sm border border-gray-200">
+					<div class="px-6 py-4 border-b border-gray-200">
+						<div class="flex items-center">
+							{% include 'components/Icon.html.twig' with {name: isLostPet ? 'map-pin' : 'calendar', size: 20, class: 'text-green-600 mr-3'} %}
+							<h3 class="text-lg font-medium text-gray-900">
 								{% if isLostPet %}
-									<div class="mb-3">
-										{{ form_label(form.lostDate) }}
-										{{ form_widget(form.lostDate, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.lostDate) }}
-									</div>
+									{{ 'animal.edit.lost_info_title'|trans }}
+								{% else %}
+									{{ 'animal.edit.found_info_title'|trans }}
+								{% endif %}
+							</h3>
+						</div>
+					</div>
+					<div class="p-6 space-y-6">
+						{% if isLostPet %}
+							{# Lost Date and Time #}
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									{{ form_label(form.lostDate, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.lostDate, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.lostDate) }}
+								</div>
+								<div>
+									{{ form_label(form.lostTime, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.lostTime, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.lostTime) }}
+								</div>
+							</div>
 
-									<div class="mb-3">
-										{{ form_label(form.lostTime) }}
-										{{ form_widget(form.lostTime, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.lostTime) }}
-									</div>
+							{# Lost Zone and Address #}
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									{{ form_label(form.lostZone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.lostZone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.lostZone) }}
+								</div>
+								<div>
+									{{ form_label(form.lostAddress, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.lostAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.lostAddress) }}
+								</div>
+							</div>
 
-									<div class="mb-3">
-										{{ form_label(form.lostZone) }}
-										{{ form_widget(form.lostZone, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.lostZone) }}
-									</div>
+							{# Lost Circumstances #}
+							<div>
+								{{ form_label(form.lostCircumstances, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.lostCircumstances, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm', 'rows': 3}}) }}
+								{{ form_errors(form.lostCircumstances) }}
+							</div>
 
-									<div class="mb-3">
-										{{ form_label(form.lostAddress) }}
-										{{ form_widget(form.lostAddress, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.lostAddress) }}
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.lostCircumstances) }}
-										{{ form_widget(form.lostCircumstances, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-										{{ form_errors(form.lostCircumstances) }}
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.rewardAmount) }}
-										{{ form_widget(form.rewardAmount, {'attr': {'class': 'form-control'}}) }}
+							{# Reward Information #}
+							<div class="border-t border-gray-200 pt-6">
+								<h4 class="text-md font-medium text-gray-900 mb-4">{{ 'animal.edit.reward_title'|trans }}</h4>
+								<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+									<div>
+										{{ form_label(form.rewardAmount, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+										{{ form_widget(form.rewardAmount, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
 										{{ form_errors(form.rewardAmount) }}
 									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.rewardDescription) }}
-										{{ form_widget(form.rewardDescription, {'attr': {'class': 'form-control', 'rows': 3}}) }}
+									<div>
+										{{ form_label(form.rewardDescription, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+										{{ form_widget(form.rewardDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm', 'rows': 3}}) }}
 										{{ form_errors(form.rewardDescription) }}
 									</div>
-								{% else %}
-									<div class="mb-3">
-										{{ form_label(form.foundDate) }}
-										{{ form_widget(form.foundDate, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.foundDate) }}
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.foundTime) }}
-										{{ form_widget(form.foundTime, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.foundTime) }}
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.foundZone) }}
-										{{ form_widget(form.foundZone, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.foundZone) }}
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.foundAddress) }}
-										{{ form_widget(form.foundAddress, {'attr': {'class': 'form-control'}}) }}
-										{{ form_errors(form.foundAddress) }}
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.foundCircumstances) }}
-										{{ form_widget(form.foundCircumstances, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-										{{ form_errors(form.foundCircumstances) }}
-										<small class="form-text text-muted">Describe las circunstancias en las que encontraste al animal</small>
-									</div>
-
-									<div class="mb-3">
-										{{ form_label(form.additionalNotes) }}
-										{{ form_widget(form.additionalNotes, {'attr': {'class': 'form-control', 'rows': 3}}) }}
-										{{ form_errors(form.additionalNotes) }}
-										<small class="form-text text-muted">Información adicional sobre el animal o el hallazgo</small>
-									</div>
-								{% endif %}
+								</div>
 							</div>
-						</div>
+						{% else %}
+							{# Found Date and Time #}
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									{{ form_label(form.foundDate, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.foundDate, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.foundDate) }}
+								</div>
+								<div>
+									{{ form_label(form.foundTime, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.foundTime, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.foundTime) }}
+								</div>
+							</div>
+
+							{# Found Zone and Address #}
+							<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+								<div>
+									{{ form_label(form.foundZone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.foundZone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.foundZone) }}
+								</div>
+								<div>
+									{{ form_label(form.foundAddress, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+									{{ form_widget(form.foundAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm'}}) }}
+									{{ form_errors(form.foundAddress) }}
+								</div>
+							</div>
+
+							{# Found Circumstances #}
+							<div>
+								{{ form_label(form.foundCircumstances, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.foundCircumstances, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm', 'rows': 3}}) }}
+								{{ form_errors(form.foundCircumstances) }}
+								<p class="mt-2 text-sm text-gray-500">{{ 'animal.edit.found_circumstances_help'|trans }}</p>
+							</div>
+
+							{# Additional Notes #}
+							<div>
+								{{ form_label(form.additionalNotes, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.additionalNotes, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm', 'rows': 3}}) }}
+								{{ form_errors(form.additionalNotes) }}
+								<p class="mt-2 text-sm text-gray-500">{{ 'animal.edit.additional_notes_help'|trans }}</p>
+							</div>
+						{% endif %}
 					</div>
 				</div>
-
-				<div class="text-center mt-4">
-					<button type="submit" class="btn btn-primary btn-lg">
-						<i class="fas fa-save"></i>
-						{% if isLostPet %}
-							Actualizar Animal Perdido
-						{% else %}
-							Actualizar Animal Encontrado
-						{% endif %}
-					</button>
-					<a href="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}" class="btn btn-secondary btn-lg ms-2">
-						<i class="fas fa-times"></i>
-						Cancelar
-					</a>
-				</div>
-				{{ form_end(form) }}
 			</div>
+
+			{# Action Buttons #}
+			<div class="flex items-center justify-center space-x-4 pt-8 border-t border-gray-200">
+				<button type="submit" 
+						class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+					{% include 'components/Icon.html.twig' with {name: 'save', size: 18, class: 'mr-2'} %}
+					{% if isLostPet %}
+						{{ 'animal.edit.update_lost_button'|trans }}
+					{% else %}
+						{{ 'animal.edit.update_found_button'|trans }}
+					{% endif %}
+				</button>
+				<a href="{{ path('app_animal_show_slug', {'id': animal.id, 'slug': animal.generateSlug()}) }}" 
+				   class="inline-flex items-center px-6 py-3 border border-gray-300 text-base font-medium rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-200">
+					{% include 'components/Icon.html.twig' with {name: 'x', size: 18, class: 'mr-2'} %}
+					{{ 'common.cancel'|trans }}
+				</a>
+			</div>
+			{{ form_end(form) }}
 		</div>
 	</div>
 {% endblock %}

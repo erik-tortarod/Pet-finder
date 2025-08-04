@@ -23,61 +23,61 @@ class EditLostPetType extends AbstractType
         $builder
             // Campos del animal (mapeados a la entidad Animals)
             ->add('name', TextType::class, [
-                'label' => 'Nombre del animal',
-                'constraints' => [new NotBlank(message: 'El nombre del animal es obligatorio')],
+                'label' => 'animal.edit.form.name',
+                'constraints' => [new NotBlank(message: 'animal.edit.validation.name_required')],
             ])
             ->add('animalType', ChoiceType::class, [
-                'label' => 'Tipo de animal',
+                'label' => 'animal.edit.form.animal_type',
                 'mapped' => false,
                 'choices' => [
-                    'Perro' => 'perro',
-                    'Gato' => 'gato',
-                    'Ave' => 'ave',
-                    'Otro' => 'otro',
+                    'animal.edit.form.animal_types.dog' => 'perro',
+                    'animal.edit.form.animal_types.cat' => 'gato',
+                    'animal.edit.form.animal_types.bird' => 'ave',
+                    'animal.edit.form.animal_types.other' => 'otro',
                 ],
-                'constraints' => [new NotBlank(message: 'El tipo de animal es obligatorio')],
+                'constraints' => [new NotBlank(message: 'animal.edit.validation.animal_type_required')],
             ])
             ->add('gender', ChoiceType::class, [
-                'label' => 'Género',
+                'label' => 'animal.edit.form.gender',
                 'choices' => [
-                    'Macho' => 'male',
-                    'Hembra' => 'female',
-                    'No especificado' => 'dont_know',
+                    'animal.edit.form.gender_types.male' => 'male',
+                    'animal.edit.form.gender_types.female' => 'female',
+                    'animal.edit.form.gender_types.unspecified' => 'dont_know',
                 ],
-                'constraints' => [new NotBlank(message: 'El género es obligatorio')],
+                'constraints' => [new NotBlank(message: 'animal.edit.validation.gender_required')],
             ])
             ->add('size', ChoiceType::class, [
-                'label' => 'Tamaño',
+                'label' => 'animal.edit.form.size',
                 'choices' => [
-                    'Pequeño' => 'small',
-                    'Mediano' => 'medium',
-                    'Grande' => 'large',
-                    'Extra Grande' => 'extra_large',
+                    'animal.edit.form.size_types.small' => 'small',
+                    'animal.edit.form.size_types.medium' => 'medium',
+                    'animal.edit.form.size_types.large' => 'large',
+                    'animal.edit.form.size_types.extra_large' => 'extra_large',
                 ],
-                'constraints' => [new NotBlank(message: 'El tamaño es obligatorio')],
+                'constraints' => [new NotBlank(message: 'animal.edit.validation.size_required')],
             ])
             ->add('color', TextType::class, [
-                'label' => 'Color',
+                'label' => 'animal.edit.form.color',
                 'required' => false,
             ])
             ->add('age', TextType::class, [
-                'label' => 'Edad (aproximada)',
+                'label' => 'animal.edit.form.age',
                 'required' => false,
             ])
             ->add('description', TextareaType::class, [
-                'label' => 'Descripción',
+                'label' => 'animal.edit.form.description',
                 'required' => false,
             ])
             ->add('animalTags', TextType::class, [
-                'label' => 'Etiquetas (separadas por comas)',
+                'label' => 'animal.edit.form.animal_tags',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
-                    'placeholder' => 'Ej: amigable, juguetón, tranquilo'
+                    'placeholder' => 'animal.edit.form.animal_tags_placeholder'
                 ],
             ])
             ->add('animalPhoto', FileType::class, [
-                'label' => 'Nueva foto del animal (opcional)',
+                'label' => 'animal.edit.form.animal_photo',
                 'mapped' => false,
                 'required' => false,
                 'constraints' => [
@@ -90,8 +90,8 @@ class EditLostPetType extends AbstractType
                             'image/webp',
                             'image/avif'
                         ],
-                        'mimeTypesMessage' => 'Por favor sube una imagen válida (JPG, PNG, GIF, WebP, AVIF)',
-                        'maxSizeMessage' => 'La imagen no puede ser mayor a 2MB'
+                        'mimeTypesMessage' => 'animal.edit.validation.invalid_image',
+                        'maxSizeMessage' => 'animal.edit.validation.image_too_large'
                     ])
                 ],
                 'attr' => [
@@ -102,39 +102,39 @@ class EditLostPetType extends AbstractType
 
             // Campos de pérdida (mapeados a la entidad LostPets)
             ->add('lostDate', DateType::class, [
-                'label' => 'Fecha de pérdida',
+                'label' => 'animal.edit.form.lost_date',
                 'widget' => 'single_text',
                 'mapped' => false,
-                'constraints' => [new NotBlank(message: 'La fecha de pérdida es obligatoria')],
+                'constraints' => [new NotBlank(message: 'animal.edit.validation.lost_date_required')],
             ])
             ->add('lostTime', TimeType::class, [
-                'label' => 'Hora aproximada de pérdida',
+                'label' => 'animal.edit.form.lost_time',
                 'widget' => 'single_text',
                 'mapped' => false,
                 'required' => false,
             ])
             ->add('lostZone', TextType::class, [
-                'label' => 'Zona donde se perdió',
+                'label' => 'animal.edit.form.lost_zone',
                 'mapped' => false,
-                'constraints' => [new NotBlank(message: 'La zona de pérdida es obligatoria')],
+                'constraints' => [new NotBlank(message: 'animal.edit.validation.lost_zone_required')],
             ])
             ->add('lostAddress', TextType::class, [
-                'label' => 'Dirección específica',
+                'label' => 'animal.edit.form.lost_address',
                 'mapped' => false,
                 'required' => false,
             ])
             ->add('lostCircumstances', TextareaType::class, [
-                'label' => 'Circunstancias de la pérdida',
+                'label' => 'animal.edit.form.lost_circumstances',
                 'mapped' => false,
                 'required' => false,
             ])
             ->add('rewardAmount', TextType::class, [
-                'label' => 'Monto de recompensa',
+                'label' => 'animal.edit.form.reward_amount',
                 'mapped' => false,
                 'required' => false,
             ])
             ->add('rewardDescription', TextareaType::class, [
-                'label' => 'Descripción de la recompensa',
+                'label' => 'animal.edit.form.reward_description',
                 'mapped' => false,
                 'required' => false,
             ])
