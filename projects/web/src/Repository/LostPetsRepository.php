@@ -58,6 +58,14 @@ class LostPetsRepository extends ServiceEntityRepository
                 ->setParameter('animalType', $filters['animalType']);
         }
 
+        // Filter by under protection status
+        if (!empty($filters['underProtection'])) {
+            if ($filters['underProtection'] === 'only') {
+                $qb->andWhere('a.status = :underProtectionStatus')
+                    ->setParameter('underProtectionStatus', 'UNDER_PROTECTION');
+            }
+        }
+
         // Get the basic results first
         $basicResults = $qb->setFirstResult($offset)
             ->setMaxResults($limit)

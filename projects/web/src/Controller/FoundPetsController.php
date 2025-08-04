@@ -31,7 +31,8 @@ final class FoundPetsController extends AbstractController
             'animalType' => $request->query->get('animalType', ''),
             'tags' => $request->query->get('tags', '') ? explode(',', $request->query->get('tags')) : [],
             'latitude' => $request->query->get('latitude', ''),
-            'longitude' => $request->query->get('longitude', '')
+            'longitude' => $request->query->get('longitude', ''),
+            'underProtection' => $request->query->get('underProtection', '')
         ];
 
         // Debug: log the filters

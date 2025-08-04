@@ -85,6 +85,24 @@
 							</a>
 						</div>
 					</div>
+					
+					{# Under Protection Filter #}
+					<div class="flex items-center gap-4 mt-3">
+						<label class="flex items-center group cursor-pointer">
+							<div class="relative">
+								<input type="checkbox" name="underProtection" value="only" 
+									{{ filters.underProtection == 'only' ? 'checked' : '' }}
+									class="sr-only peer">
+								<div class="w-4 h-4 border-2 border-gray-300 rounded peer-checked:border-purple-600 peer-checked:bg-purple-600 flex items-center justify-center transition-all duration-200 group-hover:border-purple-400">
+									{% include 'components/Icon.html.twig' with {name: 'check', size: 10, class: 'text-white opacity-0 peer-checked:opacity-100 transition-opacity duration-200'} %}
+								</div>
+							</div>
+							<span class="ml-2 text-sm text-gray-700 group-hover:text-purple-700 transition-colors flex items-center">
+								{% include 'components/Icon.html.twig' with {name: 'shield', size: 14, class: 'text-purple-500 mr-1'} %}
+								{{ 'lost_pets.filters.under_protection_only'|trans }}
+							</span>
+						</label>
+					</div>
 				</div>
 			</form>
 

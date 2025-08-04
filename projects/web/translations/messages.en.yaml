@@ -47,6 +47,9 @@ lost_pets:
         quick_filters: "Quick filters:"
         search_button: "Search"
         clear_filters: "Clear filters"
+        under_protection: "Under protection"
+        under_protection_only: "Under protection only"
+        all_animals: "All animals"
 
     proximity_indicator:
         title: "Showing lost pets sorted by proximity to your location"
@@ -179,6 +182,9 @@ found_pets:
         quick_filters: "Quick filters:"
         search_button: "Search"
         clear_filters: "Clear filters"
+        under_protection: "Under protection"
+        under_protection_only: "Under protection only"
+        all_animals: "All animals"
 
     proximity_indicator:
         title: "Showing found pets sorted by proximity to your location"
