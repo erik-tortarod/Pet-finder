@@ -78,6 +78,14 @@
 										{{ 'user.actions.found'|trans }}
 									</button>
 								</form>
+								{% if user.isShelter and item.animalId.status != 'UNDER_PROTECTION' %}
+									<form method="POST" action="{{ path('app_animal_mark_under_protection', {'id': item.animalId.id}) }}" class="inline mark-under-protection-form" data-animal-name="{{ item.animalId.name }}">
+										<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-info">
+											{% include 'components/Icon.html.twig' with {name: 'shield', size: 16, class: 'mr-1'} %}
+											{{ 'user.actions.under_protection'|trans }}
+										</button>
+									</form>
+								{% endif %}
 								<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form"
 									data-animal-name="{{ item.animalId.name }}"
 									data-confirm-title="{{ 'user.confirmations.archive_title'|trans }}"
@@ -213,6 +221,117 @@
 					{% endfor %}
 				</div>
 			</div>
+		{% endif %}
+
+		{# Under Protection Animals Section (Collapsible) - Only for shelters #}
+		{% if user.isShelter %}
+			{% set hasUnderProtectionAnimals = false %}
+			{% for item in lostPets %}
+				{% if item.animalId.status == 'UNDER_PROTECTION' %}
+					{% set hasUnderProtectionAnimals = true %}
+				{% endif %}
+			{% endfor %}
+
+			{% if hasUnderProtectionAnimals %}
+				<div class="border-t border-gray-200">
+					<button onclick="toggleUnderProtectionSection()" class="w-full px-4 sm:px-6 py-3 text-left bg-purple-50 hover:bg-purple-100 transition-colors">
+						<div class="flex items-center justify-between">
+							<h4 class="text-sm font-medium text-purple-900 flex items-center">
+								{% include 'components/Icon.html.twig' with {name: 'shield', size: 16, class: 'mr-2'} %}
+								{{ 'user.sections.under_protection_lost'|trans }} ({{ lostPets|filter(item => item.animalId.status == 'UNDER_PROTECTION')|length }})
+							</h4>
+							{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 16, class: 'transform transition-transform', id: 'under-protection-chevron'} %}
+						</div>
+					</button>
+					<div id="under-protection-section" class="hidden divide-y divide-purple-200 bg-purple-50">
+						{% for item in lostPets %}
+							{% if item.animalId.status == 'UNDER_PROTECTION' %}
+								<article class="p-4 sm:p-6 bg-purple-50">
+									<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
+										{# Animal Data #}
+										<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+											{% set primaryPhoto = null %}
+											{% if item.animalId.animalPhotos is not empty %}
+												{% for photo in item.animalId.animalPhotos %}
+													{% if photo.isPrimary %}
+														{% set primaryPhoto = photo %}
+													{% endif %}
+												{% endfor %}
+											{% endif %}
+
+											<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
+
+											<div class="flex-1 min-w-0">
+												<h4 class="text-base sm:text-lg font-semibold text-purple-900">{{ item.animalId.name }}</h4>
+												<p class="text-xs sm:text-sm text-purple-700">
+													{{ item.animalId.animalType }}
+													{{ item.animalId.gender|default("") }}
+													{{ item.animalId.age|default("") }}
+												</p>
+												<p class="text-xs sm:text-sm text-purple-600">
+													{{ 'user.dates.published'|trans }}
+													{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+													{% if daysAgo < 1 %}
+														{{ 'user.dates.today'|trans }}
+													{% elseif daysAgo < 2 %}
+														{{ 'user.dates.yesterday'|trans }}
+													{% elseif daysAgo < 7 %}
+														{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
+													{% else %}
+														{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
+													{% endif %}
+												</p>
+
+												<div class="mt-2 p-2 bg-purple-100 border border-purple-200 rounded-md">
+													<p class="text-xs text-purple-800 font-medium">
+														{% include 'components/Icon.html.twig' with {name: 'shield', size: 14, class: 'mr-1 inline'} %}
+														{{ 'user.sections.under_protection_message_lost'|trans }}
+													</p>
+												</div>
+
+												<div class="flex flex-wrap items-center mt-2 gap-2">
+													<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 uppercase">
+														{% include 'components/Icon.html.twig' with {name: 'shield', size: 14, class: 'mr-1'} %}
+														{{ item.animalId.status|capitalize }}
+													</span>
+												</div>
+											</div>
+										</div>
+
+										{# Action Buttons - Limited for under protection animals #}
+										<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
+											<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline mark-found-form" data-animal-name="{{ item.animalId.name }}">
+												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
+													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
+													{{ 'user.actions.found'|trans }}
+												</button>
+											</form>
+											<form method="POST" action="{{ path('app_animal_remove_under_protection', {'id': item.animalId.id}) }}" class="inline remove-under-protection-form" data-animal-name="{{ item.animalId.name }}">
+												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-secondary bg-purple-200 text-purple-900 hover:bg-purple-300">
+													{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
+													{{ 'user.actions.remove_under_protection'|trans }}
+												</button>
+											</form>
+											<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form" data-animal-name="{{ item.animalId.name }}">
+												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
+													{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
+													{{ 'user.actions.archive'|trans }}
+												</button>
+											</form>
+											<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form" data-animal-name="{{ item.animalId.name }}">
+												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
+													{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
+													{{ 'user.actions.delete'|trans }}
+												</button>
+											</form>
+										</div>
+									</div>
+								</article>
+							{% endif %}
+						{% endfor %}
+					</div>
+				</div>
+			{% endif %}
 		{% endif %}
 
 		{# Archived Animals Section (Collapsible) #}
@@ -390,6 +509,44 @@
 						}
 					});
 				});
+
+				// Formularios de marcar bajo custodia
+				document.querySelectorAll('.mark-under-protection-form').forEach(form => {
+					form.addEventListener('submit', async function(e) {
+						e.preventDefault();
+						const animalName = this.dataset.animalName;
+						const baseMessage = '{{ 'user.confirmations.mark_under_protection_base'|trans }}';
+						const message = baseMessage.replace('{name}', animalName);
+						const confirmed = await window.ConfirmModalHandler.confirm({
+							title: '{{ 'user.confirmations.mark_under_protection_title'|trans }}',
+							message: message,
+							confirmText: '{{ 'user.actions.under_protection'|trans }}',
+							cancelText: '{{ 'user.actions.cancel'|trans }}'
+						});
+						if (confirmed) {
+							this.submit();
+						}
+					});
+				});
+
+				// Formularios de quitar bajo custodia
+				document.querySelectorAll('.remove-under-protection-form').forEach(form => {
+					form.addEventListener('submit', async function(e) {
+						e.preventDefault();
+						const animalName = this.dataset.animalName;
+						const baseMessage = '{{ 'user.confirmations.remove_under_protection_base'|trans }}';
+						const message = baseMessage.replace('{name}', animalName);
+						const confirmed = await window.ConfirmModalHandler.confirm({
+							title: '{{ 'user.confirmations.remove_under_protection_title'|trans }}',
+							message: message,
+							confirmText: '{{ 'user.actions.remove_under_protection'|trans }}',
+							cancelText: '{{ 'user.actions.cancel'|trans }}'
+						});
+						if (confirmed) {
+							this.submit();
+						}
+					});
+				});
 			});
 
 			function toggleArchivedSection() {
@@ -408,6 +565,19 @@
 			function toggleClaimedSection() {
 				const section = document.getElementById('claimed-section');
 				const chevron = document.getElementById('claimed-chevron');
+
+				if (section.classList.contains('hidden')) {
+					section.classList.remove('hidden');
+					chevron.classList.add('rotate-180');
+				} else {
+					section.classList.add('hidden');
+					chevron.classList.remove('rotate-180');
+				}
+			}
+
+			function toggleUnderProtectionSection() {
+				const section = document.getElementById('under-protection-section');
+				const chevron = document.getElementById('under-protection-chevron');
 
 				if (section.classList.contains('hidden')) {
 					section.classList.remove('hidden');

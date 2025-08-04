@@ -4,8 +4,8 @@
 	{% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
 	{% set tags = animal.animalTags|map(tag => tag.tagId.name)|join(', ') %}
 
-	{# Solo mostrar animales con status LOST #}
-	{% if animal.status == 'LOST' %}
+	{# Solo mostrar animales con status LOST o UNDER_PROTECTION #}
+	{% if animal.status == 'LOST' or animal.status == 'UNDER_PROTECTION' %}
 		<article
 			class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
 			data-controller="pet-card"
@@ -22,7 +22,17 @@
 						<i class="fas {{ iconClass }} text-4xl text-blue-600"></i>
 					</div>
 				{% endif %}
-				<div class="absolute top-2 right-2 {% if animal.status == 'LOST' %}bg-red-500{% elseif animal.status == 'FOUND' %}bg-yellow-500{% elseif animal.status == 'CLAIMED' %}bg-green-500{% elseif animal.status == 'FILLED' %}bg-gray-500{% else %}bg-red-500{% endif %} text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
+				
+				{# Etiqueta de estado (esquina superior derecha) #}
+				<div class="absolute top-2 right-2 {% if animal.status == 'LOST' %}bg-red-500{% elseif animal.status == 'FOUND' %}bg-yellow-500{% elseif animal.status == 'CLAIMED' %}bg-green-500{% elseif animal.status == 'FILLED' %}bg-gray-500{% elseif animal.status == 'UNDER_PROTECTION' %}bg-red-500{% else %}bg-red-500{% endif %} text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
+				
+				{# Etiqueta de protectora (esquina superior izquierda) - solo si está bajo custodia #}
+				{% if animal.status == 'UNDER_PROTECTION' and user.isShelter %}
+					<div class="absolute top-2 left-2 bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
+						{% include 'components/Icon.html.twig' with {name: 'shield', size: 12, class: 'mr-1'} %}
+						{{ user.shelterName|default('Protectora') }}
+					</div>
+				{% endif %}
 			</div>
 
 			{# Information #}

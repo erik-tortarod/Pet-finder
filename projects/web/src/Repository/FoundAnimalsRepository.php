@@ -33,6 +33,8 @@ class FoundAnimalsRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('fa')
             ->leftJoin('fa.animalId', 'a')
             ->addSelect('a')
+            ->where('a.status IN (:statuses)')
+            ->setParameter('statuses', ['FOUND', 'UNDER_PROTECTION'])
             ->orderBy('fa.createdAt', 'DESC');
 
         // Apply filters
@@ -122,6 +124,7 @@ class FoundAnimalsRepository extends ServiceEntityRepository
             FROM found_animals fa
             LEFT JOIN animals a ON fa.animal_id_id = a.id
             WHERE " . implode(' AND ', $whereConditions) . "
+            AND a.status IN ('FOUND', 'UNDER_PROTECTION')
             AND fa.latitude IS NOT NULL
             AND fa.longitude IS NOT NULL
             ORDER BY distance ASC, fa.created_at DESC
@@ -199,7 +202,7 @@ class FoundAnimalsRepository extends ServiceEntityRepository
             FROM found_animals fa
             LEFT JOIN animals a ON fa.animal_id_id = a.id
             LEFT JOIN user u ON fa.user_id_id = u.id
-            WHERE a.status = 'FOUND'
+            WHERE a.status IN ('FOUND', 'UNDER_PROTECTION')
             AND fa.latitude IS NOT NULL
             AND fa.longitude IS NOT NULL
             AND (

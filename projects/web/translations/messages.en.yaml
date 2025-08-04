@@ -591,6 +591,12 @@ user:
             title: "My Found Animals"
             header: "My Found Animals"
 
+    sections:
+        under_protection_lost: "Pets Under Protection"
+        under_protection_found: "Animals Under Protection"
+        under_protection_message_lost: "This pet is under the protection of the shelter"
+        under_protection_message_found: "This animal is under the protection of the shelter"
+
     actions:
         edit: "Edit"
         found: "Found"
@@ -599,6 +605,8 @@ user:
         delete: "Delete"
         cancel: "Cancel"
         mark_as_found: "Mark as Found"
+        under_protection: "Under Protection"
+        remove_under_protection: "Remove Under Protection"
 
     dates:
         published: "Published"
@@ -612,10 +620,16 @@ user:
         archive_title: "Archive Publication"
         restore_title: "Restore Publication"
         mark_as_found_title: "Mark as Found"
+        mark_under_protection_title: "Mark as Under Protection"
+        remove_under_protection_title: "Remove Under Protection"
         delete: 'Are you sure you want to delete the publication of "{name}"? This action cannot be undone.'
         archive: 'Are you sure you want to archive the publication of "{name}"? The publication will be hidden but you can restore it later.'
         restore: 'Are you sure you want to restore the publication of "{name}"? The publication will become active again.'
         mark_as_found: 'Are you sure you want to mark "{name}" as found/claimed? This action will change the publication status.'
+        mark_under_protection: 'Are you sure you want to mark "{name}" as under protection? This action will indicate that the animal is under the protection of your organization.'
+        mark_under_protection_base: 'Are you sure you want to mark "{name}" as under protection? This action will indicate that the animal is under the protection of your organization.'
+        remove_under_protection: 'Are you sure you want to remove the "Under Protection" status from "{name}"? The animal will return to its previous status.'
+        remove_under_protection_base: 'Are you sure you want to remove the "Under Protection" status from "{name}"? The animal will return to its previous status.'
 
     settings:
         title: "Profile Settings"
@@ -662,6 +676,7 @@ flash:
         login_required_restore: "You must be logged in to restore a publication"
         login_required_delete: "You must be logged in to delete a publication"
         login_required_mark_found: "You must be logged in to mark a publication as found"
+        login_required_under_protection: "You must be logged in to mark a publication as under protection"
         user_not_found: "User not found"
         account_disabled: "Your account is disabled"
         no_permissions: "You don't have permission to perform this action"
@@ -670,6 +685,8 @@ flash:
         no_permissions_restore: "You don't have permission to restore this publication"
         no_permissions_delete: "You don't have permission to delete this publication"
         no_permissions_mark_found: "You don't have permission to mark this publication as found"
+        no_permissions_under_protection: "You don't have permission to mark this publication as under protection"
+        shelter_required: "Only shelters can mark animals as under protection"
 
     animal:
         not_found: "Animal not found"
@@ -680,11 +697,18 @@ flash:
         deleted_success: "Animal deleted successfully"
         updated_success: "Animal updated successfully"
         marked_as_found_success: "Animal marked as found/claimed successfully"
+        marked_under_protection_success: "Animal marked as under protection successfully"
         archive_error: "Error archiving the animal"
         restore_error: "Error restoring the animal"
         delete_error: "Error deleting the animal"
         update_error: "Error updating the animal"
         mark_as_found_error: "Error marking the animal as found"
+        mark_under_protection_error: "Error marking the animal as under protection"
         image_error: "Error processing the image"
         cannot_mark_archived_found: "Cannot mark an archived animal as found"
+        cannot_mark_archived_under_protection: "Cannot mark an archived animal as under protection"
         already_claimed: "The animal has already been claimed"
+        already_under_protection: "The animal is already under protection"
+        removed_under_protection_success: "The animal is no longer under protection."
+        remove_under_protection_error: "Error removing the under protection status from the animal."
+        not_under_protection: "The animal is not under protection."

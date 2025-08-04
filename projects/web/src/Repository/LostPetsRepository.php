@@ -33,8 +33,8 @@ class LostPetsRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('lp')
             ->leftJoin('lp.animalId', 'a')
             ->addSelect('a')
-            ->where('a.status = :status')
-            ->setParameter('status', 'LOST')
+            ->where('a.status IN (:statuses)')
+            ->setParameter('statuses', ['LOST', 'UNDER_PROTECTION'])
             ->orderBy('lp.createdAt', 'DESC');
 
         // Apply filters
@@ -124,7 +124,7 @@ class LostPetsRepository extends ServiceEntityRepository
             FROM lost_pets lp
             LEFT JOIN animals a ON lp.animal_id_id = a.id
             WHERE " . implode(' AND ', $whereConditions) . "
-            AND a.status = 'LOST'
+            AND a.status IN ('LOST', 'UNDER_PROTECTION')
             AND lp.latitude IS NOT NULL
             AND lp.longitude IS NOT NULL
             ORDER BY distance ASC, lp.created_at DESC

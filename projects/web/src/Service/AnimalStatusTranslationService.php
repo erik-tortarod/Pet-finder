@@ -12,12 +12,14 @@ class AnimalStatusTranslationService
          AnimalStatus::FOUND->value => 'Encontrada',
          AnimalStatus::CLAIMED->value => 'Reclamada',
          AnimalStatus::FILLED->value => 'Archivada',
+         'UNDER_PROTECTION' => 'Bajo Custodia',
       ],
       'en' => [
          AnimalStatus::LOST->value => 'Lost',
          AnimalStatus::FOUND->value => 'Found',
          AnimalStatus::CLAIMED->value => 'Claimed',
          AnimalStatus::FILLED->value => 'Archived',
+         'UNDER_PROTECTION' => 'Under Protection',
       ]
    ];
 

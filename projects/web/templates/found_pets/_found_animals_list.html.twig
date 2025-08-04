@@ -4,7 +4,7 @@
 	{% set primaryPhoto = animal.animalPhotos|filter(photo => photo.isPrimary)|first %}
 	{% set tags = animal.animalTags|map(tag => tag.tagId.name)|join(', ') %}
 
-	{% if animal.status == 'FOUND' %}
+	{% if animal.status == 'FOUND' or animal.status == 'UNDER_PROTECTION' %}
 		<article class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow cursor-pointer"
 			data-controller="pet-card"
 			data-action="click->pet-card#navigateToPet"
@@ -18,7 +18,17 @@
 						<i class="fas {{ iconClass }} text-4xl text-green-600"></i>
 					</div>
 				{% endif %}
+				
+				{# Etiqueta de estado (esquina superior derecha) #}
 				<div class="absolute top-2 right-2 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
+				
+				{# Etiqueta de protectora (esquina superior izquierda) - solo si está bajo custodia #}
+				{% if animal.status == 'UNDER_PROTECTION' and user.isShelter %}
+					<div class="absolute top-2 left-2 bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
+						{% include 'components/Icon.html.twig' with {name: 'shield', size: 12, class: 'mr-1'} %}
+						{{ user.shelterName|default('Protectora') }}
+					</div>
+				{% endif %}
 			</div>
 
 			<div class="p-4">
