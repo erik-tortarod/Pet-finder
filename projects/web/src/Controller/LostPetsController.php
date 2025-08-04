@@ -96,10 +96,21 @@ final class LostPetsController extends AbstractController
 
                 error_log('Lost Pets - Received coordinates: lat=' . var_export($latitude, true) . ', lon=' . var_export($longitude, true));
 
+                // Determinar el tipo de animal
+                $animalType = $form->get('animalType')->getData();
+                $animalTypeOther = $form->get('animalTypeOther')->getData();
+
+                // Si se seleccionó "otro" y se proporcionó un tipo personalizado, usar el tipo personalizado
+                if ($animalType === 'otro' && !empty($animalTypeOther)) {
+                    $finalAnimalType = $animalTypeOther;
+                } else {
+                    $finalAnimalType = $animalType;
+                }
+
                 // Crear el animal
                 $animal = new Animals();
                 $animal->setName($form->get('animalName')->getData());
-                $animal->setAnimalType($form->get('animalType')->getData());
+                $animal->setAnimalType($finalAnimalType);
                 $animal->setGender($form->get('animalGender')->getData());
                 $animal->setSize($form->get('animalSize')->getData());
                 $animal->setColor($form->get('animalColor')->getData());

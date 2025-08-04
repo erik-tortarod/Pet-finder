@@ -66,6 +66,11 @@
                      {{ form_widget(form.animalType, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
                      {{ form_errors(form.animalType) }}
                   </div>
+                  <div id="animal-type-other-container" class="md:col-span-2" style="display: none;">
+                     {{ form_label(form.animalTypeOther, 'lost_pets.create.step1.animal_type_other'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+                     {{ form_widget(form.animalTypeOther, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500', 'placeholder': 'lost_pets.create.step1.animal_type_other_placeholder'|trans}}) }}
+                     {{ form_errors(form.animalTypeOther) }}
+                  </div>
                   <div>
                      {{ form_label(form.animalGender, 'lost_pets.create.step1.animal_gender'|trans, {'attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
                      {{ form_widget(form.animalGender, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
@@ -295,5 +300,79 @@
 
     <script src="{{ asset('page/lost_pets/create_image_upload.js') }}"></script>
     <script src="{{ asset('page/lost_pets/create_steps.js') }}"></script>
+
+    <!-- Debug script for animal type other field -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Debug: DOM loaded for lost pets create');
+
+            // Wait a bit more and then try to initialize
+            setTimeout(() => {
+                console.log('Debug: Attempting to initialize animal type other field');
+
+                // Try multiple selectors to find the animal type select
+                const animalTypeSelect = document.querySelector('select[name*="animalType"]') ||
+                                       document.querySelector('#form_animalType') ||
+                                       document.querySelector('select[name="form[animalType]"]') ||
+                                       document.querySelector('select[name*="animalType"]');
+
+                const animalTypeOtherContainer = document.getElementById("animal-type-other-container");
+
+                console.log('Debug: animalTypeSelect found:', !!animalTypeSelect);
+                console.log('Debug: animalTypeOtherContainer found:', !!animalTypeOtherContainer);
+
+                if (animalTypeSelect) {
+                    console.log('Debug: Current animal type value:', animalTypeSelect.value);
+                    console.log('Debug: Animal type select element:', animalTypeSelect);
+
+                    // Add a test event listener
+                    animalTypeSelect.addEventListener('change', function() {
+                        console.log('Debug: Animal type changed to:', this.value);
+
+                        if (this.value === 'otro') {
+                            console.log('Debug: Should show other field');
+                            if (animalTypeOtherContainer) {
+                                animalTypeOtherContainer.style.display = 'block';
+                                console.log('Debug: Other field shown');
+
+                                // Also try to show the input field specifically
+                                const inputField = animalTypeOtherContainer.querySelector('input');
+                                if (inputField) {
+                                    inputField.style.display = 'block';
+                                    console.log('Debug: Input field found and styled');
+                                } else {
+                                    console.log('Debug: No input field found in container');
+                                }
+                            } else {
+                                console.log('Debug: Container not found');
+                            }
+                        } else {
+                            console.log('Debug: Should hide other field');
+                            if (animalTypeOtherContainer) {
+                                animalTypeOtherContainer.style.display = 'none';
+                                console.log('Debug: Other field hidden');
+                            }
+                        }
+                    });
+
+                    // Test the current value immediately
+                    if (animalTypeSelect.value === 'otro') {
+                        console.log('Debug: Initial value is "otro", showing field');
+                        if (animalTypeOtherContainer) {
+                            animalTypeOtherContainer.style.display = 'block';
+                        }
+                    }
+                } else {
+                    console.log('Debug: Could not find animal type select');
+                    // List all select elements to help debug
+                    const allSelects = document.querySelectorAll('select');
+                    console.log('Debug: All select elements found:', allSelects.length);
+                    allSelects.forEach((select, index) => {
+                        console.log(`Debug: Select ${index}:`, select.name, select.id, select.value);
+                    });
+                }
+            }, 1000);
+        });
+    </script>
 
 {% endblock %}

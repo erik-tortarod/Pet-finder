@@ -98,6 +98,8 @@ lost_pets:
             animal_name: "Pet name *"
             animal_name_placeholder: "Ex: Luna, Rocky, Mittens"
             animal_type: "Animal type *"
+            animal_type_other: "Specify animal type"
+            animal_type_other_placeholder: "Ex: rabbit, hamster, turtle, etc."
             animal_gender: "Gender"
             animal_age: "Approximate age"
             animal_age_placeholder: "Ex: 3 years, 6 months"
@@ -227,6 +229,8 @@ found_pets:
             animal_name: "Animal name (if known)"
             animal_name_placeholder: "Ex: Luna, Rocky (optional)"
             animal_type: "Animal type *"
+            animal_type_other: "Specify animal type"
+            animal_type_other_placeholder: "Ex: rabbit, hamster, turtle, etc."
             animal_gender: "Gender *"
             animal_size: "Size *"
 

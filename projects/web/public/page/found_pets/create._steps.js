@@ -54,6 +54,11 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
+    // Initialize animal type other field functionality
+    setTimeout(() => {
+        initAnimalTypeOtherField();
+    }, 100);
+
     // Initialize map functionality
     initMap();
 
@@ -703,4 +708,81 @@ function getCurrentLocation() {
             maximumAge: 60000,
         }
     );
+}
+
+// Function to handle animal type other field visibility
+function initAnimalTypeOtherField() {
+    console.log("Initializing animal type other field functionality");
+
+    // Try different selectors to find the animal type select
+    const animalTypeSelect =
+        document.querySelector('select[name*="animalType"]') ||
+        document.querySelector("#form_animalType") ||
+        document.querySelector('select[name="form[animalType]"]');
+
+    const animalTypeOtherContainer = document.getElementById(
+        "animal-type-other-container"
+    );
+    const animalTypeOtherInput =
+        document.querySelector('input[name*="animalTypeOther"]') ||
+        document.querySelector("#form_animalTypeOther") ||
+        document.querySelector('input[name="form[animalTypeOther]"]');
+
+    console.log("Animal type select found:", !!animalTypeSelect);
+    console.log(
+        "Animal type other container found:",
+        !!animalTypeOtherContainer
+    );
+    console.log("Animal type other input found:", !!animalTypeOtherInput);
+
+    if (animalTypeSelect && animalTypeOtherContainer && animalTypeOtherInput) {
+        // Check initial value
+        console.log("Initial animal type value:", animalTypeSelect.value);
+        toggleAnimalTypeOtherField(animalTypeSelect.value);
+
+        // Add change event listener
+        animalTypeSelect.addEventListener("change", function () {
+            console.log("Animal type changed to:", this.value);
+            toggleAnimalTypeOtherField(this.value);
+        });
+
+        console.log(
+            "Animal type other field functionality initialized successfully"
+        );
+    } else {
+        console.error(
+            "Could not find required elements for animal type other field"
+        );
+        console.log("animalTypeSelect:", animalTypeSelect);
+        console.log("animalTypeOtherContainer:", animalTypeOtherContainer);
+        console.log("animalTypeOtherInput:", animalTypeOtherInput);
+    }
+}
+
+// Function to toggle animal type other field visibility
+function toggleAnimalTypeOtherField(selectedValue) {
+    console.log("Toggling animal type other field for value:", selectedValue);
+
+    const animalTypeOtherContainer = document.getElementById(
+        "animal-type-other-container"
+    );
+    const animalTypeOtherInput =
+        document.querySelector('input[name*="animalTypeOther"]') ||
+        document.querySelector("#form_animalTypeOther") ||
+        document.querySelector('input[name="form[animalTypeOther]"]');
+
+    if (animalTypeOtherContainer && animalTypeOtherInput) {
+        if (selectedValue === "otro") {
+            animalTypeOtherContainer.style.display = "block";
+            animalTypeOtherInput.setAttribute("required", "required");
+            console.log("Animal type other field shown and made required");
+        } else {
+            animalTypeOtherContainer.style.display = "none";
+            animalTypeOtherInput.removeAttribute("required");
+            animalTypeOtherInput.value = ""; // Clear the field when hiding
+            console.log("Animal type other field hidden and cleared");
+        }
+    } else {
+        console.error("Could not find animal type other elements for toggling");
+    }
 }

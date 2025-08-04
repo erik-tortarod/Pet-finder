@@ -38,6 +38,16 @@ class FoundPetType extends AbstractType
             ],
             'constraints' => [new NotBlank(message: 'El tipo de animal es obligatorio')],
          ])
+         ->add('animalTypeOther', TextType::class, [
+            'label' => 'Especificar tipo de animal',
+            'mapped' => false,
+            'required' => false,
+            'attr' => [
+               'placeholder' => 'Ej: conejo, hámster, tortuga, etc.',
+               'class' => 'animal-type-other-field',
+               'style' => 'display: none;'
+            ],
+         ])
          ->add('animalGender', ChoiceType::class, [
             'label' => 'Género',
             'mapped' => false,

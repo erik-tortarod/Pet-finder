@@ -98,6 +98,8 @@ lost_pets:
             animal_name: "Nombre de la mascota *"
             animal_name_placeholder: "Ej: Luna, Rocky, Mittens"
             animal_type: "Tipo de animal *"
+            animal_type_other: "Especificar tipo de animal"
+            animal_type_other_placeholder: "Ej: conejo, hámster, tortuga, etc."
             animal_gender: "Género"
             animal_age: "Edad aproximada"
             animal_age_placeholder: "Ej: 3 años, 6 meses"
@@ -227,6 +229,8 @@ found_pets:
             animal_name: "Nombre del animal (si se conoce)"
             animal_name_placeholder: "Ej: Luna, Rocky (opcional)"
             animal_type: "Tipo de animal *"
+            animal_type_other: "Especificar tipo de animal"
+            animal_type_other_placeholder: "Ej: conejo, hámster, tortuga, etc."
             animal_gender: "Género *"
             animal_size: "Tamaño *"
 
