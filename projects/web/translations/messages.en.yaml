@@ -793,3 +793,110 @@ flash:
         removed_under_protection_success: "The animal is no longer under protection."
         remove_under_protection_error: "Error removing the under protection status from the animal."
         not_under_protection: "The animal is not under protection."
+
+# Publish Modal
+publish_modal:
+    title: "What type of publication do you want to make?"
+    lost_pet: "Lost Pet"
+    found_pet: "Found Pet"
+    cancel: "Cancel"
+
+# Admin Section
+admin:
+    title: "Administration Panel"
+    subtitle: "Manage your Pet Finder platform"
+
+    # Navigation
+    back_to_panel: "Back to Panel"
+
+    # Dashboard
+    dashboard:
+        manage_shelters: "Manage Shelters"
+        manage_shelters_desc: "Review and manage all shelters registered in the system. Approve or reject verification requests."
+        view_shelters: "View Shelters"
+        manage_users: "Manage Users"
+        manage_users_desc: "Manage all users in the system. Assign or remove administrator roles. Search and filter users by type."
+        view_users: "View Users"
+
+    # Shelters Management
+    shelters:
+        title: "Manage Shelters"
+        filters:
+            all: "All"
+            pending: "Pending"
+            verified: "Verified"
+            rejected: "Rejected"
+        no_shelters:
+            all: "No shelters registered"
+            pending: "No pending shelters"
+            verified: "No verified shelters"
+            rejected: "No rejected shelters"
+            desc_all: "No shelters have been registered in the system yet."
+            desc_filtered: "No shelters found with the selected status."
+        shelter_info:
+            contact: "Contact:"
+            email: "Email:"
+            phone: "Phone:"
+            shelter_phone: "Shelter Phone:"
+            address: "Address:"
+            registered: "Registered:"
+        actions:
+            approve: "Approve"
+            reject: "Reject"
+            change_status: "Change Status"
+            change_status_options:
+                pending: "Mark as Pending"
+                verified: "Approve"
+                rejected: "Reject"
+            contact: "Contact"
+        confirmations:
+            approve_title: "Approve Shelter"
+            approve_message: "Are you sure you want to approve {shelter_name}?"
+            reject_title: "Reject Shelter"
+            reject_message: "Are you sure you want to reject {shelter_name}?"
+
+    # Users Management
+    users:
+        title: "Manage Users"
+        filters:
+            all: "All"
+            admins: "Administrators"
+            shelters: "Shelters"
+            regular_users: "Regular Users"
+        search:
+            placeholder: "Search by email, name or shelter..."
+            button: "Search"
+            clear: "Clear"
+        no_users:
+            all: "No users registered"
+            admins: "No administrators"
+            shelters: "No shelters"
+            regular: "No regular users"
+            search_no_results: "No users found matching your search."
+            filter_no_results: "No users found with the selected filter."
+        table:
+            user: "User"
+            email: "Email"
+            type: "Type"
+            status: "Status"
+            registered: "Registered"
+            actions: "Actions"
+        user_types:
+            admin: "Admin"
+            shelter: "Shelter"
+            user: "User"
+        status:
+            pending: "PENDING"
+            verified: "VERIFIED"
+            rejected: "REJECTED"
+        actions:
+            make_admin: "Make Admin"
+            remove_admin: "Remove Admin"
+            contact: "Contact"
+            your_account: "Your account"
+        total_users: "Total users shown: {count}"
+        confirmations:
+            toggle_admin_title: "Change Administrator Role"
+            toggle_admin_message: "Are you sure you want to {action} the administrator role to {user_name}?"
+            make_admin: "assign"
+            remove_admin: "remove"

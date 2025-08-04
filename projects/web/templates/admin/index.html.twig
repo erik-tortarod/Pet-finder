@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Panel de Administración - Pet Finder
+{% block title %}{{ 'admin.title'|trans }} - Pet Finder
 {% endblock %}
 
 {% block body %}
     <div class="max-w-6xl mx-auto px-4 py-8">
         <div class="text-center mb-12">
-            <h1 class="text-5xl font-bold text-gray-800 mb-4">Panel de Administración</h1>
-            <p class="text-xl text-gray-600">Gestiona tu plataforma Pet Finder</p>
+            <h1 class="text-5xl font-bold text-gray-800 mb-4">{{ 'admin.title'|trans }}</h1>
+            <p class="text-xl text-gray-600">{{ 'admin.subtitle'|trans }}</p>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
@@ -16,13 +16,12 @@
                 <div class="text-5xl text-blue-600 mb-4">
                     <i class="fas fa-home"></i>
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Gestionar Shelters</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ 'admin.dashboard.manage_shelters'|trans }}</h2>
                 <p class="text-gray-600 mb-6 leading-relaxed">
-                    Revisa y administra todas las protectoras registradas en el sistema.
-                    Aprueba o rechaza solicitudes de verificación.
+                    {{ 'admin.dashboard.manage_shelters_desc'|trans }}
                 </p>
                 <a href="{{ path('app_admin_shelters') }}" class="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200">
-                    Ver Shelters
+                    {{ 'admin.dashboard.view_shelters'|trans }}
                 </a>
             </div>
 
@@ -31,13 +30,12 @@
                 <div class="text-5xl text-green-600 mb-4">
                     <i class="fas fa-users"></i>
                 </div>
-                <h2 class="text-2xl font-semibold text-gray-800 mb-4">Gestionar Usuarios</h2>
+                <h2 class="text-2xl font-semibold text-gray-800 mb-4">{{ 'admin.dashboard.manage_users'|trans }}</h2>
                 <p class="text-gray-600 mb-6 leading-relaxed">
-                    Administra todos los usuarios del sistema. Asigna o remueve roles de administrador.
-                    Busca y filtra usuarios por tipo.
+                    {{ 'admin.dashboard.manage_users_desc'|trans }}
                 </p>
                 <a href="{{ path('app_admin_users') }}" class="inline-block px-6 py-3 bg-green-600 text-white rounded-lg font-medium hover:bg-green-700 transition-colors duration-200">
-                    Ver Usuarios
+                    {{ 'admin.dashboard.view_users'|trans }}
                 </a>
             </div>
         </div>

@@ -1,14 +1,14 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Administrar Shelters - Pet Finder
+{% block title %}{{ 'admin.shelters.title'|trans }} - Pet Finder
 {% endblock %}
 
 {% block body %}
     <div class="max-w-6xl mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-200">
-            <h1 class="text-3xl font-bold text-gray-800">Administrar Shelters</h1>
+            <h1 class="text-3xl font-bold text-gray-800">{{ 'admin.shelters.title'|trans }}</h1>
             <a href="{{ path('app_admin') }}" class="text-blue-600 hover:text-blue-800 font-medium">
-                <i class="fas fa-arrow-left mr-2"></i>Volver al Panel
+                <i class="fas fa-arrow-left mr-2"></i>{{ 'admin.back_to_panel'|trans }}
             </a>
         </div>
 
@@ -22,7 +22,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-list mr-2"></i>Todas
+                    <i class="fas fa-list mr-2"></i>{{ 'admin.shelters.filters.all'|trans }}
                 </a>
                 <a href="{{ path('app_admin_shelters', {'filter': 'pending'}) }}"
                    class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
@@ -31,7 +31,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-clock mr-2"></i>Pendientes
+                    <i class="fas fa-clock mr-2"></i>{{ 'admin.shelters.filters.pending'|trans }}
                 </a>
                 <a href="{{ path('app_admin_shelters', {'filter': 'verified'}) }}"
                    class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
@@ -40,7 +40,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-check-circle mr-2"></i>Verificadas
+                    <i class="fas fa-check-circle mr-2"></i>{{ 'admin.shelters.filters.verified'|trans }}
                 </a>
                 <a href="{{ path('app_admin_shelters', {'filter': 'rejected'}) }}"
                    class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
@@ -49,7 +49,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-times-circle mr-2"></i>Rechazadas
+                    <i class="fas fa-times-circle mr-2"></i>{{ 'admin.shelters.filters.rejected'|trans }}
                 </a>
             </div>
         </div>
@@ -58,20 +58,20 @@
             <div class="text-center py-12">
                 <h3 class="text-xl font-semibold text-gray-700 mb-4">
                     {% if currentFilter == 'all' %}
-                        No hay shelters registradas
+                        {{ 'admin.shelters.no_shelters.all'|trans }}
                     {% elseif currentFilter == 'pending' %}
-                        No hay shelters pendientes
+                        {{ 'admin.shelters.no_shelters.pending'|trans }}
                     {% elseif currentFilter == 'verified' %}
-                        No hay shelters verificadas
+                        {{ 'admin.shelters.no_shelters.verified'|trans }}
                     {% elseif currentFilter == 'rejected' %}
-                        No hay shelters rechazadas
+                        {{ 'admin.shelters.no_shelters.rejected'|trans }}
                     {% endif %}
                 </h3>
                 <p class="text-gray-600">
                     {% if currentFilter == 'all' %}
-                        Aún no se han registrado protectoras en el sistema.
+                        {{ 'admin.shelters.no_shelters.desc_all'|trans }}
                     {% else %}
-                        No se encontraron shelters con el estado seleccionado.
+                        {{ 'admin.shelters.no_shelters.desc_filtered'|trans }}
                     {% endif %}
                 </p>
             </div>
@@ -97,33 +97,33 @@
 
                         <div class="space-y-2 mb-4">
                             <div class="flex">
-                                <span class="font-medium text-gray-600 min-w-[100px]">Contacto:</span>
+                                <span class="font-medium text-gray-600 min-w-[100px]">{{ 'admin.shelters.shelter_info.contact'|trans }}</span>
                                 <span class="text-gray-800">{{ shelter.firstName }} {{ shelter.lastName }}</span>
                             </div>
                             <div class="flex">
-                                <span class="font-medium text-gray-600 min-w-[100px]">Email:</span>
+                                <span class="font-medium text-gray-600 min-w-[100px]">{{ 'admin.shelters.shelter_info.email'|trans }}</span>
                                 <span class="text-gray-800">{{ shelter.email }}</span>
                             </div>
                             {% if shelter.phone %}
                                 <div class="flex">
-                                    <span class="font-medium text-gray-600 min-w-[100px]">Teléfono:</span>
+                                    <span class="font-medium text-gray-600 min-w-[100px]">{{ 'admin.shelters.shelter_info.phone'|trans }}</span>
                                     <span class="text-gray-800">{{ shelter.phone }}</span>
                                 </div>
                             {% endif %}
                             {% if shelter.shelterPhone %}
                                 <div class="flex">
-                                    <span class="font-medium text-gray-600 min-w-[100px]">Tel. Shelter:</span>
+                                    <span class="font-medium text-gray-600 min-w-[100px]">{{ 'admin.shelters.shelter_info.shelter_phone'|trans }}</span>
                                     <span class="text-gray-800">{{ shelter.shelterPhone }}</span>
                                 </div>
                             {% endif %}
                             {% if shelter.shelterAddress %}
                                 <div class="flex">
-                                    <span class="font-medium text-gray-600 min-w-[100px]">Dirección:</span>
+                                    <span class="font-medium text-gray-600 min-w-[100px]">{{ 'admin.shelters.shelter_info.address'|trans }}</span>
                                     <span class="text-gray-800">{{ shelter.shelterAddress }}</span>
                                 </div>
                             {% endif %}
                             <div class="flex">
-                                <span class="font-medium text-gray-600 min-w-[100px]">Registrado:</span>
+                                <span class="font-medium text-gray-600 min-w-[100px]">{{ 'admin.shelters.shelter_info.registered'|trans }}</span>
                                 <span class="text-gray-800">{{ shelter.createdAt|date('d/m/Y') }}</span>
                             </div>
                         </div>
@@ -140,13 +140,13 @@
                                 <form method="POST" action="{{ path('app_admin_shelter_approve', {'id': shelter.id}) }}" class="inline approve-shelter-form" data-shelter-name="{{ shelter.shelterName|default('esta shelter') }}">
                                     <button type="submit"
                                             class="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors duration-200 text-sm font-medium">
-                                        <i class="fas fa-check mr-2"></i>Aprobar
+                                        <i class="fas fa-check mr-2"></i>{{ 'admin.shelters.actions.approve'|trans }}
                                     </button>
                                 </form>
                                 <form method="POST" action="{{ path('app_admin_shelter_reject', {'id': shelter.id}) }}" class="inline reject-shelter-form" data-shelter-name="{{ shelter.shelterName|default('esta shelter') }}">
                                     <button type="submit"
                                             class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors duration-200 text-sm font-medium">
-                                        <i class="fas fa-times mr-2"></i>Rechazar
+                                        <i class="fas fa-times mr-2"></i>{{ 'admin.shelters.actions.reject'|trans }}
                                     </button>
                                 </form>
                             {% else %}
@@ -156,15 +156,15 @@
                                         <select name="new_status"
                                                 class="px-4 py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition-colors duration-200 text-sm font-medium border-0 focus:ring-2 focus:ring-gray-500 focus:outline-none"
                                                 onchange="this.form.submit()">
-                                            <option value="">Cambiar Estado</option>
+                                            <option value="">{{ 'admin.shelters.actions.change_status'|trans }}</option>
                                             {% if shelter.shelterVerificationStatus != 'pending' %}
-                                                <option value="pending">Marcar como Pendiente</option>
+                                                <option value="pending">{{ 'admin.shelters.actions.change_status_options.pending'|trans }}</option>
                                             {% endif %}
                                             {% if shelter.shelterVerificationStatus != 'VERIFIED' %}
-                                                <option value="VERIFIED">Aprobar</option>
+                                                <option value="VERIFIED">{{ 'admin.shelters.actions.change_status_options.verified'|trans }}</option>
                                             {% endif %}
                                             {% if shelter.shelterVerificationStatus != 'rejected' %}
-                                                <option value="rejected">Rechazar</option>
+                                                <option value="rejected">{{ 'admin.shelters.actions.change_status_options.rejected'|trans }}</option>
                                             {% endif %}
                                         </select>
                                     </form>
@@ -172,7 +172,7 @@
                             {% endif %}
 
                             <a href="mailto:{{ shelter.email }}" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors duration-200 text-sm font-medium">
-                                <i class="fas fa-envelope mr-2"></i>Contactar
+                                <i class="fas fa-envelope mr-2"></i>{{ 'admin.shelters.actions.contact'|trans }}
                             </a>
                         </div>
                     </div>
@@ -215,19 +215,19 @@
 
             async function confirmApproveShelter(shelterName) {
                 return await window.ConfirmModalHandler.confirm({
-                    title: 'Aprobar Shelter',
-                    message: `¿Estás seguro de que quieres aprobar ${shelterName}?`,
-                    confirmText: 'Aprobar',
-                    cancelText: 'Cancelar'
+                    title: '{{ 'admin.shelters.confirmations.approve_title'|trans }}',
+                    message: '{{ 'admin.shelters.confirmations.approve_message'|trans }}'.replace('{shelter_name}', shelterName),
+                    confirmText: '{{ 'admin.shelters.actions.approve'|trans }}',
+                    cancelText: '{{ 'common.cancel'|trans }}'
                 });
             }
 
             async function confirmRejectShelter(shelterName) {
                 return await window.ConfirmModalHandler.confirm({
-                    title: 'Rechazar Shelter',
-                    message: `¿Estás seguro de que quieres rechazar ${shelterName}?`,
-                    confirmText: 'Rechazar',
-                    cancelText: 'Cancelar'
+                    title: '{{ 'admin.shelters.confirmations.reject_title'|trans }}',
+                    message: '{{ 'admin.shelters.confirmations.reject_message'|trans }}'.replace('{shelter_name}', shelterName),
+                    confirmText: '{{ 'admin.shelters.actions.reject'|trans }}',
+                    cancelText: '{{ 'common.cancel'|trans }}'
                 });
             }
         }

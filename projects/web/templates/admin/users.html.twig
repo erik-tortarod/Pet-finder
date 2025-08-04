@@ -1,13 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Gestionar Usuarios - Pet Finder{% endblock %}
+{% block title %}{{ 'admin.users.title'|trans }} - Pet Finder{% endblock %}
 
 {% block body %}
     <div class="max-w-6xl mx-auto px-4 py-8">
         <div class="flex justify-between items-center mb-8 pb-4 border-b-2 border-gray-200">
-            <h1 class="text-3xl font-bold text-gray-800">Gestionar Usuarios</h1>
+            <h1 class="text-3xl font-bold text-gray-800">{{ 'admin.users.title'|trans }}</h1>
             <a href="{{ path('app_admin') }}" class="text-blue-600 hover:text-blue-800 font-medium">
-                <i class="fas fa-arrow-left mr-2"></i>Volver al Panel
+                <i class="fas fa-arrow-left mr-2"></i>{{ 'admin.back_to_panel'|trans }}
             </a>
         </div>
 
@@ -22,7 +22,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-list mr-2"></i>Todos
+                    <i class="fas fa-list mr-2"></i>{{ 'admin.users.filters.all'|trans }}
                 </a>
                 <a href="{{ path('app_admin_users', {'filter': 'admin', 'search': search}) }}"
                    class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
@@ -31,7 +31,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-user-shield mr-2"></i>Administradores
+                    <i class="fas fa-user-shield mr-2"></i>{{ 'admin.users.filters.admins'|trans }}
                 </a>
                 <a href="{{ path('app_admin_users', {'filter': 'shelter', 'search': search}) }}"
                    class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
@@ -40,7 +40,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-home mr-2"></i>Shelters
+                    <i class="fas fa-home mr-2"></i>{{ 'admin.users.filters.shelters'|trans }}
                 </a>
                 <a href="{{ path('app_admin_users', {'filter': 'regular', 'search': search}) }}"
                    class="px-4 py-2 rounded-lg font-medium transition-colors duration-200
@@ -49,7 +49,7 @@
                           {% else %}
                               bg-gray-200 text-gray-700 hover:bg-gray-300
                           {% endif %}">
-                    <i class="fas fa-user mr-2"></i>Usuarios Regulares
+                    <i class="fas fa-user mr-2"></i>{{ 'admin.users.filters.regular_users'|trans }}
                 </a>
             </div>
 
@@ -59,15 +59,15 @@
                 <input type="text"
                        name="search"
                        value="{{ search }}"
-                       placeholder="Buscar por email, nombre o shelter..."
+                       placeholder="{{ 'admin.users.search.placeholder'|trans }}"
                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                 <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200">
-                    <i class="fas fa-search mr-2"></i>Buscar
+                    <i class="fas fa-search mr-2"></i>{{ 'admin.users.search.button'|trans }}
                 </button>
                 {% if search %}
                     <a href="{{ path('app_admin_users', {'filter': currentFilter}) }}"
                        class="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors duration-200">
-                        <i class="fas fa-times mr-2"></i>Limpiar
+                        <i class="fas fa-times mr-2"></i>{{ 'admin.users.search.clear'|trans }}
                     </a>
                 {% endif %}
             </form>
@@ -77,20 +77,20 @@
             <div class="text-center py-12">
                 <h3 class="text-xl font-semibold text-gray-700 mb-4">
                     {% if currentFilter == 'all' %}
-                        No hay usuarios registrados
+                        {{ 'admin.users.no_users.all'|trans }}
                     {% elseif currentFilter == 'admin' %}
-                        No hay administradores
+                        {{ 'admin.users.no_users.admins'|trans }}
                     {% elseif currentFilter == 'shelter' %}
-                        No hay shelters
+                        {{ 'admin.users.no_users.shelters'|trans }}
                     {% elseif currentFilter == 'regular' %}
-                        No hay usuarios regulares
+                        {{ 'admin.users.no_users.regular'|trans }}
                     {% endif %}
                 </h3>
                 <p class="text-gray-600">
                     {% if search %}
-                        No se encontraron usuarios que coincidan con tu búsqueda.
+                        {{ 'admin.users.no_users.search_no_results'|trans }}
                     {% else %}
-                        No se encontraron usuarios con el filtro seleccionado.
+                        {{ 'admin.users.no_users.filter_no_results'|trans }}
                     {% endif %}
                 </p>
             </div>
@@ -101,22 +101,22 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Usuario
+                                    {{ 'admin.users.table.user'|trans }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Email
+                                    {{ 'admin.users.table.email'|trans }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Tipo
+                                    {{ 'admin.users.table.type'|trans }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Estado
+                                    {{ 'admin.users.table.status'|trans }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Registrado
+                                    {{ 'admin.users.table.registered'|trans }}
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Acciones
+                                    {{ 'admin.users.table.actions'|trans }}
                                 </th>
                             </tr>
                         </thead>
@@ -151,17 +151,17 @@
                                         <div class="flex flex-wrap gap-1">
                                             {% if 'ROLE_ADMIN' in user.roles %}
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                                                    <i class="fas fa-user-shield mr-1"></i>Admin
+                                                    <i class="fas fa-user-shield mr-1"></i>{{ 'admin.users.user_types.admin'|trans }}
                                                 </span>
                                             {% endif %}
                                             {% if user.isShelter %}
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                                                    <i class="fas fa-home mr-1"></i>Shelter
+                                                    <i class="fas fa-home mr-1"></i>{{ 'admin.users.user_types.shelter'|trans }}
                                                 </span>
                                             {% endif %}
                                             {% if not 'ROLE_ADMIN' in user.roles and not user.isShelter %}
                                                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                                                    <i class="fas fa-user mr-1"></i>Usuario
+                                                    <i class="fas fa-user mr-1"></i>{{ 'admin.users.user_types.user'|trans }}
                                                 </span>
                                             {% endif %}
                                         </div>
@@ -192,17 +192,17 @@
                                                     <button type="submit"
                                                             class="{% if 'ROLE_ADMIN' in user.roles %}bg-red-600 hover:bg-red-700{% else %}bg-purple-600 hover:bg-purple-700{% endif %} text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200">
                                                         {% if 'ROLE_ADMIN' in user.roles %}
-                                                            <i class="fas fa-user-minus mr-1"></i>Quitar Admin
+                                                            <i class="fas fa-user-minus mr-1"></i>{{ 'admin.users.actions.remove_admin'|trans }}
                                                         {% else %}
-                                                            <i class="fas fa-user-plus mr-1"></i>Hacer Admin
+                                                            <i class="fas fa-user-plus mr-1"></i>{{ 'admin.users.actions.make_admin'|trans }}
                                                         {% endif %}
                                                     </button>
                                                 </form>
                                             {% else %}
-                                                <span class="text-gray-400 text-xs">Tu cuenta</span>
+                                                <span class="text-gray-400 text-xs">{{ 'admin.users.actions.your_account'|trans }}</span>
                                             {% endif %}
                                             <a href="mailto:{{ user.email }}" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs font-medium transition-colors duration-200">
-                                                <i class="fas fa-envelope mr-1"></i>Contactar
+                                                <i class="fas fa-envelope mr-1"></i>{{ 'admin.users.actions.contact'|trans }}
                                             </a>
                                         </div>
                                     </td>
@@ -215,7 +215,7 @@
 
             <!-- Información adicional -->
             <div class="mt-6 text-center text-sm text-gray-600">
-                <p>Total de usuarios mostrados: {{ users|length }}</p>
+                <p>{{ 'admin.users.total_users'|trans({'count': users|length}) }}</p>
             </div>
         {% endif %}
     </div>
@@ -242,11 +242,12 @@
             });
 
             async function confirmToggleAdmin(userName, isAdmin) {
+                const action = isAdmin ? '{{ 'admin.users.confirmations.remove_admin'|trans }}' : '{{ 'admin.users.confirmations.make_admin'|trans }}';
                 const controller = await window.ConfirmModalHandler.confirm({
-                    title: 'Cambiar Rol de Administrador',
-                    message: `¿Estás seguro de que quieres ${isAdmin ? 'quitar' : 'asignar'} el rol de administrador a ${userName}?`,
-                    confirmText: isAdmin ? 'Quitar Admin' : 'Hacer Admin',
-                    cancelText: 'Cancelar'
+                    title: '{{ 'admin.users.confirmations.toggle_admin_title'|trans }}',
+                    message: '{{ 'admin.users.confirmations.toggle_admin_message'|trans }}'.replace('{action}', action).replace('{user_name}', userName),
+                    confirmText: isAdmin ? '{{ 'admin.users.actions.remove_admin'|trans }}' : '{{ 'admin.users.actions.make_admin'|trans }}',
+                    cancelText: '{{ 'common.cancel'|trans }}'
                 });
                 return controller;
             }

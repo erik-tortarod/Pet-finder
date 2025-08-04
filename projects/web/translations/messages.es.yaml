@@ -793,3 +793,110 @@ flash:
         removed_under_protection_success: "El animal ya no está bajo custodia."
         remove_under_protection_error: "Error al quitar el estado bajo custodia del animal."
         not_under_protection: "El animal no está bajo custodia."
+
+# Publish Modal
+publish_modal:
+    title: "¿Qué tipo de publicación quieres hacer?"
+    lost_pet: "Animal Perdido"
+    found_pet: "Animal Avistado"
+    cancel: "Cancelar"
+
+# Admin Section
+admin:
+    title: "Panel de Administración"
+    subtitle: "Gestiona tu plataforma Pet Finder"
+
+    # Navigation
+    back_to_panel: "Volver al Panel"
+
+    # Dashboard
+    dashboard:
+        manage_shelters: "Gestionar Shelters"
+        manage_shelters_desc: "Revisa y administra todas las protectoras registradas en el sistema. Aprueba o rechaza solicitudes de verificación."
+        view_shelters: "Ver Shelters"
+        manage_users: "Gestionar Usuarios"
+        manage_users_desc: "Administra todos los usuarios del sistema. Asigna o remueve roles de administrador. Busca y filtra usuarios por tipo."
+        view_users: "Ver Usuarios"
+
+    # Shelters Management
+    shelters:
+        title: "Administrar Shelters"
+        filters:
+            all: "Todas"
+            pending: "Pendientes"
+            verified: "Verificadas"
+            rejected: "Rechazadas"
+        no_shelters:
+            all: "No hay shelters registradas"
+            pending: "No hay shelters pendientes"
+            verified: "No hay shelters verificadas"
+            rejected: "No hay shelters rechazadas"
+            desc_all: "Aún no se han registrado protectoras en el sistema."
+            desc_filtered: "No se encontraron shelters con el estado seleccionado."
+        shelter_info:
+            contact: "Contacto:"
+            email: "Email:"
+            phone: "Teléfono:"
+            shelter_phone: "Tel. Shelter:"
+            address: "Dirección:"
+            registered: "Registrado:"
+        actions:
+            approve: "Aprobar"
+            reject: "Rechazar"
+            change_status: "Cambiar Estado"
+            change_status_options:
+                pending: "Marcar como Pendiente"
+                verified: "Aprobar"
+                rejected: "Rechazar"
+            contact: "Contactar"
+        confirmations:
+            approve_title: "Aprobar Shelter"
+            approve_message: "¿Estás seguro de que quieres aprobar {shelter_name}?"
+            reject_title: "Rechazar Shelter"
+            reject_message: "¿Estás seguro de que quieres rechazar {shelter_name}?"
+
+    # Users Management
+    users:
+        title: "Gestionar Usuarios"
+        filters:
+            all: "Todos"
+            admins: "Administradores"
+            shelters: "Shelters"
+            regular_users: "Usuarios Regulares"
+        search:
+            placeholder: "Buscar por email, nombre o shelter..."
+            button: "Buscar"
+            clear: "Limpiar"
+        no_users:
+            all: "No hay usuarios registrados"
+            admins: "No hay administradores"
+            shelters: "No hay shelters"
+            regular: "No hay usuarios regulares"
+            search_no_results: "No se encontraron usuarios que coincidan con tu búsqueda."
+            filter_no_results: "No se encontraron usuarios con el filtro seleccionado."
+        table:
+            user: "Usuario"
+            email: "Email"
+            type: "Tipo"
+            status: "Estado"
+            registered: "Registrado"
+            actions: "Acciones"
+        user_types:
+            admin: "Admin"
+            shelter: "Shelter"
+            user: "Usuario"
+        status:
+            pending: "PENDIENTE"
+            verified: "VERIFICADO"
+            rejected: "RECHAZADO"
+        actions:
+            make_admin: "Hacer Admin"
+            remove_admin: "Quitar Admin"
+            contact: "Contactar"
+            your_account: "Tu cuenta"
+        total_users: "Total de usuarios mostrados: {count}"
+        confirmations:
+            toggle_admin_title: "Cambiar Rol de Administrador"
+            toggle_admin_message: "¿Estás seguro de que quieres {action} el rol de administrador a {user_name}?"
+            make_admin: "asignar"
+            remove_admin: "quitar"
