@@ -23,6 +23,11 @@
 				<a class="nav-publish-btn">
 					{{ 'nav.publish'|trans }}
 				</a>
+				{% if is_granted('ROLE_ADMIN') %}
+					<a href="{{path('app_admin')}}" class="nav-link {% if app.request.get('_route') starts with 'app_admin' %}nav-link-desktop active{% else %}nav-link-desktop{% endif %}" title="{{ 'nav.admin'|trans }}">
+						{% include 'components/Icon.html.twig' with {name: 'shield', size: 18} %}
+					</a>
+				{% endif %}
 				<div class="relative">
 					<a href="{{path('app_user')}}" class="nav-user-link {% if app.request.get('_route') starts with 'app_user' %}nav-user-link-desktop active{% else %}nav-user-link-desktop{% endif %}">
 						{% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-1 lg:mr-2'} %}
@@ -59,6 +64,11 @@
 				<a class="nav-publish-btn-mobile">
 					{% include 'components/Icon.html.twig' with {name: 'plus', size: 20, class: 'inline mr-3'} %}{{ 'nav.publish'|trans }}
 				</a>
+				{% if is_granted('ROLE_ADMIN') %}
+					<a href="{{path('app_admin')}}" class="{% if app.request.get('_route') starts with 'app_admin' %}nav-link-mobile active{% else %}nav-link-mobile{% endif %}">
+						{% include 'components/Icon.html.twig' with {name: 'shield', size: 20, class: 'inline mr-3'} %}{{ 'nav.admin'|trans }}
+					</a>
+				{% endif %}
 				<a href="{{path('app_user')}}" class="{% if app.request.get('_route') starts with 'app_user' %}nav-user-link-mobile active{% else %}nav-user-link-mobile{% endif %}">
 					{% include 'components/Icon.html.twig' with {name: 'user', size: 20, class: 'inline mr-3'} %}{{ 'nav.my_account'|trans }}
 				</a>

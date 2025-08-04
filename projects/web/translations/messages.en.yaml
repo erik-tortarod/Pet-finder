@@ -5,6 +5,7 @@ nav:
     found_pets: "Found Pets"
     publish: "Publish"
     my_account: "My Account"
+    admin: "Administration"
 
 language:
     spanish: "Español"

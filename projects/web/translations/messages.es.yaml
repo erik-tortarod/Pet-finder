@@ -5,6 +5,7 @@ nav:
     found_pets: "Avistados"
     publish: "Publicar"
     my_account: "Mi Cuenta"
+    admin: "Administración"
 
 language:
     spanish: "Español"
