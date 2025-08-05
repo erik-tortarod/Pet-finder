@@ -52,6 +52,9 @@ class Animals
     #[ORM\Column(type: 'animal_status_enum')]
     private ?string $status = null;
 
+    #[ORM\Column(type: 'integer', options: ['default' => 0])]
+    private ?int $reminderCount = 0;
+
     #[ORM\OneToOne(mappedBy: 'animalId', cascade: ['persist', 'remove'])]
     private ?LostPets $lostPets = null;
 
@@ -197,6 +200,18 @@ class Animals
     public function setStatus(string $status): static
     {
         $this->status = $status;
+
+        return $this;
+    }
+
+    public function getReminderCount(): ?int
+    {
+        return $this->reminderCount;
+    }
+
+    public function setReminderCount(int $reminderCount): static
+    {
+        $this->reminderCount = $reminderCount;
 
         return $this;
     }

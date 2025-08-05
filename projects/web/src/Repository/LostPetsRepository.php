@@ -295,4 +295,21 @@ class LostPetsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find old publications that need reminders
+     */
+    public function findOldPublications(\DateTimeImmutable $cutoffDate): array
+    {
+        return $this->createQueryBuilder('lp')
+            ->leftJoin('lp.animalId', 'a')
+            ->leftJoin('lp.userId', 'u')
+            ->addSelect('a', 'u')
+            ->where('lp.createdAt < :cutoffDate')
+            ->andWhere('a.status IN (:activeStatuses)')
+            ->setParameter('cutoffDate', $cutoffDate)
+            ->setParameter('activeStatuses', ['LOST', 'UNDER_PROTECTION'])
+            ->getQuery()
+            ->getResult();
+    }
 }

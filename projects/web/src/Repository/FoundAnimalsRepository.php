@@ -323,4 +323,21 @@ class FoundAnimalsRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
+
+    /**
+     * Find old publications that need reminders
+     */
+    public function findOldPublications(\DateTimeImmutable $cutoffDate): array
+    {
+        return $this->createQueryBuilder('fa')
+            ->leftJoin('fa.animalId', 'a')
+            ->leftJoin('fa.userId', 'u')
+            ->addSelect('a', 'u')
+            ->where('fa.createdAt < :cutoffDate')
+            ->andWhere('a.status IN (:activeStatuses)')
+            ->setParameter('cutoffDate', $cutoffDate)
+            ->setParameter('activeStatuses', ['FOUND', 'UNDER_PROTECTION'])
+            ->getQuery()
+            ->getResult();
+    }
 }

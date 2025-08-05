@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Actualizar Estado de Publicación{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-md mx-auto bg-white rounded-lg shadow-md p-6">
+        <div class="text-center">
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">¿Qué pasó con tu publicación?</h1>
+
+            {% for message in app.flashes('success') %}
+                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('error') %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% for message in app.flashes('info') %}
+                <div class="bg-blue-100 border border-blue-400 text-blue-700 px-4 py-3 rounded mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            {% if not action %}
+                <p class="text-gray-600 mb-6">
+                    Selecciona la opción que mejor describa la situación actual:
+                </p>
+
+                <div class="space-y-3">
+                    {% if type == 'lost' %}
+                        <a href="{{ path('app_reminder_response', {'animalId': animalId, 'type': type, 'action': 'still_searching'}) }}"
+                           class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded transition duration-200">
+                            🐾 Sigo buscando
+                        </a>
+
+                        <a href="{{ path('app_reminder_response', {'animalId': animalId, 'type': type, 'action': 'found'}) }}"
+                           class="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded transition duration-200">
+                            🎉 ¡Lo encontré!
+                        </a>
+                    {% else %}
+                        <a href="{{ path('app_reminder_response', {'animalId': animalId, 'type': type, 'action': 'still_searching'}) }}"
+                           class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded transition duration-200">
+                            🐾 Sigo buscando al dueño
+                        </a>
+
+                        <a href="{{ path('app_reminder_response', {'animalId': animalId, 'type': type, 'action': 'found'}) }}"
+                           class="block w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-4 rounded transition duration-200">
+                            🎉 ¡Encontré al dueño!
+                        </a>
+                    {% endif %}
+
+                    <a href="{{ path('app_reminder_response', {'animalId': animalId, 'type': type, 'action': 'resolved'}) }}"
+                       class="block w-full bg-gray-500 hover:bg-gray-600 text-white font-bold py-3 px-4 rounded transition duration-200">
+                        ✅ Resuelto (otra razón)
+                    </a>
+                </div>
+            {% else %}
+                <div class="space-y-3">
+                    <a href="{{ path('app_home') }}"
+                       class="block w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-4 rounded transition duration-200">
+                        🏠 Volver al Inicio
+                    </a>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
