@@ -1,0 +1,55 @@
+<!-- Location Search Modal for Create Pages -->
+<div id="location-search-create-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50 flex items-center justify-center" style="background-color: rgba(75, 85, 99, 0.5) !important;">
+    <div class="relative mx-auto p-5 border w-11/12 max-w-4xl shadow-lg rounded-md bg-white">
+        <div class="mt-3">
+            <!-- Header -->
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium text-gray-900">Seleccionar ubicación</h3>
+                <button id="close-location-search-create-modal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+
+            <!-- Search Section -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                <div class="md:col-span-2">
+                    <div class="relative search-container">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-map-marker-alt text-gray-400"></i>
+                        </div>
+                        <input type="text"
+                               id="location-search-create-input"
+                               placeholder="Buscar dirección o lugar..."
+                               class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"/>
+                        <div id="location-suggestions-create"
+                             class="absolute w-full bg-white border border-gray-300 rounded-md shadow-lg z-[9999] hidden max-h-48 overflow-y-auto">
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <button type="button" id="current-location-create-btn" class="w-full px-3 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                        <i class="fas fa-crosshairs mr-2"></i>
+                        Usar mi ubicación
+                    </button>
+                </div>
+            </div>
+
+            <!-- Map Container -->
+            <div id="location-map-create-container" class="w-full h-64 rounded-lg border border-gray-300 mb-4"></div>
+
+            <!-- Action Buttons -->
+            <div class="flex justify-end space-x-3">
+                <button id="clear-location-create-btn" class="px-4 py-2 text-gray-600 hover:text-gray-800">
+                    Limpiar ubicación
+                </button>
+                <button id="apply-location-create-btn" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                    Aplicar ubicación
+                </button>
+            </div>
+
+            <!-- Hidden inputs for form integration -->
+            <input type="hidden" id="location-create-latitude" name="coordinates_latitude" value="">
+            <input type="hidden" id="location-create-longitude" name="coordinates_longitude" value="">
+        </div>
+    </div>
+</div>

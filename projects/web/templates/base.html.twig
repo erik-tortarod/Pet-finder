@@ -26,6 +26,7 @@
 		{% include 'components/NavBar.html.twig' %}
 		{% include 'components/PublishModal.html.twig' %}
 		{% include 'components/LocationSearchModal.html.twig' %}
+		{% include 'components/LocationSearchCreateModal.html.twig' %}
 		{% include 'components/FlashMessages.html.twig' %}
 		{% block body %}{% endblock %}
 		{% include 'components/Footer.html.twig' %}
@@ -35,6 +36,7 @@
 		<script src="{{ asset('page/base/utils.js') }}"></script>
 		<script src="{{ asset('page/base/publish_modal.js') }}"></script>
 		<script src="{{ asset('page/base/location_search_modal.js') }}"></script>
+		<script src="{{ asset('page/base/location_search_create_modal.js') }}"></script>
 
 		{# Custom JavaScript #}
 		<script src="{{ asset('js/alpine.js') }}"></script>
