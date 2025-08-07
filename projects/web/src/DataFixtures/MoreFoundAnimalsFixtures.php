@@ -97,6 +97,7 @@ class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterf
             $createdAt = new \DateTimeImmutable("-{$daysAgo} days");
             $animal->setCreatedAt($createdAt);
             $animal->setUpdatedAt($createdAt);
+            $animal->setReminderCount(0);
 
             $manager->persist($animal);
 
@@ -188,6 +189,7 @@ class MoreFoundAnimalsFixtures extends Fixture implements DependentFixtureInterf
             $createdAt = new \DateTimeImmutable("-{$daysAgo} days");
             $animal->setCreatedAt($createdAt);
             $animal->setUpdatedAt($createdAt);
+            $animal->setReminderCount(0);
 
             $manager->persist($animal);
 

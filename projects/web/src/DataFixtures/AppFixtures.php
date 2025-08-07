@@ -255,6 +255,7 @@ class AppFixtures extends Fixture
          $animal->setStatus('LOST');
          $animal->setCreatedAt(new \DateTimeImmutable());
          $animal->setUpdatedAt(new \DateTimeImmutable());
+         $animal->setReminderCount(0);
 
          $manager->persist($animal);
 
@@ -411,6 +412,7 @@ class AppFixtures extends Fixture
          $animal->setStatus('FOUND');
          $animal->setCreatedAt(new \DateTimeImmutable());
          $animal->setUpdatedAt(new \DateTimeImmutable());
+         $animal->setReminderCount(0);
 
          $manager->persist($animal);
 
