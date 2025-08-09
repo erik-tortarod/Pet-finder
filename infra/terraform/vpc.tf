@@ -1,53 +1,46 @@
-# Use existing default VPC
-data "aws_vpc" "default" {
-  default = true
+resource "aws_vpc" "vpc" {
+  cidr_block           = "10.0.0.0/16"
+  instance_tenancy     = "default"
+  enable_dns_hostnames = true
+
+  tags = {
+    Name = "custom_vpc"
+  }
 }
 
-# Use existing default subnet
-data "aws_subnet" "default" {
-  vpc_id            = data.aws_vpc.default.id
-  availability_zone = var.availability_zone
+resource "aws_internet_gateway" "internet_gateway" {
+  vpc_id = aws_vpc.vpc.id
+
+  tags = {
+    Name = "int-gw"
+  }
 }
 
-# Create a new subnet for our application (if we have permissions)
-resource "aws_subnet" "public_subnet" {
-  count             = 0 # Disable this for now since we don't have permissions
-  vpc_id            = data.aws_vpc.default.id
-  cidr_block        = var.subnet_cidr_block
-  availability_zone = var.availability_zone
-
+resource "aws_subnet" "public_subnet_erik" {
+  vpc_id                  = aws_vpc.vpc.id
+  cidr_block              = var.subnet_cidr_block
+  availability_zone       = var.availability_zone
   map_public_ip_on_launch = true
 
   tags = {
-    Name = "Pet Finder Public Subnet"
+    Name = "public subnet erik"
   }
 }
 
-# Use existing internet gateway
-data "aws_internet_gateway" "default" {
-  filter {
-    name   = "attachment.vpc-id"
-    values = [data.aws_vpc.default.id]
-  }
-}
-
-# Create route table for public subnet
 resource "aws_route_table" "public_route_table" {
-  vpc_id = data.aws_vpc.default.id
+  vpc_id = aws_vpc.vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
-    gateway_id = data.aws_internet_gateway.default.id
+    gateway_id = aws_internet_gateway.internet_gateway.id
   }
 
   tags = {
-    Name = "Pet Finder Public RT"
+    Name = "public route table"
   }
 }
 
-# Associate route table with default subnet
-resource "aws_route_table_association" "public_subnet_association" {
-  subnet_id      = data.aws_subnet.default.id
+resource "aws_route_table_association" "public_subnet_az1_route_table_association" {
+  subnet_id      = aws_subnet.public_subnet_erik.id
   route_table_id = aws_route_table.public_route_table.id
 }
-

@@ -12,8 +12,8 @@ provider "aws" {
 
   default_tags {
     tags = {
-      Application = "Pet Finder"
-      Owner       = "Erik Tortajada Rodríguez"
+      Application = "Web EC2 S3"
+      Owner       = "Erik Tortajada"
     }
   }
 }

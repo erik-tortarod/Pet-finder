@@ -1,13 +1,13 @@
 variable "vpc_cidr_block" {
   description = "CIDR block para la VPC"
   type        = string
-  default     = "172.31.0.0/16"
+  default     = "10.0.0.0/16"
 }
 
 variable "subnet_cidr_block" {
   description = "CIDR block para la Subnet Pública"
   type        = string
-  default     = "172.31.80.0/20"
+  default     = "10.0.0.0/24"
 }
 
 variable "availability_zone" {
@@ -28,6 +28,12 @@ variable "instance_type" {
   default     = "t2.micro"
 }
 
+variable "key_name" {
+  description = "Nombre de la clave SSH para la instancia EC2"
+  type        = string
+  default     = "mikeypair"
+}
+
 variable "ingress_http_cidr" {
   description = "CIDR para acceso HTTP (puerto 80)"
   type        = string
@@ -38,10 +44,4 @@ variable "ingress_ssh_cidr" {
   description = "CIDR para acceso SSH (puerto 22)"
   type        = string
   default     = "0.0.0.0/0"
-}
-
-variable "key_name" {
-  description = "Nombre de la clave SSH para la instancia EC2"
-  type        = string
-  default     = "mikeypair"
 }
