@@ -55,6 +55,7 @@ sudo chmod -R 755 /tmp/mi_repositorio
 cd /tmp/mi_repositorio/projects/web
 
 composer install --no-dev --optimize-autoloader
+composer install
 
 npm install
 
@@ -63,3 +64,27 @@ npm run build
 sudo docker build -t symfony-app .
 
 sudo docker run -d -p 80:80 --name symfony-app symfony-app
+
+# SSL + DNS
+sudo apt install -y nginx
+sudo mv /tmp/certificate.crt /etc/ssl/certs/
+sudo mv /tmp/private.key /etc/ssl/private/
+sudo mv /tmp/ca_bundle.crt /etc/ssl/certs/
+
+# TODO: reemplazar por el dominio
+cat <<EOL | sudo tee /etc/nginx/sites-available/default
+server {
+    listen 443 ssl;
+    server_name justdocitauth.site;
+
+    ssl_certificate /etc/ssl/certs/certificate.crt;
+    ssl_certificate_key /etc/ssl/private/private.key;
+    ssl_trusted_certificate /etc/ssl/certs/ca_bundle.crt;
+
+    location / {
+        proxy_pass http://127.0.0.1:80;
+    }
+}
+EOL
+
+sudo systemctl restart nginx
