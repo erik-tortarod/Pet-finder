@@ -1,41 +1,25 @@
 FROM php:8.2-apache
 
-# Instalar extensiones necesarias y Composer
+# Instalar extensiones necesarias
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
-    unzip \
-    git \
     && docker-php-ext-install zip pdo_mysql
-
-# Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Habilitar mod_rewrite
 RUN a2enmod rewrite
 
-# Configurar directorio de trabajo
-WORKDIR /var/www/html
+# Copiar el proyecto
+COPY . /var/www/html/
 
-# Copiar composer.json y composer.lock primero (para cache de Docker)
-COPY composer.json composer.lock ./
-
-# Instalar dependencias PHP
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# Copiar el resto del proyecto
-COPY . .
-
-# Ejecutar composer install nuevamente por si hay archivos adicionales
-RUN composer install --no-dev --optimize-autoloader --no-interaction
-
-# Limpiar cache de Symfony
-RUN php bin/console cache:clear --env=prod --no-debug || echo "Cache clear failed, continuing..."
+# Configurar para producción
+RUN echo "APP_ENV=prod" > /var/www/html/.env.local && \
+    echo "APP_DEBUG=false" >> /var/www/html/.env.local
 
 # Configurar permisos
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html \
-    && chmod -R 775 /var/www/html/var || true
+    && chmod -R 775 /var/www/html/var
 
 # Configurar Apache para Symfony
 RUN echo '<VirtualHost *:80>\n\
