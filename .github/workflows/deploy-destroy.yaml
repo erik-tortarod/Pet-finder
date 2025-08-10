@@ -1,0 +1,93 @@
+name: deploy-destroy
+
+on:
+    workflow_dispatch:
+        inputs:
+            action:
+                description: "Action to perform"
+                required: true
+                type: choice
+                options:
+                    - deploy
+                    - destroy
+
+jobs:
+    deploy:
+        if: github.event.inputs.action == 'deploy'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4.2.1
+
+            - name: give my tokens to aws
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+                  aws-region: "us-east-1"
+
+            - name: copy secret files in credential folder
+              run: |
+                  mkdir -p infra/terraform/credentials
+                  echo "${{ secrets.CERTIFICATE_CRT }}" > infra/terraform/credentials/certificate.crt
+                  echo "${{ secrets.CA_BUNDLE_CRT }}" > infra/terraform/credentials/ca_bundle.crt
+                  echo "${{ secrets.PRIVATE_KEY }}" > infra/terraform/credentials/private.key
+                  echo "${{ secrets.MIKEYPAIR_PEM }}" > infra/terraform/credentials/mikeypair.pem
+                  chmod 600 infra/terraform/credentials/mikeypair.pem
+                  chmod 600 infra/terraform/credentials/private.key
+                  chmod 644 infra/terraform/credentials/certificate.crt
+                  chmod 644 infra/terraform/credentials/ca_bundle.crt
+
+            - name: make the setup of tf
+              uses: hashicorp/setup-terraform@v3
+
+            - name: initialize tf
+              working-directory: ./infra/terraform
+              run: terraform init
+
+            - name: plan of tf
+              working-directory: ./infra/terraform
+              run: terraform plan -no-color
+
+            - name: apply tf
+              working-directory: ./infra/terraform
+              run: terraform apply -auto-approve
+
+            - name: Subir tfstate como artefacto
+              uses: actions/upload-artifact@v4.4.3
+              with:
+                  name: terraform-tfstate
+                  path: ./infra/terraform/terraform.tfstate
+
+    destroy:
+        if: github.event.inputs.action == 'destroy'
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4.2.1
+
+            - name: Descargar tfstate como artefacto
+              uses: actions/download-artifact@v4.1.8
+              with:
+                  name: terraform-tfstate
+                  path: ./infra/terraform/
+
+            - name: pasar mis tokens a aws
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+                  aws-region: "us-east-1"
+
+            - name: Hacer el set up de tf
+              uses: hashicorp/setup-terraform@v3
+
+            - name: inicializar terraform
+              working-directory: ./infra/terraform
+              run: terraform init
+
+            - name: destroy terraform
+              working-directory: ./infra/terraform
+              run: terraform destroy -auto-approve
