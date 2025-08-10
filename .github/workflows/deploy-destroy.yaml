@@ -30,10 +30,10 @@ jobs:
             - name: copy secret files in credential folder
               run: |
                   mkdir -p infra/terraform/credentials
-                  echo "${{ secrets.CERTIFICATE_CRT }}" > infra/terraform/credentials/certificate.crt
-                  echo "${{ secrets.CA_BUNDLE_CRT }}" > infra/terraform/credentials/ca_bundle.crt
-                  echo "${{ secrets.PRIVATE_KEY }}" > infra/terraform/credentials/private.key
-                  echo "${{ secrets.MIKEYPAIR_PEM }}" > infra/terraform/credentials/mikeypair.pem
+                  echo "${{ vars.VAR_CERTIFICATE }}" > infra/terraform/credentials/certificate.crt
+                  echo "${{ vars.VAR_CA_BUNDLE }}" > infra/terraform/credentials/ca_bundle.crt
+                  echo "${{ vars.VAR_PRIVATE }}" > infra/terraform/credentials/private.key
+                  echo "${{ vars.VAR_MY_KEY_PAIR }}" > infra/terraform/credentials/mikeypair.pem
                   chmod 600 infra/terraform/credentials/mikeypair.pem
                   chmod 600 infra/terraform/credentials/private.key
                   chmod 644 infra/terraform/credentials/certificate.crt
