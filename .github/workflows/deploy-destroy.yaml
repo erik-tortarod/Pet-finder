@@ -34,10 +34,12 @@ jobs:
                   echo "${{ vars.VAR_CA_BUNDLE }}" > infra/terraform/credentials/ca_bundle.crt
                   echo "${{ vars.VAR_PRIVATE }}" > infra/terraform/credentials/private.key
                   echo "${{ vars.VAR_MY_KEY_PAIR }}" > infra/terraform/credentials/mikeypair.pem
+                  echo "${{ vars.SYMFONY_ENV }}" > infra/terraform/credentials/.env
                   chmod 600 infra/terraform/credentials/mikeypair.pem
                   chmod 600 infra/terraform/credentials/private.key
                   chmod 644 infra/terraform/credentials/certificate.crt
                   chmod 644 infra/terraform/credentials/ca_bundle.crt
+                  chmod 644 infra/terraform/credentials/.env
 
             - name: make the setup of tf
               uses: hashicorp/setup-terraform@v3

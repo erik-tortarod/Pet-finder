@@ -64,4 +64,16 @@ resource "aws_instance" "ec2_instance" {
       timeout     = "4m" # Añadido para dar tiempo a que la instancia esté lista
     }
   }
+  provisioner "file" {
+    source      = "./credentials/.env"
+    destination = "/tmp/.env"
+
+    connection {
+      type        = "ssh"
+      user        = "admin" # Este es correcto para Debian
+      private_key = file("./credentials/mikeypair.pem")
+      host        = self.public_ip
+      timeout     = "4m" # Añadido para dar tiempo a que la instancia esté lista
+    }
+  }
 }

@@ -51,6 +51,8 @@ sudo git clone https://github.com/erik-tortarod/Pet-finder.git /tmp/mi_repositor
 sudo chown -R $USER:$USER /tmp/mi_repositorio
 sudo chmod -R 755 /tmp/mi_repositorio
 
+# Mover el archivo .env subido por Terraform al directorio del proyecto
+sudo mv /tmp/.env /tmp/mi_repositorio/projects/web/.env
 
 cd /tmp/mi_repositorio/projects/web
 
