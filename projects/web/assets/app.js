@@ -12,10 +12,46 @@ import "./styles/app.css";
 // Handle Turbo navigation events to ensure proper controller initialization
 document.addEventListener("turbo:load", function () {
     console.log("Turbo load event - page loaded");
+    // Reinitialize phone prefix controllers if they exist
+    const phoneControllers = document.querySelectorAll(
+        '[data-controller="phone-prefix"]'
+    );
+    phoneControllers.forEach((controller) => {
+        const controllerInstance =
+            window.Stimulus.getControllerForElementAndIdentifier(
+                controller,
+                "phone-prefix"
+            );
+        if (
+            controllerInstance &&
+            typeof controllerInstance.reinitialize === "function"
+        ) {
+            controllerInstance.reinitialize();
+        }
+    });
 });
 
 document.addEventListener("turbo:render", function () {
     console.log("Turbo render event - page rendered");
+    // Reinitialize phone prefix controllers if they exist with a small delay
+    setTimeout(() => {
+        const phoneControllers = document.querySelectorAll(
+            '[data-controller="phone-prefix"]'
+        );
+        phoneControllers.forEach((controller) => {
+            const controllerInstance =
+                window.Stimulus.getControllerForElementAndIdentifier(
+                    controller,
+                    "phone-prefix"
+                );
+            if (
+                controllerInstance &&
+                typeof controllerInstance.reinitialize === "function"
+            ) {
+                controllerInstance.reinitialize();
+            }
+        });
+    }, 100);
 });
 
 document.addEventListener("turbo:before-render", function () {

@@ -81,12 +81,43 @@
 				<input type="email" name="email" id="email" placeholder="{{ 'auth.register.form.email_placeholder'|trans }}" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
-			<div class="mb-6">
+			<div class="mb-6" data-controller="phone-prefix">
 				<label for="phone" class="block text-sm font-medium text-gray-700 mb-3">
 					<i class="fas fa-phone mr-1"></i>
 					{{ 'auth.register.form.phone'|trans }}
 				</label>
-				<input type="tel" name="phone" id="phone" placeholder="{{ 'auth.register.form.phone_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+				<div class="flex space-x-2">
+					<div
+						class="w-1/3 relative">
+						<!-- Botón del dropdown -->
+						<button type="button" data-phone-prefix-target="button" data-action="click->phone-prefix#toggleDropdown" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-left flex items-center justify-between">
+							<span data-phone-prefix-target="display" class="text-gray-700 flex items-center">
+								<span class="text-lg">🌍</span>
+								<span class="text-gray-500 ml-1">+</span>
+							</span>
+							<i class="fas fa-chevron-down text-gray-400 transition-transform duration-200" data-phone-prefix-target="icon"></i>
+						</button>
+
+						<!-- Dropdown personalizado -->
+						<div
+							data-phone-prefix-target="dropdown" class="hidden absolute z-50 w-80 mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-96 overflow-hidden">
+
+							<!-- Campo de búsqueda -->
+							<div class="p-4 border-b border-gray-200 bg-gray-50">
+								<input type="text" data-phone-prefix-target="search" data-action="input->phone-prefix#searchCountries" placeholder="Buscar país o prefijo..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+							</div>
+
+							<!-- Lista de países -->
+							<div data-phone-prefix-target="options" class="max-h-80 overflow-y-auto"></div>
+						</div>
+
+						<!-- Select oculto para el formulario -->
+						<select data-phone-prefix-target="select" data-action="change->phone-prefix#selectCountry" class="hidden"></select>
+					</div>
+					<div class="w-2/3">
+						<input type="tel" name="phone" id="phone" data-phone-prefix-target="input" data-action="input->phone-prefix#formatPhoneNumber" placeholder="{{ 'auth.register.form.phone_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+					</div>
+				</div>
 			</div>
 
 			<div class="grid grid-cols-2 gap-6 mb-6">
@@ -110,12 +141,12 @@
 			</div>
 
 			{# <div class="flex items-center mb-8">
-							<input type="checkbox" name="emailNotifications" id="emailNotifications" class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-							<label for="emailNotifications" class="ml-3 block text-sm text-gray-700">
-								<i class="fas fa-bell mr-1"></i>
-								{{ 'auth.register.form.email_notifications'|trans }}
-							</label>
-						</div> #}
+																																																	<input type="checkbox" name="emailNotifications" id="emailNotifications" class="h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+																																																	<label for="emailNotifications" class="ml-3 block text-sm text-gray-700">
+																																																		<i class="fas fa-bell mr-1"></i>
+																																																		{{ 'auth.register.form.email_notifications'|trans }}
+																																																	</label>
+																																																</div> #}
 
 			<!-- Campos específicos de protectora -->
 			<div id="shelter-fields" class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-lg p-8 mb-8" style="display: none;">
@@ -158,12 +189,43 @@
 				</div>
 
 				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-					<div>
+					<div data-controller="phone-prefix">
 						<label for="shelterPhone" class="block text-sm font-medium text-gray-700 mb-3">
 							<i class="fas fa-phone mr-1"></i>
 							{{ 'auth.register.shelter.phone'|trans }}
 						</label>
-						<input type="tel" name="shelterPhone" id="shelterPhone" placeholder="{{ 'auth.register.shelter.phone_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+						<div class="flex space-x-2">
+							<div
+								class="w-1/3 relative">
+								<!-- Botón del dropdown -->
+								<button type="button" data-phone-prefix-target="button" data-action="click->phone-prefix#toggleDropdown" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-white text-left flex items-center justify-between">
+									<span data-phone-prefix-target="display" class="text-gray-700 flex items-center">
+										<span class="text-lg">🌍</span>
+										<span class="text-gray-500 ml-1">+</span>
+									</span>
+									<i class="fas fa-chevron-down text-gray-400 transition-transform duration-200" data-phone-prefix-target="icon"></i>
+								</button>
+
+								<!-- Dropdown personalizado -->
+								<div
+									data-phone-prefix-target="dropdown" class="hidden absolute z-50 w-80 mt-1 bg-white border border-gray-300 rounded-lg shadow-xl max-h-96 overflow-hidden">
+
+									<!-- Campo de búsqueda -->
+									<div class="p-4 border-b border-gray-200 bg-gray-50">
+										<input type="text" data-phone-prefix-target="search" data-action="input->phone-prefix#searchCountries" placeholder="Buscar país o prefijo..." class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm">
+									</div>
+
+									<!-- Lista de países -->
+									<div data-phone-prefix-target="options" class="max-h-80 overflow-y-auto"></div>
+								</div>
+
+								<!-- Select oculto para el formulario -->
+								<select data-phone-prefix-target="select" data-action="change->phone-prefix#selectCountry" class="hidden"></select>
+							</div>
+							<div class="w-2/3">
+								<input type="tel" name="shelterPhone" id="shelterPhone" data-phone-prefix-target="input" data-action="input->phone-prefix#formatPhoneNumber" placeholder="{{ 'auth.register.shelter.phone_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+							</div>
+						</div>
 					</div>
 					<div>
 						<label for="shelterWebsite" class="block text-sm font-medium text-gray-700 mb-3">
@@ -218,8 +280,9 @@ isShelterInput.value = '1';
 shelterFields.style.display = 'block';
 requiredFields.forEach(fieldId => {
 const field = document.getElementById(fieldId);
-if (field)
+if (field) 
 field.required = true;
+
 
 
 });
@@ -232,8 +295,9 @@ isShelterInput.value = '0';
 shelterFields.style.display = 'none';
 requiredFields.forEach(fieldId => {
 const field = document.getElementById(fieldId);
-if (field)
+if (field) 
 field.required = false;
+
 
 
 });
@@ -246,5 +310,51 @@ shelterToggle.addEventListener('click', () => setActiveToggle(true));
 
 // Initialize with user toggle active
 setActiveToggle(false);
+
+// Phone prefix handling
+document.addEventListener('DOMContentLoaded', function () {
+const form = document.querySelector('form');
+if (form) {
+form.addEventListener('submit', function (e) { // Get all phone prefix controllers
+const phoneControllers = document.querySelectorAll('[data-controller="phone-prefix"]');
+
+phoneControllers.forEach(controller => { // Get the Stimulus controller instance
+const controllerInstance = window.Stimulus.getControllerForElementAndIdentifier(controller, 'phone-prefix');
+
+if (controllerInstance && controllerInstance.selectedPrefixValue) {
+const input = controller.querySelector('[data-phone-prefix-target="input"]');
+
+if (input && input.value) { // Combine prefix with phone number
+const fullPhone = `${
+controllerInstance.selectedPrefixValue
+} ${
+input.value
+}`;
+console.log('Combining phone:', controllerInstance.selectedPrefixValue, '+', input.value, '=', fullPhone);
+input.value = fullPhone;
+}
+} else { // Alternative approach: get prefix from the display element
+const displayElement = controller.querySelector('[data-phone-prefix-target="display"]');
+const input = controller.querySelector('[data-phone-prefix-target="input"]');
+
+if (displayElement && input && input.value) { // Extract prefix from the display (it shows "🇪🇸 +34")
+const displayText = displayElement.textContent || displayElement.innerText;
+const prefixMatch = displayText.match(/\+[\d-]+/);
+
+if (prefixMatch && prefixMatch[0] !== '+') {
+const fullPhone = `${
+prefixMatch[0]
+} ${
+input.value
+}`;
+console.log('Alternative combining phone:', prefixMatch[0], '+', input.value, '=', fullPhone);
+input.value = fullPhone;
+}
+}
+}
+});
+});
+}
+});
 	</script>
 {% endblock %}

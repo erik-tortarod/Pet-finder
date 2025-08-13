@@ -56,8 +56,24 @@ export default class extends Controller {
                 ? this.petNameTarget.textContent
                 : "esta mascota";
             const message = `Hola, vi tu publicación sobre ${petName} y me gustaría contactarte.`;
-            const whatsappUrl = `https://wa.me/${this.currentPhoneValue.replace(
-                /\D/g,
+
+            // Process phone number to get the correct format for WhatsApp
+            let phoneNumber = this.currentPhoneValue;
+
+            // Remove any spaces and non-digit characters except the + prefix
+            phoneNumber = phoneNumber.replace(/\s/g, "");
+
+            // If it doesn't start with +, we can't determine the country code
+            // so we'll show an error message
+            if (!phoneNumber.startsWith("+")) {
+                alert(
+                    "El número de teléfono no tiene un prefijo internacional válido. No se puede abrir WhatsApp."
+                );
+                return;
+            }
+
+            const whatsappUrl = `https://wa.me/${phoneNumber.replace(
+                "+",
                 ""
             )}?text=${encodeURIComponent(message)}`;
             window.open(whatsappUrl, "_blank");
