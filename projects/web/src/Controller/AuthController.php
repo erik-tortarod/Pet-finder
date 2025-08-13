@@ -15,6 +15,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
 use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
+use App\Service\ShelterEmailService;
 
 final class AuthController extends AbstractController
 {
@@ -22,7 +23,8 @@ final class AuthController extends AbstractController
         private UserPasswordHasherInterface $passwordHasher,
         private PasswordResetService $passwordResetService,
         private TelegramService $telegramService,
-        private UserAuthenticatorInterface $userAuthenticator
+        private UserAuthenticatorInterface $userAuthenticator,
+        private ShelterEmailService $shelterEmailService
     ) {}
 
     #[Route('/auth/register', name: 'app_auth_register')]
@@ -108,24 +110,30 @@ final class AuthController extends AbstractController
 
             $userRepository->add($user, true);
 
-            // Enviar notificación a Telegram si es una shelter
-            if ($isShelter) {
-                $shelterData = [
-                    'id' => $user->getId(),
-                    'name' => $shelterName,
-                    'email' => $email,
-                    'phone' => $shelterPhone,
-                    'address' => $shelterAddress,
-                    'description' => $shelterDescription,
-                    'website' => $shelterWebsite,
-                    'facebook' => $shelterFacebook,
-                    'created_at' => $user->getCreatedAt()
-                ];
+            // Enviar email de bienvenida a todos los usuarios
+            $welcomeEmailSent = $this->shelterEmailService->sendWelcomeEmail($user);
 
-                $this->telegramService->sendShelterRegistrationNotification($shelterData);
-            }
+            // Enviar notificación a Telegram si es una shelter
+            // if ($isShelter) {
+            //     $shelterData = [
+            //         'id' => $user->getId(),
+            //         'name' => $shelterName,
+            //         'email' => $email,
+            //         'phone' => $shelterPhone,
+            //         'address' => $shelterAddress,
+            //         'description' => $shelterDescription,
+            //         'website' => $shelterWebsite,
+            //         'facebook' => $shelterFacebook,
+            //         'created_at' => $user->getCreatedAt()
+            //     ];
+
+            //     $this->telegramService->sendShelterRegistrationNotification($shelterData);
+            // }
 
             $successMessage = $isShelter ? 'Protectora registrada exitosamente. Tu cuenta está pendiente de verificación.' : 'Usuario registrado exitosamente';
+            if ($welcomeEmailSent) {
+                $successMessage .= ' Se ha enviado un email de bienvenida.';
+            }
             $this->addFlash('success', $successMessage);
 
             // Si es un usuario normal (no shelter), hacer login automático

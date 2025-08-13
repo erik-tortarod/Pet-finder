@@ -11,12 +11,17 @@ use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Entity\User;
+use App\Service\ShelterEmailService;
 
 /**
  * @method User getUser()
  */
 final class AdminController extends AbstractController
 {
+    public function __construct(
+        private ShelterEmailService $shelterEmailService
+    ) {}
+
     #[Route('/admin', name: 'app_admin')]
     #[IsGranted('ROLE_ADMIN')]
     public function index(): Response
@@ -117,7 +122,10 @@ final class AdminController extends AbstractController
             $entityManager->persist($shelter);
             $entityManager->flush();
 
-            $this->addFlash('success', "Shelter '{$shelter->getShelterName()}' aprobada exitosamente");
+            // Enviar email de aprobación
+            $emailSent = $this->shelterEmailService->sendShelterApprovedEmail($shelter);
+
+            $this->addFlash('success', "Shelter '{$shelter->getShelterName()}' aprobada exitosamente" . ($emailSent ? ' y notificación enviada' : ' (error al enviar email)'));
         } catch (\Exception $e) {
             $this->addFlash('error', 'Error al aprobar la shelter: ' . $e->getMessage());
         }
@@ -149,7 +157,10 @@ final class AdminController extends AbstractController
             $entityManager->persist($shelter);
             $entityManager->flush();
 
-            $this->addFlash('success', "Shelter '{$shelter->getShelterName()}' rechazada exitosamente");
+            // Enviar email de rechazo
+            $emailSent = $this->shelterEmailService->sendShelterRejectedEmail($shelter);
+
+            $this->addFlash('success', "Shelter '{$shelter->getShelterName()}' rechazada exitosamente" . ($emailSent ? ' y notificación enviada' : ' (error al enviar email)'));
         } catch (\Exception $e) {
             $this->addFlash('error', 'Error al rechazar la shelter: ' . $e->getMessage());
         }
@@ -192,6 +203,14 @@ final class AdminController extends AbstractController
             $entityManager->persist($shelter);
             $entityManager->flush();
 
+            // Enviar email según el nuevo estado
+            $emailSent = false;
+            if ($newStatus === 'VERIFIED') {
+                $emailSent = $this->shelterEmailService->sendShelterApprovedEmail($shelter);
+            } elseif ($newStatus === 'rejected') {
+                $emailSent = $this->shelterEmailService->sendShelterRejectedEmail($shelter);
+            }
+
             $statusMessages = [
                 'pending' => 'marcada como pendiente',
                 'VERIFIED' => 'aprobada',
@@ -199,7 +218,7 @@ final class AdminController extends AbstractController
             ];
 
             $message = $statusMessages[$newStatus] ?? 'cambiada de estado';
-            $this->addFlash('success', "Shelter '{$shelter->getShelterName()}' {$message} exitosamente");
+            $this->addFlash('success', "Shelter '{$shelter->getShelterName()}' {$message} exitosamente" . ($emailSent ? ' y notificación enviada' : ''));
         } catch (\Exception $e) {
             $this->addFlash('error', 'Error al cambiar el estado de la shelter: ' . $e->getMessage());
         }

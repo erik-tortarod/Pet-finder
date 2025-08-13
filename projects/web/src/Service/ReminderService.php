@@ -16,87 +16,89 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 class ReminderService
 {
-   public function __construct(
-      private AnimalsRepository $animalsRepository,
-      private LostPetsRepository $lostPetsRepository,
-      private FoundAnimalsRepository $foundAnimalsRepository,
-      private UserRepository $userRepository,
-      private MailerInterface $mailer,
-      private UrlGeneratorInterface $urlGenerator,
-      private \Doctrine\ORM\EntityManagerInterface $entityManager
-   ) {}
+    public function __construct(
+        private AnimalsRepository $animalsRepository,
+        private LostPetsRepository $lostPetsRepository,
+        private FoundAnimalsRepository $foundAnimalsRepository,
+        private UserRepository $userRepository,
+        private MailerInterface $mailer,
+        private UrlGeneratorInterface $urlGenerator,
+        private \Doctrine\ORM\EntityManagerInterface $entityManager
+    ) {}
 
-   public function checkAndSendReminders(): void
-   {
-      // Buscar publicaciones que tengan más de 1 minuto (para testing)
-      $cutoffDate = new \DateTimeImmutable('-1 month');
+    public function checkAndSendReminders(): void
+    {
+        // Buscar publicaciones que tengan más de 1 minuto (para testing)
+        $cutoffDate = new \DateTimeImmutable('-1 month');
 
-      // Buscar animales perdidos
-      $lostPets = $this->lostPetsRepository->findOldPublications($cutoffDate);
-      foreach ($lostPets as $lostPet) {
-         $this->processReminder($lostPet->getUserId(), $lostPet->getAnimalId(), 'lost');
-      }
+        // Buscar animales perdidos
+        $lostPets = $this->lostPetsRepository->findOldPublications($cutoffDate);
+        foreach ($lostPets as $lostPet) {
+            $this->processReminder($lostPet->getUserId(), $lostPet->getAnimalId(), 'lost');
+        }
 
-      // Buscar animales encontrados
-      $foundAnimals = $this->foundAnimalsRepository->findOldPublications($cutoffDate);
-      foreach ($foundAnimals as $foundAnimal) {
-         $this->processReminder($foundAnimal->getUserId(), $foundAnimal->getAnimalId(), 'found');
-      }
-   }
+        // Buscar animales encontrados
+        $foundAnimals = $this->foundAnimalsRepository->findOldPublications($cutoffDate);
+        foreach ($foundAnimals as $foundAnimal) {
+            $this->processReminder($foundAnimal->getUserId(), $foundAnimal->getAnimalId(), 'found');
+        }
+    }
 
-   private function processReminder(User $user, Animals $animal, string $type): void
-   {
-      $reminderCount = $animal->getReminderCount() ?? 0;
+    private function processReminder(User $user, Animals $animal, string $type): void
+    {
+        $reminderCount = $animal->getReminderCount() ?? 0;
 
-      // Si ya se han enviado 3 recordatorios sin respuesta, archivar automáticamente
-      if ($reminderCount >= 3) {
-         $animal->setStatus('ARCHIVED');
-         $animal->setUpdatedAt(new \DateTimeImmutable());
-         $this->entityManager->flush();
-         return;
-      }
+        // Si ya se han enviado 3 recordatorios sin respuesta, archivar automáticamente
+        if ($reminderCount >= 3) {
+            $animal->setStatus('ARCHIVED');
+            $animal->setUpdatedAt(new \DateTimeImmutable());
+            $this->entityManager->flush();
+            return;
+        }
 
-      // Incrementar contador de recordatorios
-      $animal->setReminderCount($reminderCount + 1);
-      $animal->setUpdatedAt(new \DateTimeImmutable());
-      $this->entityManager->flush();
+        // Incrementar contador de recordatorios
+        $animal->setReminderCount($reminderCount + 1);
+        $animal->setUpdatedAt(new \DateTimeImmutable());
+        $this->entityManager->flush();
 
-      // Enviar email de recordatorio
-      $this->sendReminderEmail($user, $animal, $type);
-   }
+        // Enviar email de recordatorio
+        $this->sendReminderEmail($user, $animal, $type);
+    }
 
-   private function sendReminderEmail(User $user, Animals $animal, string $type): void
-   {
-      $reminderUrl = $this->urlGenerator->generate(
-         'app_reminder_response',
-         ['animalId' => $animal->getId(), 'type' => $type],
-         UrlGeneratorInterface::ABSOLUTE_URL
-      );
+    private function sendReminderEmail(User $user, Animals $animal, string $type): void
+    {
+        $reminderUrl = $this->urlGenerator->generate(
+            'app_reminder_response',
+            ['animalId' => $animal->getId(), 'type' => $type],
+            UrlGeneratorInterface::ABSOLUTE_URL
+        );
 
-      $subject = $type === 'lost' ? '¿Sigue perdido tu ' . $animal->getAnimalType() . '?' : '¿Sigue activa tu publicación de ' . $animal->getAnimalType() . ' encontrado?';
+        $subject = $type === 'lost' ? '¿Sigue perdido tu ' . $animal->getAnimalType() . '?' : '¿Sigue activa tu publicación de ' . $animal->getAnimalType() . ' encontrado?';
 
-      $email = (new Email())
-         ->from($_ENV['MAIL_SENDER'] ?? 'noreply@petfinder.com')
-         ->to($user->getEmail())
-         ->subject($subject)
-         ->html($this->getReminderEmailTemplate($user, $animal, $reminderUrl, $type));
+        $email = (new Email())
+            ->from($_ENV['MAIL_SENDER'] ?? 'noreply@mypetfinder.site')
+            ->to($user->getEmail())
+            ->subject($subject)
+            ->html($this->getReminderEmailTemplate($user, $animal, $reminderUrl, $type));
 
-      $this->mailer->send($email);
-   }
+        $this->mailer->send($email);
+    }
 
-   private function getReminderEmailTemplate(User $user, Animals $animal, string $reminderUrl, string $type): string
-   {
-      $animalType = $animal->getAnimalType();
-      $animalName = $animal->getName() ?: $animalType;
-      $reminderCount = $animal->getReminderCount();
+    private function getReminderEmailTemplate(User $user, Animals $animal, string $reminderUrl, string $type): string
+    {
+        $animalType = $animal->getAnimalType();
+        $animalName = $animal->getName() ?: $animalType;
+        $reminderCount = $animal->getReminderCount();
 
-      $message = $type === 'lost'
-         ? "Hace más de un mes que publicaste que perdiste a <strong>{$animalName}</strong>. ¿Ya lo encontraste?"
-         : "Hace más de un mes que publicaste que encontraste a <strong>{$animalName}</strong>. ¿Ya encontraste a su dueño?";
+        $message = $type === 'lost'
+            ? "Hace más de un mes que publicaste que perdiste a <strong>{$animalName}</strong>. ¿Ya lo encontraste?"
+            : "Hace más de un mes que publicaste que encontraste a <strong>{$animalName}</strong>. ¿Ya encontraste a su dueño?";
 
-      $reminderText = $reminderCount === 1 ? "primer recordatorio" : "recordatorio #{$reminderCount}";
+        $reminderText = $reminderCount === 1 ? "primer recordatorio" : "recordatorio #{$reminderCount}";
+        $icon = $type === 'lost' ? '🐕' : '🏠';
+        $title = $type === 'lost' ? '¿Sigue perdido tu ' . $animalType . '?' : '¿Sigue activa tu publicación?';
 
-      return "
+        return "
         <!DOCTYPE html>
         <html>
         <head>
@@ -108,14 +110,16 @@ class ReminderService
                     font-family: Arial, sans-serif;
                     line-height: 1.6;
                     color: #333;
+                }
+                .container {
                     max-width: 600px;
                     margin: 0 auto;
                     padding: 20px;
                 }
                 .header {
-                    background: #667eea;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
                     color: white;
-                    padding: 20px;
+                    padding: 30px;
                     text-align: center;
                     border-radius: 10px 10px 0 0;
                 }
@@ -126,109 +130,164 @@ class ReminderService
                 }
                 .button {
                     display: inline-block;
-                    background: #667eea;
+                    background: #4CAF50;
                     color: white;
                     padding: 12px 30px;
                     text-decoration: none;
                     border-radius: 5px;
                     margin: 20px 0;
+                    font-weight: bold;
                 }
                 .button:hover {
-                    background: #5a6fd8;
+                    background: #45a049;
                 }
                 .footer {
+                    text-align: center;
                     margin-top: 30px;
-                    padding-top: 20px;
-                    border-top: 1px solid #ddd;
-                    font-size: 14px;
                     color: #666;
+                    font-size: 14px;
                 }
-                .warning {
-                    background: #fff3cd;
-                    border: 1px solid #ffeaa7;
-                    color: #856404;
-                    padding: 10px;
+                .info-box {
+                    background: #e8f5e8;
+                    border: 1px solid #4CAF50;
+                    padding: 15px;
                     border-radius: 5px;
-                    margin: 15px 0;
+                    margin: 20px 0;
+                }
+                .warning-box {
+                    background: #fff3cd;
+                    border: 1px solid #ffc107;
+                    color: #856404;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
+                }
+                .animal-info {
+                    background: #e3f2fd;
+                    border: 1px solid #2196F3;
+                    padding: 15px;
+                    border-radius: 5px;
+                    margin: 20px 0;
                 }
             </style>
         </head>
         <body>
-            <div class='header'>
-                <h1>Pet Finder</h1>
-                <p>Recordatorio de Publicación ({$reminderText})</p>
-            </div>
-            <div class='content'>
-                <h2>Hola {$user->getFirstName()},</h2>
-                <p>{$message}</p>
+            <div class='container'>
+                <div class='header'>
+                    <h1>{$icon} {$title}</h1>
+                    <h2>Pet Finder - Recordatorio</h2>
+                    <p>{$reminderText}</p>
+                </div>
+                <div class='content'>
+                    <p>Hola <strong>{$user->getFirstName()} {$user->getLastName()}</strong>,</p>
 
-                <p>Actualiza el estado de tu publicación haciendo clic en el botón de abajo:</p>
+                    <p>{$message}</p>
 
-                <a href='{$reminderUrl}' class='button'>Actualizar Estado</a>
+                    <div class='animal-info'>
+                        <h3>📋 Información de la publicación</h3>
+                        <ul>
+                            <li><strong>Animal:</strong> {$animalName}</li>
+                            <li><strong>Tipo:</strong> {$animalType}</li>
+                            <li><strong>Fecha de publicación:</strong> " . $animal->getCreatedAt()->format('d/m/Y') . "</li>
+                            <li><strong>Estado actual:</strong> " . ucfirst(strtolower($animal->getStatus())) . "</li>
+                        </ul>
+                    </div>
 
-                <p>Si la publicación sigue activa, simplemente ignora este email y te recordaremos en otro mes.</p>
+                    <div class='info-box'>
+                        <h3>🔄 ¿Qué puedes hacer?</h3>
+                        <p>Actualiza el estado de tu publicación para mantener informada a la comunidad:</p>
+                        <ul>
+                            <li>✅ Si ya encontraste a tu mascota o al dueño</li>
+                            <li>🔄 Si sigues buscando</li>
+                            <li>📝 Si necesitas actualizar información</li>
+                        </ul>
+                    </div>
 
-                " . ($reminderCount >= 2 ? "<div class='warning'><strong>Importante:</strong> Este es tu {$reminderText}. Si no respondes, tu publicación será archivada automáticamente después del tercer recordatorio.</div>" : "") . "
-            </div>
-            <div class='footer'>
-                <p>Este es un email automático, por favor no respondas a este mensaje.</p>
-                <p>Si tienes problemas, contacta con nuestro equipo de soporte.</p>
+                    <div style='text-align: center;'>
+                        <a href='{$reminderUrl}' class='button'>📝 Actualizar Estado</a>
+                    </div>
+
+                    <p>Si la publicación sigue activa, simplemente ignora este email y te recordaremos en otro mes.</p>
+
+                    " . ($reminderCount >= 2 ? "<div class='warning-box'>
+                        <h3>⚠️ Importante</h3>
+                        <p>Este es tu <strong>{$reminderText}</strong>. Si no respondes, tu publicación será archivada automáticamente después del tercer recordatorio para mantener la información actualizada en nuestra plataforma.</p>
+                        <p><strong>¿Por qué archivamos las publicaciones?</strong></p>
+                        <ul>
+                            <li>Mantener información actualizada para la comunidad</li>
+                            <li>Evitar confusión con casos ya resueltos</li>
+                            <li>Mejorar la eficiencia de búsquedas</li>
+                        </ul>
+                    </div>" : "") . "
+
+                    <p><strong>¿Necesitas ayuda?</strong></p>
+                    <p>Si tienes alguna pregunta o necesitas ayuda para actualizar tu publicación, no dudes en contactarnos.</p>
+
+                    <p>¡Gracias por mantener actualizada la información y por ser parte de nuestra comunidad!</p>
+
+                    <p>Saludos,<br>
+                    <strong>El equipo de Pet Finder</strong></p>
+                </div>
+                <div class='footer'>
+                    <p>Este es un email automático, por favor no respondas a este mensaje.</p>
+                    <p>© 2025 Pet Finder. Todos los derechos reservados.</p>
+                </div>
             </div>
         </body>
         </html>
         ";
-   }
+    }
 
-   public function markAsResolved(int $animalId, string $type): bool
-   {
-      $animal = $this->animalsRepository->find($animalId);
+    public function markAsResolved(int $animalId, string $type): bool
+    {
+        $animal = $this->animalsRepository->find($animalId);
 
-      if (!$animal) {
-         return false;
-      }
-
-      // Marcar como reclamado
-      $animal->setStatus('CLAIMED');
-      $animal->setUpdatedAt(new \DateTimeImmutable());
-
-      $this->entityManager->flush();
-
-      return true;
-   }
-
-   public function updateAnimalStatus(int $animalId, string $action, string $type): bool
-   {
-      $animal = $this->animalsRepository->find($animalId);
-
-      if (!$animal) {
-         return false;
-      }
-
-      switch ($action) {
-         case 'still_searching':
-            // Resetear contador de recordatorios cuando el usuario responde
-            $animal->setReminderCount(0);
-            break;
-
-         case 'found':
-            // Marcar como reclamado y resetear contador
-            $animal->setStatus('CLAIMED');
-            $animal->setReminderCount(0);
-            break;
-
-         case 'resolved':
-            // Marcar como reclamado y resetear contador
-            $animal->setStatus('CLAIMED');
-            $animal->setReminderCount(0);
-            break;
-
-         default:
+        if (!$animal) {
             return false;
-      }
+        }
 
-      $animal->setUpdatedAt(new \DateTimeImmutable());
-      $this->entityManager->flush();
+        // Marcar como reclamado
+        $animal->setStatus('CLAIMED');
+        $animal->setUpdatedAt(new \DateTimeImmutable());
 
-      return true;
-   }
+        $this->entityManager->flush();
+
+        return true;
+    }
+
+    public function updateAnimalStatus(int $animalId, string $action, string $type): bool
+    {
+        $animal = $this->animalsRepository->find($animalId);
+
+        if (!$animal) {
+            return false;
+        }
+
+        switch ($action) {
+            case 'still_searching':
+                // Resetear contador de recordatorios cuando el usuario responde
+                $animal->setReminderCount(0);
+                break;
+
+            case 'found':
+                // Marcar como reclamado y resetear contador
+                $animal->setStatus('CLAIMED');
+                $animal->setReminderCount(0);
+                break;
+
+            case 'resolved':
+                // Marcar como reclamado y resetear contador
+                $animal->setStatus('CLAIMED');
+                $animal->setReminderCount(0);
+                break;
+
+            default:
+                return false;
+        }
+
+        $animal->setUpdatedAt(new \DateTimeImmutable());
+        $this->entityManager->flush();
+
+        return true;
+    }
 }
