@@ -12,13 +12,17 @@ use App\Service\TelegramService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Component\Security\Http\Authenticator\FormLoginAuthenticator;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 final class AuthController extends AbstractController
 {
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
         private PasswordResetService $passwordResetService,
-        private TelegramService $telegramService
+        private TelegramService $telegramService,
+        private UserAuthenticatorInterface $userAuthenticator
     ) {}
 
     #[Route('/auth/register', name: 'app_auth_register')]
@@ -123,7 +127,25 @@ final class AuthController extends AbstractController
 
             $successMessage = $isShelter ? 'Protectora registrada exitosamente. Tu cuenta está pendiente de verificación.' : 'Usuario registrado exitosamente';
             $this->addFlash('success', $successMessage);
-            return $this->redirectToRoute('app_user');
+
+            // Si es un usuario normal (no shelter), hacer login automático
+            if (!$isShelter) {
+                // Crear un token de autenticación para el usuario
+                $token = new UsernamePasswordToken(
+                    $user,
+                    'main',
+                    $user->getRoles()
+                );
+
+                // Establecer el token en el contenedor de seguridad
+                $this->container->get('security.token_storage')->setToken($token);
+
+                // Redirigir al dashboard del usuario
+                return $this->redirectToRoute('app_user');
+            } else {
+                // Para shelters, redirigir a la página de verificación pendiente
+                return $this->redirectToRoute('app_shelter_pending_verification');
+            }
         }
 
         return $this->render('auth/register.html.twig', [
