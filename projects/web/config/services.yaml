@@ -5,6 +5,8 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app.uploads_dir: "%kernel.project_dir%/public/uploads"
+    app.telegram.bot_token: "%env(TELEGRAM_BOT_TOKEN)%"
+    app.telegram.chat_id: "%env(TELEGRAM_CHAT_ID)%"
 
 services:
     # default configuration for services in *this* file

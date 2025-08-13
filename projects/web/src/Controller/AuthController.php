@@ -8,6 +8,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use App\Service\PasswordResetService;
+use App\Service\TelegramService;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
@@ -16,7 +17,8 @@ final class AuthController extends AbstractController
 {
     public function __construct(
         private UserPasswordHasherInterface $passwordHasher,
-        private PasswordResetService $passwordResetService
+        private PasswordResetService $passwordResetService,
+        private TelegramService $telegramService
     ) {}
 
     #[Route('/auth/register', name: 'app_auth_register')]
@@ -30,7 +32,7 @@ final class AuthController extends AbstractController
             $password = $request->request->get('password');
             $confirmPassword = $request->request->get('confirm_password');
             $emailNotifications = $request->request->get('emailNotifications');
-            $isShelter = $request->request->get('isShelter') === 'on';
+            $isShelter = $request->request->get('isShelter') === '1';
 
             // Shelter-specific fields
             $shelterName = $request->request->get('shelterName');
@@ -101,6 +103,23 @@ final class AuthController extends AbstractController
             }
 
             $userRepository->add($user, true);
+
+            // Enviar notificación a Telegram si es una shelter
+            if ($isShelter) {
+                $shelterData = [
+                    'id' => $user->getId(),
+                    'name' => $shelterName,
+                    'email' => $email,
+                    'phone' => $shelterPhone,
+                    'address' => $shelterAddress,
+                    'description' => $shelterDescription,
+                    'website' => $shelterWebsite,
+                    'facebook' => $shelterFacebook,
+                    'created_at' => $user->getCreatedAt()
+                ];
+
+                $this->telegramService->sendShelterRegistrationNotification($shelterData);
+            }
 
             $successMessage = $isShelter ? 'Protectora registrada exitosamente. Tu cuenta está pendiente de verificación.' : 'Usuario registrado exitosamente';
             $this->addFlash('success', $successMessage);
