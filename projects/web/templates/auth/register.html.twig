@@ -280,7 +280,7 @@ isShelterInput.value = '1';
 shelterFields.style.display = 'block';
 requiredFields.forEach(fieldId => {
 const field = document.getElementById(fieldId);
-if (field) 
+if (field)
 field.required = true;
 
 
@@ -295,7 +295,7 @@ isShelterInput.value = '0';
 shelterFields.style.display = 'none';
 requiredFields.forEach(fieldId => {
 const field = document.getElementById(fieldId);
-if (field) 
+if (field)
 field.required = false;
 
 
@@ -356,5 +356,95 @@ input.value = fullPhone;
 });
 }
 });
+
+// Password validation - Works with both initial load and Turbo navigation
+function initializePasswordValidation() {
+    console.log('🔗 Password validation script loaded');
+
+    const passwordInput = document.getElementById('password');
+    const confirmPasswordInput = document.getElementById('confirm_password');
+    const submitButton = document.querySelector('button[type="submit"]');
+
+    if (!passwordInput || !confirmPasswordInput || !submitButton) {
+        console.error('❌ Required elements not found');
+        return;
+    }
+
+    console.log('✅ All elements found');
+
+    // Remove existing error element if it exists
+    const existingError = document.querySelector('.password-error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+
+    // Create error message element
+    let errorElement = document.createElement('div');
+    errorElement.className = 'password-error-message';
+    errorElement.style.cssText = 'color: #dc2626; font-size: 14px; margin-top: 8px; font-weight: bold; display: none;';
+    confirmPasswordInput.parentNode.appendChild(errorElement);
+
+    function validatePasswords() {
+        const password = passwordInput.value;
+        const confirmPassword = confirmPasswordInput.value;
+
+        console.log('🔍 Validating passwords:', { password, confirmPassword });
+
+        // Check if passwords match
+        const isValid = password === confirmPassword && password.length > 0;
+
+        console.log('✅ Passwords match:', isValid);
+
+        // Show/hide error message
+        if (confirmPassword.length > 0 && !isValid) {
+            errorElement.textContent = '❌ Las contraseñas no coinciden';
+            errorElement.style.display = 'block';
+            console.log('🚨 Error message shown');
+        } else {
+            errorElement.style.display = 'none';
+            console.log('✅ Error message hidden');
+        }
+
+        // Update button state
+        submitButton.disabled = !isValid;
+        submitButton.style.opacity = isValid ? '1' : '0.5';
+        submitButton.style.cursor = isValid ? 'pointer' : 'not-allowed';
+
+        // Update border colors
+        if (confirmPassword.length === 0) {
+            confirmPasswordInput.style.borderColor = '#d1d5db'; // gray
+        } else if (isValid) {
+            confirmPasswordInput.style.borderColor = '#10b981'; // green
+        } else {
+            confirmPasswordInput.style.borderColor = '#ef4444'; // red
+        }
+    }
+
+    // Remove existing event listeners to prevent duplicates
+    passwordInput.removeEventListener('input', validatePasswords);
+    confirmPasswordInput.removeEventListener('input', validatePasswords);
+
+    // Add event listeners
+    passwordInput.addEventListener('input', () => {
+        console.log('📝 Password input event');
+        validatePasswords();
+    });
+
+    confirmPasswordInput.addEventListener('input', () => {
+        console.log('📝 Confirm password input event');
+        validatePasswords();
+    });
+
+    console.log('✅ Event listeners attached');
+}
+
+// Initialize on DOM ready (for direct page loads)
+document.addEventListener('DOMContentLoaded', initializePasswordValidation);
+
+// Initialize on Turbo navigation (for SPA-like navigation)
+document.addEventListener('turbo:load', initializePasswordValidation);
+
+// Also initialize on turbo:render for extra compatibility
+document.addEventListener('turbo:render', initializePasswordValidation);
 	</script>
 {% endblock %}
