@@ -397,7 +397,7 @@ function initializePasswordValidation() {
 
         // Show/hide error message
         if (confirmPassword.length > 0 && !isValid) {
-            errorElement.textContent = '❌ Las contraseñas no coinciden';
+            errorElement.textContent = '{{ "auth.register.form.password_mismatch"|trans }}';
             errorElement.style.display = 'block';
             console.log('🚨 Error message shown');
         } else {

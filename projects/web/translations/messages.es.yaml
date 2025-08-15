@@ -498,6 +498,7 @@ auth:
             password_placeholder: "Tu contraseña"
             confirm_password: "Confirmar Contraseña"
             confirm_password_placeholder: "Confirma tu contraseña"
+            password_mismatch: "❌ Las contraseñas no coinciden"
             email_notifications: "Recibir notificaciones por email"
             create_account: "Crear Cuenta"
 

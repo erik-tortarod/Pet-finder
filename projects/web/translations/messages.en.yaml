@@ -498,6 +498,7 @@ auth:
             password_placeholder: "Your password"
             confirm_password: "Confirm Password"
             confirm_password_placeholder: "Confirm your password"
+            password_mismatch: "❌ Passwords do not match"
             email_notifications: "Receive email notifications"
             create_account: "Create Account"
 
