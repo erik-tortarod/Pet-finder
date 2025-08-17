@@ -305,6 +305,7 @@ animal:
             found: "Encontrada"
             claimed: "Reclamada"
             filled: "Archivada"
+            under_protection: "Bajo Custodia"
 
         gender:
             male: "Macho"

@@ -305,6 +305,7 @@ animal:
             found: "Found"
             claimed: "Claimed"
             filled: "Archived"
+            under_protection: "Under Protection"
 
         gender:
             male: "Male"

@@ -1,6 +1,8 @@
 {% extends 'user/base.html.twig' %}
 
-{% block title %}{{ 'user.pages.lost_pets.title'|trans }}{% endblock %}
+{% block title %}
+	{{ 'user.pages.lost_pets.title'|trans }}
+{% endblock %}
 
 {% block content %}
 
@@ -11,112 +13,174 @@
 		</div>
 
 		{# Active Animals Section #}
-		<div class="divide-y divide-gray-200">
+		<div class="p-4 sm:p-6">
 			{% set hasActiveAnimals = false %}
 			{% for item in lostPets %}
 				{% if item.animalId.status != 'ARCHIVED' and item.animalId.status != 'CLAIMED' %}
 					{% set hasActiveAnimals = true %}
-					<article class="p-4 sm:p-6">
-						<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-							{# Animal Data #}
-							<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
-								{% set primaryPhoto = null %}
-								{% if item.animalId.animalPhotos is not empty %}
-									{% for photo in item.animalId.animalPhotos %}
-										{% if photo.isPrimary %}
-											{% set primaryPhoto = photo %}
-										{% endif %}
-									{% endfor %}
-								{% endif %}
-
-								<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
-
-								<div class="flex-1 min-w-0">
-									<h4 class="text-base sm:text-lg font-semibold text-gray-900">{{ item.animalId.name }}</h4>
-									<p class="text-xs sm:text-sm text-gray-600">
-										{{ item.animalId.animalType }}
-										{{ item.animalId.gender|default("") }}
-										{{ item.animalId.age|default("") }}
-									</p>
-									<p class="text-xs sm:text-sm text-gray-500">
-										{{ 'user.dates.published'|trans }}
-										{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
-										{% if daysAgo < 1 %}
-											{{ 'user.dates.today'|trans }}
-										{% elseif daysAgo < 2 %}
-											{{ 'user.dates.yesterday'|trans }}
-										{% elseif daysAgo < 7 %}
-											{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
-										{% else %}
-											{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
-										{% endif %}
-									</p>
-
-									<div class="flex flex-wrap items-center mt-2 gap-2">
-										<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800 uppercase">
-											{% include 'components/Icon.html.twig' with {name: 'alert-triangle', size: 14, class: 'mr-1'} %}
-											{{ item.animalId.status|capitalize }}
-										</span>
-									</div>
-								</div>
-							</div>
-
-							{# Action Buttons #}
-							<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
-								<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="flex items-center text-xs sm:text-sm rounded-md btn btn-primary">
-									{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 16, class: 'mr-1'} %}
-									{{ 'user.actions.edit'|trans }}
-								</a>
-								<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline mark-found-form"
-									data-animal-name="{{ item.animalId.name }}"
-									data-confirm-title="{{ 'user.confirmations.mark_as_found_title'|trans }}"
-									data-confirm-message="{{ 'user.confirmations.mark_as_found'|trans({'name': item.animalId.name}) }}"
-									data-confirm-text="{{ 'user.actions.mark_as_found'|trans }}"
-									data-cancel-text="{{ 'user.actions.cancel'|trans }}">
-									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
-										{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
-										{{ 'user.actions.found'|trans }}
-									</button>
-								</form>
-								{% if user.isShelter and item.animalId.status != 'UNDER_PROTECTION' %}
-									<form method="POST" action="{{ path('app_animal_mark_under_protection', {'id': item.animalId.id}) }}" class="inline mark-under-protection-form" data-animal-name="{{ item.animalId.name }}">
-										<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-info">
-											{% include 'components/Icon.html.twig' with {name: 'shield', size: 16, class: 'mr-1'} %}
-											{{ 'user.actions.under_protection'|trans }}
-										</button>
-									</form>
-								{% endif %}
-								<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form"
-									data-animal-name="{{ item.animalId.name }}"
-									data-confirm-title="{{ 'user.confirmations.archive_title'|trans }}"
-									data-confirm-message="{{ 'user.confirmations.archive'|trans({'name': item.animalId.name}) }}"
-									data-confirm-text="{{ 'user.actions.archive'|trans }}"
-									data-cancel-text="{{ 'user.actions.cancel'|trans }}">
-									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
-										{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
-										{{ 'user.actions.archive'|trans }}
-									</button>
-								</form>
-								<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form"
-									data-animal-name="{{ item.animalId.name }}"
-									data-confirm-title="{{ 'user.confirmations.delete_title'|trans }}"
-									data-confirm-message="{{ 'user.confirmations.delete'|trans({'name': item.animalId.name}) }}"
-									data-confirm-text="{{ 'user.actions.delete'|trans }}"
-									data-cancel-text="{{ 'user.actions.cancel'|trans }}">
-									<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
-										{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
-										{{ 'user.actions.delete'|trans }}
-									</button>
-								</form>
-							</div>
-						</div>
-					</article>
 				{% endif %}
 			{% endfor %}
 
-			{% if not hasActiveAnimals %}
-				<div class="p-8 text-center">
-					<p class="text-gray-500">No tienes mascotas perdidas activas</p>
+			{% if hasActiveAnimals %}
+				<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+					{% for item in lostPets %}
+						{% if item.animalId.status != 'ARCHIVED' and item.animalId.status != 'CLAIMED' %}
+							<article
+								class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group cursor-pointer" onclick="navigateToAnimal('{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}', event)">
+								{# Header with photo and status #}
+								<div class="relative overflow-hidden">
+									{% set primaryPhoto = null %}
+									{% if item.animalId.animalPhotos is not empty %}
+										{% for photo in item.animalId.animalPhotos %}
+											{% if photo.isPrimary %}
+												{% set primaryPhoto = photo %}
+											{% endif %}
+										{% endfor %}
+									{% endif %}
+
+									<img
+									src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-full h-48 object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-300">
+
+									{# Status Badge #}
+									<div class="absolute top-3 right-3">
+										{% set statusConfig = {
+											'LOST': {'bg': 'bg-red-500', 'icon': 'alert-triangle'},
+											'UNDER_PROTECTION': {'bg': 'bg-purple-500', 'icon': 'shield'},
+											'CLAIMED': {'bg': 'bg-green-500', 'icon': 'check-circle'},
+											'ARCHIVED': {'bg': 'bg-gray-500', 'icon': 'archive'}
+										} %}
+										{% set config = statusConfig[item.animalId.status] ?? statusConfig['LOST'] %}
+										<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold {{ config.bg }} text-white shadow-lg">
+											{% include 'components/Icon.html.twig' with {name: config.icon, size: 12, class: 'mr-1'} %}
+											{{ ('animal.show.status.' ~ item.animalId.status|lower)|trans }}
+										</span>
+									</div>
+
+									{# Quick Actions Overlay #}
+									<div class="absolute inset-0 bg-white/0 group-hover:bg-white/20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100">
+										<div class="flex space-x-3">
+											<div class="tooltip-container">
+												<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="p-3 bg-white rounded-full shadow-lg hover:bg-blue-50 hover:shadow-xl hover:scale-110 transition-all duration-200 transform scale-0 group-hover:scale-100 cursor-pointer block" onclick="event.stopPropagation();">
+													{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 18, class: 'text-blue-600'} %}
+												</a>
+												<div class="tooltip tooltip-blue">{{ 'user.actions.edit'|trans }}</div>
+											</div>
+											<div class="tooltip-container">
+												<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline mark-found-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.mark_as_found_title'|trans }}" data-confirm-message="{{ 'user.confirmations.mark_as_found'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.mark_as_found'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+													<button type="submit" class="p-3 bg-white rounded-full shadow-lg hover:bg-green-50 hover:shadow-xl hover:scale-110 transition-all duration-200 transform scale-0 group-hover:scale-100 delay-75 cursor-pointer">
+														{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 18, class: 'text-green-600'} %}
+													</button>
+												</form>
+												<div class="tooltip tooltip-green">{{ 'user.actions.mark_as_found'|trans }}</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								{# Content #}
+								<div class="p-4">
+									<h4 class="font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors truncate text-lg">
+										{{ item.animalId.name }}
+									</h4>
+
+									{# Animal Details #}
+									<div class="mb-3">
+										<div class="flex items-center text-base text-gray-600 mb-1">
+											{% set iconClass = item.animalId.animalType|lower == 'perro' ? 'fa-dog' : (item.animalId.animalType|lower == 'gato' ? 'fa-cat' : (item.animalId.animalType|lower == 'ave' ? 'fa-dove' : (item.animalId.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+											<i class="fas {{ iconClass }} mr-2 text-gray-400"></i>
+											<span class="truncate">{{ item.animalId.animalType }}</span>
+											{% if item.animalId.gender or item.animalId.age %}
+												<span class="text-gray-400 mx-1">
+													•
+												</span>
+												{% if item.animalId.gender %}
+													<span class="">{{ item.animalId.gender }}</span>
+												{% endif %}
+												<span class="text-gray-400 mx-1">
+													•
+												</span>
+
+												{% if item.animalId.age %}
+													<span>{{ item.animalId.age }}</span>
+												{% endif %}
+											{% endif %}
+										</div>
+									</div>
+
+									{# Time Info #}
+									<div class="flex items-center justify-between text-sm text-gray-500 mb-3">
+										{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+										{% if daysAgo < 1 %}
+											<span class="px-3 py-1.5 bg-green-100 text-green-800 rounded-full font-medium text-sm">{{ 'lost_pets.list.today'|trans }}</span>
+										{% elseif daysAgo < 2 %}
+											<span class="px-3 py-1.5 bg-green-100 text-green-800 rounded-full font-medium text-sm">{{ 'lost_pets.list.yesterday'|trans }}</span>
+										{% elseif daysAgo < 7 %}
+											<span class="px-3 py-1.5 bg-orange-100 text-orange-800 rounded-full font-medium text-sm">{{ 'lost_pets.list.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}</span>
+										{% else %}
+											<span class="px-3 py-1.5 bg-red-100 text-red-800 rounded-full font-medium text-sm">{{ 'lost_pets.list.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}</span>
+										{% endif %}
+									</div>
+
+									{# Action Buttons #}
+									<div
+										class="flex flex-wrap gap-3">
+										{# Edit Button - Mobile only #}
+										<div class="tooltip-container lg:hidden">
+											<a href="{{ path('app_animal_edit', {'id': item.animalId.id}) }}" class="inline-flex items-center justify-center p-3 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer" onclick="event.stopPropagation();">
+												{% include 'components/Icon.html.twig' with {name: 'edit-2', size: 18} %}
+											</a>
+											<div class="tooltip tooltip-blue">{{ 'user.actions.edit'|trans }}</div>
+										</div>
+
+										{# Mark as Found Button - Mobile only #}
+										<div class="tooltip-container lg:hidden">
+											<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline mark-found-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.mark_as_found_title'|trans }}" data-confirm-message="{{ 'user.confirmations.mark_as_found'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.mark_as_found'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+												<button type="submit" class="p-3 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 18} %}
+												</button>
+											</form>
+											<div class="tooltip tooltip-green">{{ 'user.actions.mark_as_found'|trans }}</div>
+										</div>
+
+										{% if user.isShelter and item.animalId.status != 'UNDER_PROTECTION' %}
+											<div class="tooltip-container">
+												<form method="POST" action="{{ path('app_animal_mark_under_protection', {'id': item.animalId.id}) }}" class="inline mark-under-protection-form" data-animal-name="{{ item.animalId.name }}">
+													<button type="submit" class="p-3 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+														{% include 'components/Icon.html.twig' with {name: 'shield', size: 18} %}
+													</button>
+												</form>
+												<div class="tooltip tooltip-purple">{{ 'user.actions.under_protection'|trans }}</div>
+											</div>
+										{% endif %}
+										<div class="tooltip-container">
+											<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.archive_title'|trans }}" data-confirm-message="{{ 'user.confirmations.archive'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.archive'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+												<button type="submit" class="p-3 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+													{% include 'components/Icon.html.twig' with {name: 'archive', size: 18} %}
+												</button>
+											</form>
+											<div class="tooltip tooltip-orange">{{ 'user.actions.archive'|trans }}</div>
+										</div>
+										<div class="tooltip-container">
+											<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.delete_title'|trans }}" data-confirm-message="{{ 'user.confirmations.delete'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.delete'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+												<button type="submit" class="p-3 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+													{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 18} %}
+												</button>
+											</form>
+											<div class="tooltip tooltip-red">{{ 'user.actions.delete'|trans }}</div>
+										</div>
+									</div>
+								</div>
+							</article>
+						{% endif %}
+					{% endfor %}
+				</div>
+			{% else %}
+				<div class="text-center py-12">
+					<div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
+						{% include 'components/Icon.html.twig' with {name: 'paw', size: 24, class: 'text-gray-400'} %}
+					</div>
+					<p class="text-gray-500 text-lg">No tienes mascotas perdidas activas</p>
+					<p class="text-gray-400 text-sm mt-1">Cuando reportes una mascota perdida, aparecerá aquí</p>
 				</div>
 			{% endif %}
 		</div>
@@ -140,13 +204,14 @@
 						{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 16, class: 'transform transition-transform', id: 'claimed-chevron'} %}
 					</div>
 				</button>
-				<div id="claimed-section" class="hidden divide-y divide-blue-200 bg-blue-50">
-					{% for item in lostPets %}
-						{% if item.animalId.status == 'CLAIMED' %}
-							<article class="p-4 sm:p-6 bg-blue-50">
-								<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-									{# Animal Data #}
-									<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+				<div id="claimed-section" class="hidden p-4 sm:p-6 bg-gradient-to-br from-blue-50 to-green-50">
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+						{% for item in lostPets %}
+							{% if item.animalId.status == 'CLAIMED' %}
+								<article
+									class="bg-white border border-green-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group cursor-pointer" onclick="navigateToAnimal('{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}', event)">
+									{# Header with photo and status #}
+									<div class="relative overflow-hidden">
 										{% set primaryPhoto = null %}
 										{% if item.animalId.animalPhotos is not empty %}
 											{% for photo in item.animalId.animalPhotos %}
@@ -156,69 +221,91 @@
 											{% endfor %}
 										{% endif %}
 
-										<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
+										<img
+										src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-full h-48 object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-300">
 
-										<div class="flex-1 min-w-0">
-											<h4 class="text-base sm:text-lg font-semibold text-blue-900">{{ item.animalId.name }}</h4>
-											<p class="text-xs sm:text-sm text-blue-700">
-												{{ item.animalId.animalType }}
-												{{ item.animalId.gender|default("") }}
-												{{ item.animalId.age|default("") }}
-											</p>
-											<p class="text-xs sm:text-sm text-blue-600">
-												{{ 'user.dates.published'|trans }}
-												{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
-												{% if daysAgo < 1 %}
-													{{ 'user.dates.today'|trans }}
-												{% elseif daysAgo < 2 %}
-													{{ 'user.dates.yesterday'|trans }}
-												{% elseif daysAgo < 7 %}
-													{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
-												{% else %}
-													{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
-												{% endif %}
-											</p>
+										{# Success Badge #}
+										<div class="absolute top-3 right-3">
+											<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-green-500 text-white shadow-lg">
+												{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 12, class: 'mr-1'} %}
+												{{ ('animal.show.status.' ~ item.animalId.status|lower)|trans }}
+											</span>
+										</div>
 
-											<div class="mt-2 p-2 bg-blue-100 border border-blue-200 rounded-md">
-												<p class="text-xs text-blue-800 font-medium">
-													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 14, class: 'mr-1 inline'} %}
-													¡Éxito! Tu mascota ha sido encontrada y reclamada
-												</p>
-											</div>
-
-											<div class="flex flex-wrap items-center mt-2 gap-2">
-												<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 uppercase">
-													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 14, class: 'mr-1'} %}
-													{{ item.animalId.status|capitalize }}
-												</span>
+										{# Success Overlay #}
+										<div class="absolute inset-0 bg-green-500/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+											<div class="bg-white rounded-lg p-3 shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-300">
+												<div class="flex items-center">
+													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-2 text-green-600'} %}
+													<p class="text-sm font-medium text-green-800">{{ 'animal.show.status.claimed'|trans }}</p>
+												</div>
 											</div>
 										</div>
 									</div>
 
-									{# Action Buttons - Limited for claimed animals #}
-									<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
-										<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form" data-animal-name="{{ item.animalId.name }}">
-											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
-												{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
-												{{ 'user.actions.archive'|trans }}
-											</button>
-										</form>
-										<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form"
-											data-animal-name="{{ item.animalId.name }}"
-											data-confirm-title="{{ 'user.confirmations.delete_title'|trans }}"
-											data-confirm-message="{{ 'user.confirmations.delete'|trans({'name': item.animalId.name}) }}"
-											data-confirm-text="{{ 'user.actions.delete'|trans }}"
-											data-cancel-text="{{ 'user.actions.cancel'|trans }}">
-											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
-												{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
-												{{ 'user.actions.delete'|trans }}
-											</button>
-										</form>
+									{# Content #}
+									<div class="p-4">
+										<h4 class="font-bold text-green-900 mb-2 hover:text-green-700 transition-colors truncate">
+											{{ item.animalId.name }}
+										</h4>
+
+										{# Animal Details #}
+										<div class="space-y-2 mb-3">
+											<div class="flex items-center text-sm text-green-700">
+												{% set iconClass = item.animalId.animalType|lower == 'perro' ? 'fa-dog' : (item.animalId.animalType|lower == 'gato' ? 'fa-cat' : (item.animalId.animalType|lower == 'ave' ? 'fa-dove' : (item.animalId.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+												<i class="fas {{ iconClass }} mr-2 text-green-400"></i>
+												<span class="truncate">{{ item.animalId.animalType }}</span>
+											</div>
+											{% if item.animalId.gender or item.animalId.age %}
+												<div class="flex items-center text-sm text-green-600">
+													{% if item.animalId.gender %}
+														<span class="mr-3">{{ item.animalId.gender }}</span>
+													{% endif %}
+													{% if item.animalId.age %}
+														<span>{{ item.animalId.age }}</span>
+													{% endif %}
+												</div>
+											{% endif %}
+										</div>
+
+										{# Time Info #}
+										<div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+											{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+											{% if daysAgo < 1 %}
+												<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">{{ 'lost_pets.list.today'|trans }}</span>
+											{% elseif daysAgo < 2 %}
+												<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">{{ 'lost_pets.list.yesterday'|trans }}</span>
+											{% elseif daysAgo < 7 %}
+												<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">{{ 'lost_pets.list.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}</span>
+											{% else %}
+												<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">{{ 'lost_pets.list.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}</span>
+											{% endif %}
+										</div>
+
+										{# Action Buttons #}
+										<div class="flex flex-wrap gap-2">
+											<div class="tooltip-container">
+												<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form" data-animal-name="{{ item.animalId.name }}">
+													<button type="submit" class="p-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+														{% include 'components/Icon.html.twig' with {name: 'archive', size: 16} %}
+													</button>
+												</form>
+												<div class="tooltip tooltip-orange">{{ 'user.actions.archive'|trans }}</div>
+											</div>
+											<div class="tooltip-container">
+												<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.delete_title'|trans }}" data-confirm-message="{{ 'user.confirmations.delete'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.delete'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+													<button type="submit" class="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+														{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16} %}
+													</button>
+												</form>
+												<div class="tooltip tooltip-red">{{ 'user.actions.delete'|trans }}</div>
+											</div>
+										</div>
 									</div>
-								</div>
-							</article>
-						{% endif %}
-					{% endfor %}
+								</article>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
 			</div>
 		{% endif %}
@@ -238,18 +325,20 @@
 						<div class="flex items-center justify-between">
 							<h4 class="text-sm font-medium text-purple-900 flex items-center">
 								{% include 'components/Icon.html.twig' with {name: 'shield', size: 16, class: 'mr-2'} %}
-								{{ 'user.sections.under_protection_lost'|trans }} ({{ lostPets|filter(item => item.animalId.status == 'UNDER_PROTECTION')|length }})
+								{{ 'user.sections.under_protection_lost'|trans }}
+								({{ lostPets|filter(item => item.animalId.status == 'UNDER_PROTECTION')|length }})
 							</h4>
 							{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 16, class: 'transform transition-transform', id: 'under-protection-chevron'} %}
 						</div>
 					</button>
-					<div id="under-protection-section" class="hidden divide-y divide-purple-200 bg-purple-50">
-						{% for item in lostPets %}
-							{% if item.animalId.status == 'UNDER_PROTECTION' %}
-								<article class="p-4 sm:p-6 bg-purple-50">
-									<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-										{# Animal Data #}
-										<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+					<div id="under-protection-section" class="hidden p-4 sm:p-6 bg-gradient-to-br from-purple-50 to-indigo-50">
+						<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+							{% for item in lostPets %}
+								{% if item.animalId.status == 'UNDER_PROTECTION' %}
+									<article
+										class="bg-white border border-purple-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden group cursor-pointer" onclick="navigateToAnimal('{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}', event)">
+										{# Header with photo and status #}
+										<div class="relative overflow-hidden">
 											{% set primaryPhoto = null %}
 											{% if item.animalId.animalPhotos is not empty %}
 												{% for photo in item.animalId.animalPhotos %}
@@ -259,76 +348,107 @@
 												{% endfor %}
 											{% endif %}
 
-											<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0">
+											<img
+											src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-full h-48 object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-300">
 
-											<div class="flex-1 min-w-0">
-												<h4 class="text-base sm:text-lg font-semibold text-purple-900">{{ item.animalId.name }}</h4>
-												<p class="text-xs sm:text-sm text-purple-700">
-													{{ item.animalId.animalType }}
-													{{ item.animalId.gender|default("") }}
-													{{ item.animalId.age|default("") }}
-												</p>
-												<p class="text-xs sm:text-sm text-purple-600">
-													{{ 'user.dates.published'|trans }}
-													{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
-													{% if daysAgo < 1 %}
-														{{ 'user.dates.today'|trans }}
-													{% elseif daysAgo < 2 %}
-														{{ 'user.dates.yesterday'|trans }}
-													{% elseif daysAgo < 7 %}
-														{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
-													{% else %}
-														{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
-													{% endif %}
-												</p>
+											{# Protection Badge #}
+											<div class="absolute top-3 right-3">
+												<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-purple-500 text-white shadow-lg">
+													{% include 'components/Icon.html.twig' with {name: 'shield', size: 12, class: 'mr-1'} %}
+													{{ ('animal.show.status.' ~ item.animalId.status|lower)|trans }}
+												</span>
+											</div>
 
-												<div class="mt-2 p-2 bg-purple-100 border border-purple-200 rounded-md">
-													<p class="text-xs text-purple-800 font-medium">
-														{% include 'components/Icon.html.twig' with {name: 'shield', size: 14, class: 'mr-1 inline'} %}
-														{{ 'user.sections.under_protection_message_lost'|trans }}
-													</p>
-												</div>
-
-												<div class="flex flex-wrap items-center mt-2 gap-2">
-													<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 uppercase">
-														{% include 'components/Icon.html.twig' with {name: 'shield', size: 14, class: 'mr-1'} %}
-														{{ item.animalId.status|capitalize }}
-													</span>
+											{# Protection Overlay #}
+											<div class="absolute inset-0 bg-purple-500/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+												<div class="bg-white rounded-lg p-3 shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-300">
+													<div class="flex items-center">
+														{% include 'components/Icon.html.twig' with {name: 'shield', size: 16, class: 'mr-2 text-purple-600'} %}
+														<p class="text-sm font-medium text-purple-800">{{ 'user.actions.under_protection'|trans }}</p>
+													</div>
 												</div>
 											</div>
 										</div>
 
-										{# Action Buttons - Limited for under protection animals #}
-										<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
-											<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline mark-found-form" data-animal-name="{{ item.animalId.name }}">
-												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
-													{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16, class: 'mr-1'} %}
-													{{ 'user.actions.found'|trans }}
-												</button>
-											</form>
-											<form method="POST" action="{{ path('app_animal_remove_under_protection', {'id': item.animalId.id}) }}" class="inline remove-under-protection-form" data-animal-name="{{ item.animalId.name }}">
-												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-secondary bg-purple-200 text-purple-900 hover:bg-purple-300">
-													{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
-													{{ 'user.actions.remove_under_protection'|trans }}
-												</button>
-											</form>
-											<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form" data-animal-name="{{ item.animalId.name }}">
-												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-warning">
-													{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-1'} %}
-													{{ 'user.actions.archive'|trans }}
-												</button>
-											</form>
-											<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form" data-animal-name="{{ item.animalId.name }}">
-												<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
-													{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
-													{{ 'user.actions.delete'|trans }}
-												</button>
-											</form>
+										{# Content #}
+										<div class="p-4">
+											<h4 class="font-bold text-purple-900 mb-2 hover:text-purple-700 transition-colors truncate">
+												{{ item.animalId.name }}
+											</h4>
+
+											{# Animal Details #}
+											<div class="space-y-2 mb-3">
+												<div class="flex items-center text-sm text-purple-700">
+													{% set iconClass = item.animalId.animalType|lower == 'perro' ? 'fa-dog' : (item.animalId.animalType|lower == 'gato' ? 'fa-cat' : (item.animalId.animalType|lower == 'ave' ? 'fa-dove' : (item.animalId.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+													<i class="fas {{ iconClass }} mr-2 text-purple-400"></i>
+													<span class="truncate">{{ item.animalId.animalType }}</span>
+												</div>
+												{% if item.animalId.gender or item.animalId.age %}
+													<div class="flex items-center text-sm text-purple-600">
+														{% if item.animalId.gender %}
+															<span class="mr-3">{{ item.animalId.gender }}</span>
+														{% endif %}
+														{% if item.animalId.age %}
+															<span>{{ item.animalId.age }}</span>
+														{% endif %}
+													</div>
+												{% endif %}
+											</div>
+
+											{# Time Info #}
+											<div class="flex items-center justify-between text-xs text-gray-500 mb-3">
+												{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+												{% if daysAgo < 1 %}
+													<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">{{ 'lost_pets.list.today'|trans }}</span>
+												{% elseif daysAgo < 2 %}
+													<span class="px-2 py-1 bg-green-100 text-green-800 rounded-full font-medium">{{ 'lost_pets.list.yesterday'|trans }}</span>
+												{% elseif daysAgo < 7 %}
+													<span class="px-2 py-1 bg-orange-100 text-orange-800 rounded-full font-medium">{{ 'lost_pets.list.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}</span>
+												{% else %}
+													<span class="px-2 py-1 bg-red-100 text-red-800 rounded-full font-medium">{{ 'lost_pets.list.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}</span>
+												{% endif %}
+											</div>
+
+											{# Action Buttons #}
+											<div class="flex flex-wrap gap-2">
+												<div class="tooltip-container">
+													<form method="POST" action="{{ path('app_animal_mark_as_found', {'id': item.animalId.id}) }}" class="inline mark-found-form" data-animal-name="{{ item.animalId.name }}">
+														<button type="submit" class="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+															{% include 'components/Icon.html.twig' with {name: 'check-circle', size: 16} %}
+														</button>
+													</form>
+													<div class="tooltip tooltip-green">{{ 'user.actions.mark_as_found'|trans }}</div>
+												</div>
+												<div class="tooltip-container">
+													<form method="POST" action="{{ path('app_animal_remove_under_protection', {'id': item.animalId.id}) }}" class="inline remove-under-protection-form" data-animal-name="{{ item.animalId.name }}">
+														<button type="submit" class="p-2 bg-purple-100 text-purple-700 rounded-lg hover:bg-purple-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+															{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16} %}
+														</button>
+													</form>
+													<div class="tooltip tooltip-purple">{{ 'user.actions.remove_under_protection'|trans }}</div>
+												</div>
+												<div class="tooltip-container">
+													<form method="POST" action="{{ path('app_animal_archive', {'id': item.animalId.id}) }}" class="inline archive-form" data-animal-name="{{ item.animalId.name }}">
+														<button type="submit" class="p-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+															{% include 'components/Icon.html.twig' with {name: 'archive', size: 16} %}
+														</button>
+													</form>
+													<div class="tooltip tooltip-orange">{{ 'user.actions.archive'|trans }}</div>
+												</div>
+												<div class="tooltip-container">
+													<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form" data-animal-name="{{ item.animalId.name }}">
+														<button type="submit" class="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+															{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16} %}
+														</button>
+													</form>
+													<div class="tooltip tooltip-red">{{ 'user.actions.delete'|trans }}</div>
+												</div>
+											</div>
 										</div>
-									</div>
-								</article>
-							{% endif %}
-						{% endfor %}
+									</article>
+								{% endif %}
+							{% endfor %}
+						</div>
 					</div>
 				</div>
 			{% endif %}
@@ -353,13 +473,14 @@
 						{% include 'components/Icon.html.twig' with {name: 'chevron-down', size: 16, class: 'transform transition-transform', id: 'archived-chevron'} %}
 					</div>
 				</button>
-				<div id="archived-section" class="hidden divide-y divide-gray-200 bg-gray-50">
-					{% for item in lostPets %}
-						{% if item.animalId.status == 'ARCHIVED' %}
-							<article class="p-4 sm:p-6 bg-gray-50 opacity-75">
-								<div class="flex flex-col lg:flex-row lg:items-start lg:justify-between space-y-4 lg:space-y-0">
-									{# Animal Data #}
-									<div class="flex items-start space-x-3 sm:space-x-4 cursor-pointer" onclick="window.location.href='{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}'">
+				<div id="archived-section" class="hidden p-4 sm:p-6 bg-gradient-to-br from-gray-50 to-slate-50">
+					<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+						{% for item in lostPets %}
+							{% if item.animalId.status == 'ARCHIVED' %}
+								<article
+									class="bg-white border border-gray-200 rounded-lg shadow-sm hover:shadow-lg transition-all duration-200 overflow-hidden opacity-75 group cursor-pointer" onclick="navigateToAnimal('{{ path('app_animal_show_slug', {'id': item.animalId.id, 'slug': item.animalId.generateSlug()}) }}', event)">
+									{# Header with photo and status #}
+									<div class="relative overflow-hidden">
 										{% set primaryPhoto = null %}
 										{% if item.animalId.animalPhotos is not empty %}
 											{% for photo in item.animalId.animalPhotos %}
@@ -369,67 +490,91 @@
 											{% endfor %}
 										{% endif %}
 
-										<img src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-lg object-cover flex-shrink-0 grayscale">
+										<img
+										src="{% if primaryPhoto %}{{ path('app_image_animal', {'id': primaryPhoto.id}) }}{% else %}/path/to/default/image.jpg{% endif %}" alt="Foto de {{ item.animalId.name }}" class="w-full h-48 object-cover group-hover:scale-105 group-hover:blur-sm transition-all duration-300 grayscale">
 
-										<div class="flex-1 min-w-0">
-											<h4 class="text-base sm:text-lg font-semibold text-gray-600">{{ item.animalId.name }}</h4>
-											<p class="text-xs sm:text-sm text-gray-500">
-												{{ item.animalId.animalType }}
-												{{ item.animalId.gender|default("") }}
-												{{ item.animalId.age|default("") }}
-											</p>
-											<p class="text-xs sm:text-sm text-gray-400">
-												{{ 'user.dates.published'|trans }}
-												{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
-												{% if daysAgo < 1 %}
-													{{ 'user.dates.today'|trans }}
-												{% elseif daysAgo < 2 %}
-													{{ 'user.dates.yesterday'|trans }}
-												{% elseif daysAgo < 7 %}
-													{{ 'user.dates.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}
-												{% else %}
-													{{ 'user.dates.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}
-												{% endif %}
-											</p>
+										{# Archive Badge #}
+										<div class="absolute top-3 right-3">
+											<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-semibold bg-gray-500 text-white shadow-lg">
+												{% include 'components/Icon.html.twig' with {name: 'archive', size: 12, class: 'mr-1'} %}
+												{{ ('animal.show.status.' ~ item.animalId.status|lower)|trans }}
+											</span>
+										</div>
 
-											<div class="flex flex-wrap items-center mt-2 gap-2">
-												<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800 uppercase">
-													{% include 'components/Icon.html.twig' with {name: 'archive', size: 14, class: 'mr-1'} %}
-													{{ item.animalId.status|capitalize }}
-												</span>
+										{# Archive Overlay #}
+										<div class="absolute inset-0 bg-gray-500/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+											<div class="bg-white rounded-lg p-3 shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-300">
+												<div class="flex items-center">
+													{% include 'components/Icon.html.twig' with {name: 'archive', size: 16, class: 'mr-2 text-gray-500'} %}
+													<p class="text-sm font-medium text-gray-600">{{ 'animal.show.status.filled'|trans }}</p>
+												</div>
 											</div>
 										</div>
 									</div>
 
-									{# Action Buttons - Limited for archived animals #}
-									<div class="flex flex-wrap gap-2 lg:flex-nowrap lg:items-center lg:space-x-2">
-										<form method="POST" action="{{ path('app_animal_restore', {'id': item.animalId.id}) }}" class="inline restore-form"
-											data-animal-name="{{ item.animalId.name }}"
-											data-confirm-title="{{ 'user.confirmations.restore_title'|trans }}"
-											data-confirm-message="{{ 'user.confirmations.restore'|trans({'name': item.animalId.name}) }}"
-											data-confirm-text="{{ 'user.actions.restore'|trans }}"
-											data-cancel-text="{{ 'user.actions.cancel'|trans }}">
-											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-success">
-												{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16, class: 'mr-1'} %}
-												{{ 'user.actions.restore'|trans }}
-											</button>
-										</form>
-										<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form"
-											data-animal-name="{{ item.animalId.name }}"
-											data-confirm-title="{{ 'user.confirmations.delete_title'|trans }}"
-											data-confirm-message="{{ 'user.confirmations.delete'|trans({'name': item.animalId.name}) }}"
-											data-confirm-text="{{ 'user.actions.delete'|trans }}"
-											data-cancel-text="{{ 'user.actions.cancel'|trans }}">
-											<button type="submit" class="flex items-center text-xs sm:text-sm rounded-md btn btn-danger">
-												{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16, class: 'mr-1'} %}
-												{{ 'user.actions.delete'|trans }}
-											</button>
-										</form>
+									{# Content #}
+									<div class="p-4">
+										<h4 class="font-bold text-gray-600 mb-2 hover:text-gray-800 transition-colors truncate">
+											{{ item.animalId.name }}
+										</h4>
+
+										{# Animal Details #}
+										<div class="space-y-2 mb-3">
+											<div class="flex items-center text-sm text-gray-500">
+												{% set iconClass = item.animalId.animalType|lower == 'perro' ? 'fa-dog' : (item.animalId.animalType|lower == 'gato' ? 'fa-cat' : (item.animalId.animalType|lower == 'ave' ? 'fa-dove' : (item.animalId.animalType|lower == 'conejo' ? 'fa-feather' : 'fa-paw'))) %}
+												<i class="fas {{ iconClass }} mr-2 text-gray-400"></i>
+												<span class="truncate">{{ item.animalId.animalType }}</span>
+											</div>
+											{% if item.animalId.gender or item.animalId.age %}
+												<div class="flex items-center text-sm text-gray-400">
+													{% if item.animalId.gender %}
+														<span class="mr-3">{{ item.animalId.gender }}</span>
+													{% endif %}
+													{% if item.animalId.age %}
+														<span>{{ item.animalId.age }}</span>
+													{% endif %}
+												</div>
+											{% endif %}
+										</div>
+
+										{# Time Info #}
+										<div class="flex items-center justify-between text-xs text-gray-400 mb-3">
+											{% set daysAgo = (date()|date('U') - item.createdAt|date('U')) / 86400 %}
+											{% if daysAgo < 1 %}
+												<span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full font-medium">{{ 'lost_pets.list.today'|trans }}</span>
+											{% elseif daysAgo < 2 %}
+												<span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full font-medium">{{ 'lost_pets.list.yesterday'|trans }}</span>
+											{% elseif daysAgo < 7 %}
+												<span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full font-medium">{{ 'lost_pets.list.days_ago'|trans({'%days%': daysAgo|round(0, 'floor')}) }}</span>
+											{% else %}
+												<span class="px-2 py-1 bg-gray-100 text-gray-600 rounded-full font-medium">{{ 'lost_pets.list.weeks_ago'|trans({'%weeks%': (daysAgo / 7)|round(0, 'floor')}) }}</span>
+											{% endif %}
+										</div>
+
+										{# Action Buttons #}
+										<div class="flex flex-wrap gap-2">
+											<div class="tooltip-container">
+												<form method="POST" action="{{ path('app_animal_restore', {'id': item.animalId.id}) }}" class="inline restore-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.restore_title'|trans }}" data-confirm-message="{{ 'user.confirmations.restore'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.restore'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+													<button type="submit" class="p-2 bg-green-100 text-green-700 rounded-lg hover:bg-green-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+														{% include 'components/Icon.html.twig' with {name: 'refresh-cw', size: 16} %}
+													</button>
+												</form>
+												<div class="tooltip tooltip-green">{{ 'user.actions.restore'|trans }}</div>
+											</div>
+											<div class="tooltip-container">
+												<form method="POST" action="{{ path('app_animal_delete', {'id': item.animalId.id}) }}" class="inline delete-form" data-animal-name="{{ item.animalId.name }}" data-confirm-title="{{ 'user.confirmations.delete_title'|trans }}" data-confirm-message="{{ 'user.confirmations.delete'|trans({'name': item.animalId.name}) }}" data-confirm-text="{{ 'user.actions.delete'|trans }}" data-cancel-text="{{ 'user.actions.cancel'|trans }}">
+													<button type="submit" class="p-2 bg-red-100 text-red-700 rounded-lg hover:bg-red-200 hover:shadow-md hover:scale-105 transition-all duration-200 cursor-pointer">
+														{% include 'components/Icon.html.twig' with {name: 'trash-2', size: 16} %}
+													</button>
+												</form>
+												<div class="tooltip tooltip-red">{{ 'user.actions.delete'|trans }}</div>
+											</div>
+										</div>
 									</div>
-								</div>
-							</article>
-						{% endif %}
-					{% endfor %}
+								</article>
+							{% endif %}
+						{% endfor %}
+					</div>
 				</div>
 			</div>
 		{% endif %}
@@ -437,156 +582,232 @@
 
 	<script>
 		// Verificar si ya está inicializado para evitar redeclaraciones
-		if (typeof window.confirmModalInitialized === 'undefined') {
-			window.confirmModalInitialized = true;
+if (typeof window.confirmModalInitialized === 'undefined') {
+window.confirmModalInitialized = true;
 
-			// Event listeners para formularios
-			document.addEventListener('DOMContentLoaded', function() {
-				// Formularios de eliminar
-				document.querySelectorAll('.delete-form').forEach(form => {
-					form.addEventListener('submit', async function(e) {
-						e.preventDefault();
-						const animalName = this.dataset.animalName;
-						const confirmed = await window.ConfirmModalHandler.confirm({
-							title: this.dataset.confirmTitle,
-							message: this.dataset.confirmMessage,
-							confirmText: this.dataset.confirmText,
-							cancelText: this.dataset.cancelText
-						});
-						if (confirmed) {
-							this.submit();
-						}
-					});
-				});
+// Event listeners para formularios
+document.addEventListener('DOMContentLoaded', function () { // Formularios de eliminar
+document.querySelectorAll('.delete-form').forEach(form => {
+form.addEventListener('submit', async function (e) {
+e.preventDefault();
+const animalName = this.dataset.animalName;
+const confirmed = await window.ConfirmModalHandler.confirm({title: this.dataset.confirmTitle, message: this.dataset.confirmMessage, confirmText: this.dataset.confirmText, cancelText: this.dataset.cancelText});
+if (confirmed) {
+this.submit();
+}
+});
+});
 
-				// Formularios de restaurar
-				document.querySelectorAll('.restore-form').forEach(form => {
-					form.addEventListener('submit', async function(e) {
-						e.preventDefault();
-						const animalName = this.dataset.animalName;
-						const confirmed = await window.ConfirmModalHandler.confirm({
-							title: this.dataset.confirmTitle,
-							message: this.dataset.confirmMessage,
-							confirmText: this.dataset.confirmText,
-							cancelText: this.dataset.cancelText
-						});
-						if (confirmed) {
-							this.submit();
-						}
-					});
-				});
+// Formularios de restaurar
+document.querySelectorAll('.restore-form').forEach(form => {
+form.addEventListener('submit', async function (e) {
+e.preventDefault();
+const animalName = this.dataset.animalName;
+const confirmed = await window.ConfirmModalHandler.confirm({title: this.dataset.confirmTitle, message: this.dataset.confirmMessage, confirmText: this.dataset.confirmText, cancelText: this.dataset.cancelText});
+if (confirmed) {
+this.submit();
+}
+});
+});
 
-				// Formularios de archivar
-				document.querySelectorAll('.archive-form').forEach(form => {
-					form.addEventListener('submit', async function(e) {
-						e.preventDefault();
-						const animalName = this.dataset.animalName;
-						const confirmed = await window.ConfirmModalHandler.confirm({
-							title: this.dataset.confirmTitle,
-							message: this.dataset.confirmMessage,
-							confirmText: this.dataset.confirmText,
-							cancelText: this.dataset.cancelText
-						});
-						if (confirmed) {
-							this.submit();
-						}
-					});
-				});
+// Formularios de archivar
+document.querySelectorAll('.archive-form').forEach(form => {
+form.addEventListener('submit', async function (e) {
+e.preventDefault();
+const animalName = this.dataset.animalName;
+const confirmed = await window.ConfirmModalHandler.confirm({title: this.dataset.confirmTitle, message: this.dataset.confirmMessage, confirmText: this.dataset.confirmText, cancelText: this.dataset.cancelText});
+if (confirmed) {
+this.submit();
+}
+});
+});
 
-				// Formularios de marcar como encontrado
-				document.querySelectorAll('.mark-found-form').forEach(form => {
-					form.addEventListener('submit', async function(e) {
-						e.preventDefault();
-						const animalName = this.dataset.animalName;
-						const confirmed = await window.ConfirmModalHandler.confirm({
-							title: this.dataset.confirmTitle,
-							message: this.dataset.confirmMessage,
-							confirmText: this.dataset.confirmText,
-							cancelText: this.dataset.cancelText
-						});
-						if (confirmed) {
-							this.submit();
-						}
-					});
-				});
+// Formularios de marcar como encontrado
+document.querySelectorAll('.mark-found-form').forEach(form => {
+form.addEventListener('submit', async function (e) {
+e.preventDefault();
+const animalName = this.dataset.animalName;
+const confirmed = await window.ConfirmModalHandler.confirm({title: this.dataset.confirmTitle, message: this.dataset.confirmMessage, confirmText: this.dataset.confirmText, cancelText: this.dataset.cancelText});
+if (confirmed) {
+this.submit();
+}
+});
+});
 
-				// Formularios de marcar bajo custodia
-				document.querySelectorAll('.mark-under-protection-form').forEach(form => {
-					form.addEventListener('submit', async function(e) {
-						e.preventDefault();
-						const animalName = this.dataset.animalName;
-						const baseMessage = '{{ 'user.confirmations.mark_under_protection_base'|trans }}';
-						const message = baseMessage.replace('{name}', animalName);
-						const confirmed = await window.ConfirmModalHandler.confirm({
-							title: '{{ 'user.confirmations.mark_under_protection_title'|trans }}',
-							message: message,
-							confirmText: '{{ 'user.actions.under_protection'|trans }}',
-							cancelText: '{{ 'user.actions.cancel'|trans }}'
-						});
-						if (confirmed) {
-							this.submit();
-						}
-					});
-				});
+// Formularios de marcar bajo custodia
+document.querySelectorAll('.mark-under-protection-form').forEach(form => {
+form.addEventListener('submit', async function (e) {
+e.preventDefault();
+const animalName = this.dataset.animalName;
+const baseMessage = '{{ 'user.confirmations.mark_under_protection_base'|trans }}';
+const message = baseMessage.replace('{name}', animalName);
+const confirmed = await window.ConfirmModalHandler.confirm({title: '{{ 'user.confirmations.mark_under_protection_title'|trans }}', message: message, confirmText: '{{ 'user.actions.under_protection'|trans }}', cancelText: '{{ 'user.actions.cancel'|trans }}'});
+if (confirmed) {
+this.submit();
+}
+});
+});
 
-				// Formularios de quitar bajo custodia
-				document.querySelectorAll('.remove-under-protection-form').forEach(form => {
-					form.addEventListener('submit', async function(e) {
-						e.preventDefault();
-						const animalName = this.dataset.animalName;
-						const baseMessage = '{{ 'user.confirmations.remove_under_protection_base'|trans }}';
-						const message = baseMessage.replace('{name}', animalName);
-						const confirmed = await window.ConfirmModalHandler.confirm({
-							title: '{{ 'user.confirmations.remove_under_protection_title'|trans }}',
-							message: message,
-							confirmText: '{{ 'user.actions.remove_under_protection'|trans }}',
-							cancelText: '{{ 'user.actions.cancel'|trans }}'
-						});
-						if (confirmed) {
-							this.submit();
-						}
-					});
-				});
-			});
+// Formularios de quitar bajo custodia
+document.querySelectorAll('.remove-under-protection-form').forEach(form => {
+form.addEventListener('submit', async function (e) {
+e.preventDefault();
+const animalName = this.dataset.animalName;
+const baseMessage = '{{ 'user.confirmations.remove_under_protection_base'|trans }}';
+const message = baseMessage.replace('{name}', animalName);
+const confirmed = await window.ConfirmModalHandler.confirm({title: '{{ 'user.confirmations.remove_under_protection_title'|trans }}', message: message, confirmText: '{{ 'user.actions.remove_under_protection'|trans }}', cancelText: '{{ 'user.actions.cancel'|trans }}'});
+if (confirmed) {
+this.submit();
+}
+});
+});
+});
 
-			function toggleArchivedSection() {
-				const section = document.getElementById('archived-section');
-				const chevron = document.getElementById('archived-chevron');
+function toggleArchivedSection() {
+const section = document.getElementById('archived-section');
+const chevron = document.getElementById('archived-chevron');
 
-				if (section.classList.contains('hidden')) {
-					section.classList.remove('hidden');
-					chevron.classList.add('rotate-180');
-				} else {
-					section.classList.add('hidden');
-					chevron.classList.remove('rotate-180');
-				}
-			}
+if (section.classList.contains('hidden')) {
+section.classList.remove('hidden');
+chevron.classList.add('rotate-180');
+} else {
+section.classList.add('hidden');
+chevron.classList.remove('rotate-180');
+}
+}
 
-			function toggleClaimedSection() {
-				const section = document.getElementById('claimed-section');
-				const chevron = document.getElementById('claimed-chevron');
+function toggleClaimedSection() {
+const section = document.getElementById('claimed-section');
+const chevron = document.getElementById('claimed-chevron');
 
-				if (section.classList.contains('hidden')) {
-					section.classList.remove('hidden');
-					chevron.classList.add('rotate-180');
-				} else {
-					section.classList.add('hidden');
-					chevron.classList.remove('rotate-180');
-				}
-			}
+if (section.classList.contains('hidden')) {
+section.classList.remove('hidden');
+chevron.classList.add('rotate-180');
+} else {
+section.classList.add('hidden');
+chevron.classList.remove('rotate-180');
+}
+}
 
-			function toggleUnderProtectionSection() {
-				const section = document.getElementById('under-protection-section');
-				const chevron = document.getElementById('under-protection-chevron');
+function toggleUnderProtectionSection() {
+const section = document.getElementById('under-protection-section');
+const chevron = document.getElementById('under-protection-chevron');
 
-				if (section.classList.contains('hidden')) {
-					section.classList.remove('hidden');
-					chevron.classList.add('rotate-180');
-				} else {
-					section.classList.add('hidden');
-					chevron.classList.remove('rotate-180');
-				}
+if (section.classList.contains('hidden')) {
+section.classList.remove('hidden');
+chevron.classList.add('rotate-180');
+} else {
+section.classList.add('hidden');
+chevron.classList.remove('rotate-180');
+}
+}
+
+// Función para navegar al animal cuando se hace click en la tarjeta
+function navigateToAnimal(url, event) { // Prevenir la navegación si se hizo click en un botón o enlace
+if (event.target.closest('button') || event.target.closest('a') || event.target.closest('form')) {
+return;
+}
+// Navegar a la página del animal
+window.location.href = url;
+}
+}
+	</script>
+
+	<style>
+		/* Estilos personalizados para tooltips */
+		.tooltip-container {
+			position: relative;
+			display: inline-block;
+		}
+
+		.tooltip-container a {
+			display: block;
+			text-decoration: none;
+			position: relative;
+			z-index: 1;
+		}
+
+		.tooltip-container form {
+			display: inline-block;
+		}
+
+		.tooltip {
+			position: absolute;
+			bottom: 125%;
+			left: 50%;
+			transform: translateX(-50%);
+			background-color: #1f2937;
+			color: white;
+			padding: 8px 12px;
+			border-radius: 8px;
+			font-size: 12px;
+			font-weight: 500;
+			white-space: nowrap;
+			opacity: 0;
+			visibility: hidden;
+			transition: all 0.2s ease-in-out;
+			z-index: 1000;
+			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+		}
+
+		.tooltip::after {
+			content: '';
+			position: absolute;
+			top: 100%;
+			left: 50%;
+			margin-left: -5px;
+			border-width: 5px;
+			border-style: solid;
+			border-color: #1f2937 transparent transparent transparent;
+		}
+
+		.tooltip-container:hover .tooltip {
+			opacity: 1;
+			visibility: visible;
+			transform: translateX(-50%) translateY(-4px);
+		}
+
+		/* Tooltips con colores temáticos */
+		.tooltip-blue {
+			background-color: #3b82f6;
+		}
+		.tooltip-blue::after {
+			border-color: #3b82f6 transparent transparent transparent;
+		}
+
+		.tooltip-green {
+			background-color: #10b981;
+		}
+		.tooltip-green::after {
+			border-color: #10b981 transparent transparent transparent;
+		}
+
+		.tooltip-purple {
+			background-color: #8b5cf6;
+		}
+		.tooltip-purple::after {
+			border-color: #8b5cf6 transparent transparent transparent;
+		}
+
+		.tooltip-orange {
+			background-color: #f59e0b;
+		}
+		.tooltip-orange::after {
+			border-color: #f59e0b transparent transparent transparent;
+		}
+
+		.tooltip-red {
+			background-color: #ef4444;
+		}
+		.tooltip-red::after {
+			border-color: #ef4444 transparent transparent transparent;
+		}
+
+		/* Ocultar botones móviles en desktop */
+		@media(min-width: 1024px) {
+			.tooltip-container.lg\:hidden {
+				display: none !important;
 			}
 		}
-	</script>
+	</style>
 </div></section>{% endblock %}
