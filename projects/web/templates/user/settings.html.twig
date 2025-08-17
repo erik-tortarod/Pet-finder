@@ -1,6 +1,8 @@
 {% extends 'user/base.html.twig' %}
 
-{% block title %}{{ 'user.settings.title'|trans }}{% endblock %}
+{% block title %}
+	{{ 'user.settings.title'|trans }}
+{% endblock %}
 
 {% block content %}
 	<div
@@ -11,79 +13,193 @@
 				{% include 'components/Icon.html.twig' with {name: 'user', size: 16, class: 'mr-2'} %}
 				{{ 'user.settings.profile_info'|trans }}
 			</h3>
-		</div>
 
-		<div class="p-6">
-			{{ form_start(form, {'attr': {'class': 'space-y-4', 'id': 'profile-update-form'}}) }}
-			<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-				<div>
-					{{ form_label(form.firstName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-					{{ form_widget(form.firstName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
-					{% if form.firstName.vars.errors|length > 0 %}
-						<div class="mt-1 text-red-600 text-sm">
-							{% for error in form.firstName.vars.errors %}
-								<div class="flex items-center">
-									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
-									{{ error.message }}
+			<div class="p-6">
+				{{ form_start(form, {'attr': {'class': 'space-y-6', 'id': 'profile-update-form'}}) }}
+
+				{# Personal Information Section #}
+				<div class="space-y-4">
+					<h4 class="text-md font-medium text-gray-800 border-b border-gray-200 pb-2">
+						{{ 'user.settings.personal_info'|trans }}
+					</h4>
+					<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+						<div>
+							{{ form_label(form.firstName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.firstName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+							{% if form.firstName.vars.errors|length > 0 %}
+								<div class="mt-1 text-red-600 text-sm">
+									{% for error in form.firstName.vars.errors %}
+										<div class="flex items-center">
+											{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+											{{ error.message }}
+										</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
+							{% endif %}
 						</div>
-					{% endif %}
-				</div>
-				<div>
-					{{ form_label(form.lastName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-					{{ form_widget(form.lastName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
-					{% if form.lastName.vars.errors|length > 0 %}
-						<div class="mt-1 text-red-600 text-sm">
-							{% for error in form.lastName.vars.errors %}
-								<div class="flex items-center">
-									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
-									{{ error.message }}
+						<div>
+							{{ form_label(form.lastName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.lastName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+							{% if form.lastName.vars.errors|length > 0 %}
+								<div class="mt-1 text-red-600 text-sm">
+									{% for error in form.lastName.vars.errors %}
+										<div class="flex items-center">
+											{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+											{{ error.message }}
+										</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
+							{% endif %}
 						</div>
-					{% endif %}
-				</div>
-				<div>
-					{{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-					{{ form_widget(form.email, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
-					{% if form.email.vars.errors|length > 0 %}
-						<div class="mt-1 text-red-600 text-sm">
-							{% for error in form.email.vars.errors %}
-								<div class="flex items-center">
-									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
-									{{ error.message }}
+						<div>
+							{{ form_label(form.email, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.email, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+							{% if form.email.vars.errors|length > 0 %}
+								<div class="mt-1 text-red-600 text-sm">
+									{% for error in form.email.vars.errors %}
+										<div class="flex items-center">
+											{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+											{{ error.message }}
+										</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
+							{% endif %}
 						</div>
-					{% endif %}
-				</div>
-				<div>
-					{{ form_label(form.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
-					{{ form_widget(form.phone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
-					{% if form.phone.vars.errors|length > 0 %}
-						<div class="mt-1 text-red-600 text-sm">
-							{% for error in form.phone.vars.errors %}
-								<div class="flex items-center">
-									{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
-									{{ error.message }}
+						<div>
+							{{ form_label(form.phone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.phone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+							{% if form.phone.vars.errors|length > 0 %}
+								<div class="mt-1 text-red-600 text-sm">
+									{% for error in form.phone.vars.errors %}
+										<div class="flex items-center">
+											{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+											{{ error.message }}
+										</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
+							{% endif %}
 						</div>
-					{% endif %}
+					</div>
 				</div>
+
+				{# Shelter Information Section - Only for shelters #}
+				{% if user.isShelter %}
+					<div class="space-y-4 pt-6 border-t border-gray-200">
+						<h4 class="text-md font-medium text-gray-800 border-b border-gray-200 pb-2 flex items-center">
+							{% include 'components/Icon.html.twig' with {name: 'shield', size: 16, class: 'mr-2'} %}
+							{{ 'user.settings.shelter_info'|trans }}
+						</h4>
+
+						{# Shelter Name #}
+						<div>
+							{{ form_label(form.shelterName, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.shelterName, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+							{% if form.shelterName.vars.errors|length > 0 %}
+								<div class="mt-1 text-red-600 text-sm">
+									{% for error in form.shelterName.vars.errors %}
+										<div class="flex items-center">
+											{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+											{{ error.message }}
+										</div>
+									{% endfor %}
+								</div>
+							{% endif %}
+						</div>
+
+						{# Shelter Description #}
+						<div>
+							{{ form_label(form.shelterDescription, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+							{{ form_widget(form.shelterDescription, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 resize-none'}}) }}
+							{% if form.shelterDescription.vars.errors|length > 0 %}
+								<div class="mt-1 text-red-600 text-sm">
+									{% for error in form.shelterDescription.vars.errors %}
+										<div class="flex items-center">
+											{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+											{{ error.message }}
+										</div>
+									{% endfor %}
+								</div>
+							{% endif %}
+						</div>
+
+						{# Shelter Contact Information #}
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								{{ form_label(form.shelterAddress, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.shelterAddress, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+								{% if form.shelterAddress.vars.errors|length > 0 %}
+									<div class="mt-1 text-red-600 text-sm">
+										{% for error in form.shelterAddress.vars.errors %}
+											<div class="flex items-center">
+												{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+												{{ error.message }}
+											</div>
+										{% endfor %}
+									</div>
+								{% endif %}
+							</div>
+							<div>
+								{{ form_label(form.shelterPhone, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.shelterPhone, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+								{% if form.shelterPhone.vars.errors|length > 0 %}
+									<div class="mt-1 text-red-600 text-sm">
+										{% for error in form.shelterPhone.vars.errors %}
+											<div class="flex items-center">
+												{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+												{{ error.message }}
+											</div>
+										{% endfor %}
+									</div>
+								{% endif %}
+							</div>
+						</div>
+
+						{# Shelter Online Presence #}
+						<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+							<div>
+								{{ form_label(form.shelterWebsite, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.shelterWebsite, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+								{% if form.shelterWebsite.vars.errors|length > 0 %}
+									<div class="mt-1 text-red-600 text-sm">
+										{% for error in form.shelterWebsite.vars.errors %}
+											<div class="flex items-center">
+												{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+												{{ error.message }}
+											</div>
+										{% endfor %}
+									</div>
+								{% endif %}
+							</div>
+							<div>
+								{{ form_label(form.shelterFacebook, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-2'}}) }}
+								{{ form_widget(form.shelterFacebook, {'attr': {'class': 'block w-full px-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500'}}) }}
+								{% if form.shelterFacebook.vars.errors|length > 0 %}
+									<div class="mt-1 text-red-600 text-sm">
+										{% for error in form.shelterFacebook.vars.errors %}
+											<div class="flex items-center">
+												{% include 'components/Icon.html.twig' with {name: 'exclamation-circle', size: 12, class: 'mr-1'} %}
+												{{ error.message }}
+											</div>
+										{% endfor %}
+									</div>
+								{% endif %}
+							</div>
+						</div>
+					</div>
+				{% endif %}
+
+				{# Save Button #}
+				<div class="flex justify-end pt-6 border-t border-gray-200">
+					<button type="submit" class="btn btn-primary flex items-center" id="save-button">
+						{% include 'components/Icon.html.twig' with {name: 'save', size: 16, class: 'mr-2'} %}
+						<span class="save-text">{{ 'user.settings.save_changes'|trans }}</span>
+						<span class="saving-text hidden">{{ 'user.settings.saving'|trans }}</span>
+					</button>
+				</div>
+				{{ form_end(form) }}
 			</div>
-			<div class="flex justify-end">
-				<button type="submit" class="btn btn-primary flex items-center" id="save-button">
-					{% include 'components/Icon.html.twig' with {name: 'save', size: 16, class: 'mr-2'} %}
-					<span class="save-text">{{ 'user.settings.save_changes'|trans }}</span>
-					<span class="saving-text hidden">{{ 'user.settings.saving'|trans }}</span>
-				</button>
-			</div>
-			{{ form_end(form) }}
 		</div>
 	</div>
-
 
 	<script src="{{ asset('page/user/settings.js') }}"></script>
 {% endblock %}

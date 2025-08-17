@@ -718,6 +718,8 @@ user:
     settings:
         title: "Configuración del Perfil"
         profile_info: "Información del Perfil"
+        personal_info: "Información Personal"
+        shelter_info: "Información de la Protectora"
         save_changes: "Guardar Cambios"
         saving: "Guardando..."
 
@@ -730,6 +732,18 @@ user:
             email_placeholder: "ejemplo@correo.com"
             phone: "Teléfono"
             phone_placeholder: "+34 123 456 789"
+            shelter_name: "Nombre de la Protectora"
+            shelter_name_placeholder: "Ingresa el nombre de tu protectora"
+            shelter_description: "Descripción"
+            shelter_description_placeholder: "Describe brevemente tu protectora y su misión"
+            shelter_address: "Dirección"
+            shelter_address_placeholder: "Dirección física de la protectora"
+            shelter_phone: "Teléfono de la Protectora"
+            shelter_phone_placeholder: "+34 123 456 789"
+            shelter_website: "Sitio Web"
+            shelter_website_placeholder: "https://www.tuprotectora.com"
+            shelter_facebook: "Facebook"
+            shelter_facebook_placeholder: "https://www.facebook.com/tuprotectora"
 
         validation:
             first_name_required: "El nombre es obligatorio"
@@ -746,6 +760,17 @@ user:
             email_already_used: "Este email ya está en uso por otro usuario"
             phone_max_length: "El teléfono no puede tener más de {{ limit }} caracteres"
             phone_invalid: "El teléfono solo puede contener números, espacios, guiones y paréntesis"
+            shelter_name_required: "El nombre de la protectora es obligatorio"
+            shelter_name_min_length: "El nombre de la protectora debe tener al menos {{ limit }} caracteres"
+            shelter_name_max_length: "El nombre de la protectora no puede tener más de {{ limit }} caracteres"
+            shelter_description_max_length: "La descripción no puede tener más de {{ limit }} caracteres"
+            shelter_address_max_length: "La dirección no puede tener más de {{ limit }} caracteres"
+            shelter_phone_max_length: "El teléfono no puede tener más de {{ limit }} caracteres"
+            shelter_phone_invalid: "El teléfono solo puede contener números, espacios, guiones y paréntesis"
+            shelter_website_max_length: "La URL del sitio web no puede tener más de {{ limit }} caracteres"
+            shelter_website_invalid: "La URL del sitio web no es válida"
+            shelter_facebook_max_length: "La URL de Facebook no puede tener más de {{ limit }} caracteres"
+            shelter_facebook_invalid: "La URL de Facebook no es válida"
 
         messages:
             profile_updated: "Perfil actualizado correctamente"

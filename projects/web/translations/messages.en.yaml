@@ -718,6 +718,8 @@ user:
     settings:
         title: "Profile Settings"
         profile_info: "Profile Information"
+        personal_info: "Personal Information"
+        shelter_info: "Shelter Information"
         save_changes: "Save Changes"
         saving: "Saving..."
 
@@ -730,6 +732,18 @@ user:
             email_placeholder: "example@email.com"
             phone: "Phone"
             phone_placeholder: "+1 123 456 7890"
+            shelter_name: "Shelter Name"
+            shelter_name_placeholder: "Enter your shelter name"
+            shelter_description: "Description"
+            shelter_description_placeholder: "Briefly describe your shelter and its mission"
+            shelter_address: "Address"
+            shelter_address_placeholder: "Physical address of the shelter"
+            shelter_phone: "Shelter Phone"
+            shelter_phone_placeholder: "+1 123 456 7890"
+            shelter_website: "Website"
+            shelter_website_placeholder: "https://www.yourshelter.com"
+            shelter_facebook: "Facebook"
+            shelter_facebook_placeholder: "https://www.facebook.com/yourshelter"
 
         validation:
             first_name_required: "First name is required"
@@ -746,6 +760,17 @@ user:
             email_already_used: "This email is already in use by another user"
             phone_max_length: "Phone number cannot be longer than {{ limit }} characters"
             phone_invalid: "Phone number can only contain numbers, spaces, hyphens and parentheses"
+            shelter_name_required: "Shelter name is required"
+            shelter_name_min_length: "Shelter name must be at least {{ limit }} characters long"
+            shelter_name_max_length: "Shelter name cannot be longer than {{ limit }} characters"
+            shelter_description_max_length: "Description cannot be longer than {{ limit }} characters"
+            shelter_address_max_length: "Address cannot be longer than {{ limit }} characters"
+            shelter_phone_max_length: "Phone number cannot be longer than {{ limit }} characters"
+            shelter_phone_invalid: "Phone number can only contain numbers, spaces, hyphens and parentheses"
+            shelter_website_max_length: "Website URL cannot be longer than {{ limit }} characters"
+            shelter_website_invalid: "Website URL is not valid"
+            shelter_facebook_max_length: "Facebook URL cannot be longer than {{ limit }} characters"
+            shelter_facebook_invalid: "Facebook URL is not valid"
 
         messages:
             profile_updated: "Profile updated successfully"
