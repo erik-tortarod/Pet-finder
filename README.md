@@ -28,6 +28,8 @@ make run
 ### OAuth2 & Email Setup
 
 1. **Google OAuth2**: Create OAuth2 credentials in [Google Cloud Console](https://console.cloud.google.com/)
+    - **Authorized redirect URI**: `http://localhost:8000/login/with-google`
+    - **Authorized JavaScript origins**: `http://localhost:8000`
 2. **Email Credentials**: Generate app passwords at [Google App Passwords](https://myaccount.google.com/apppasswords)
 3. **Telegram Bot**: Create a bot with [@BotFather](https://t.me/botfather) and get credentials
     - Send `/newbot` to BotFather
