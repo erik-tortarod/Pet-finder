@@ -116,9 +116,11 @@ lost_pets:
             animal_color: "Main color"
             animal_description: "Detailed description *"
             animal_description_placeholder: "Describe the unique characteristics of your pet: marks, spots, behavior, etc."
-            animal_tags: "Tags"
-            animal_tags_placeholder: "Separate tags with commas (ex: friendly, playful, calm)"
-            animal_tags_help: "Enter tags separated by commas (ex: friendly, playful, calm)"
+            most_used_tags: "Most used tags"
+            most_used_tags_help: "Select the tags that best describe your pet"
+            other_tags: "Other tags"
+            other_tags_placeholder: "Separate tags with commas (ex: friendly, playful, calm)"
+            other_tags_help: "Enter other tags separated by commas (ex: friendly, playful, calm)"
 
         step3:
             title: "Location Information"
@@ -251,9 +253,11 @@ found_pets:
             animal_age_placeholder: "Ex: 3 years, 6 months, puppy"
             animal_description: "Animal description"
             animal_description_placeholder: "Describe the physical characteristics and behavior of the found animal"
-            animal_tags: "Tags"
-            animal_tags_placeholder: "Separate tags with commas (ex: friendly, scared, injured)"
-            animal_tags_help: "Describe the animal's condition and behavior (ex: friendly, scared, injured)"
+            most_used_tags: "Most used tags"
+            most_used_tags_help: "Select the tags that best describe the found animal"
+            other_tags: "Other tags"
+            other_tags_placeholder: "Separate tags with commas (ex: friendly, scared, injured)"
+            other_tags_help: "Describe the animal's condition and behavior (ex: friendly, scared, injured)"
 
         step3:
             title: "Location Information"

@@ -47,6 +47,29 @@ class TagsRepository extends ServiceEntityRepository
         return $tag;
     }
 
+    /**
+     * Get the 10 most used tags
+     */
+    public function findMostUsedTags(int $limit = 10): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->select('t', 'COUNT(at.id) as usage_count')
+            ->leftJoin('App\Entity\AnimalTags', 'at', 'WITH', 'at.tagId = t.id')
+            ->where('t.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->groupBy('t.id')
+            ->orderBy('usage_count', 'DESC')
+            ->addOrderBy('t.name', 'ASC')
+            ->setMaxResults($limit);
+
+        $results = $qb->getQuery()->getResult();
+
+        // Extract just the Tags entities
+        return array_map(function ($result) {
+            return $result[0]; // The Tags entity is at index 0
+        }, $results);
+    }
+
     //    /**
     //     * @return Tags[] Returns an array of Tags objects
     //     */

@@ -116,9 +116,11 @@ lost_pets:
             animal_color: "Color principal"
             animal_description: "Descripción detallada *"
             animal_description_placeholder: "Describe las características únicas de tu mascota: marcas, manchas, comportamiento, etc."
-            animal_tags: "Etiquetas"
-            animal_tags_placeholder: "Separa las etiquetas con comas (ej: amigable, juguetón, tranquilo)"
-            animal_tags_help: "Ingresa las etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)"
+            most_used_tags: "Etiquetas más usadas"
+            most_used_tags_help: "Selecciona las etiquetas que mejor describan a tu mascota"
+            other_tags: "Otras etiquetas"
+            other_tags_placeholder: "Separa las etiquetas con comas (ej: amigable, juguetón, tranquilo)"
+            other_tags_help: "Ingresa otras etiquetas separadas por comas (ej: amigable, juguetón, tranquilo)"
 
         step3:
             title: "Información de Ubicación"
@@ -251,9 +253,11 @@ found_pets:
             animal_age_placeholder: "Ej: 3 años, 6 meses, cachorro"
             animal_description: "Descripción del animal"
             animal_description_placeholder: "Describe las características físicas y comportamiento del animal encontrado"
-            animal_tags: "Etiquetas"
-            animal_tags_placeholder: "Separa las etiquetas con comas (ej: amigable, asustado, herido)"
-            animal_tags_help: "Describe el estado y comportamiento del animal (ej: amigable, asustado, herido)"
+            most_used_tags: "Etiquetas más usadas"
+            most_used_tags_help: "Selecciona las etiquetas que mejor describan al animal encontrado"
+            other_tags: "Otras etiquetas"
+            other_tags_placeholder: "Separa las etiquetas con comas (ej: amigable, asustado, herido)"
+            other_tags_help: "Describe el estado y comportamiento del animal (ej: amigable, asustado, herido)"
 
         step3:
             title: "Información de Ubicación"

@@ -132,7 +132,12 @@ final class FoundPetsController extends AbstractController
             );
         }
 
-        $form = $this->createForm(FoundPetType::class);
+        // Get the 10 most used tags
+        $mostUsedTags = $tagsRepository->findMostUsedTags(10);
+
+        $form = $this->createForm(FoundPetType::class, null, [
+            'most_used_tags' => $mostUsedTags
+        ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -172,7 +177,22 @@ final class FoundPetsController extends AbstractController
 
                 $entityManager->persist($animal);
 
-                // Procesar etiquetas
+                // Procesar etiquetas más usadas
+                $mostUsedTagsSelected = $form->get('mostUsedTags')->getData();
+                if ($mostUsedTagsSelected && is_array($mostUsedTagsSelected)) {
+                    foreach ($mostUsedTagsSelected as $tagId) {
+                        $tag = $tagsRepository->find($tagId);
+                        if ($tag) {
+                            $animalTag = new AnimalTags();
+                            $animalTag->setAnimalId($animal);
+                            $animalTag->setTagId($tag);
+                            $animalTag->setCreatedAt(new \DateTimeImmutable());
+                            $entityManager->persist($animalTag);
+                        }
+                    }
+                }
+
+                // Procesar otras etiquetas
                 $tagsInput = $form->get('animalTags')->getData();
                 if ($tagsInput) {
                     $tagNames = array_map('trim', explode(',', $tagsInput));

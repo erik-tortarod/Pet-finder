@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\LostPets;
+use App\Entity\Tags;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -10,6 +11,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -84,8 +86,19 @@ class LostPetType extends AbstractType
                 'mapped' => false,
                 'required' => false,
             ])
+            ->add('mostUsedTags', ChoiceType::class, [
+                'label' => 'Etiquetas más usadas',
+                'mapped' => false,
+                'required' => false,
+                'multiple' => true,
+                'expanded' => true,
+                'choices' => $this->getMostUsedTagsChoices($options['most_used_tags'] ?? []),
+                'attr' => [
+                    'class' => 'most-used-tags-checkboxes'
+                ],
+            ])
             ->add('animalTags', TextType::class, [
-                'label' => 'Etiquetas (separadas por comas)',
+                'label' => 'Otras etiquetas (separadas por comas)',
                 'mapped' => false,
                 'required' => false,
                 'attr' => [
@@ -153,10 +166,20 @@ class LostPetType extends AbstractType
         ;
     }
 
+    private function getMostUsedTagsChoices(array $mostUsedTags): array
+    {
+        $choices = [];
+        foreach ($mostUsedTags as $tag) {
+            $choices[$tag->getName()] = $tag->getId();
+        }
+        return $choices;
+    }
+
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
             'data_class' => LostPets::class,
+            'most_used_tags' => [],
         ]);
     }
 }

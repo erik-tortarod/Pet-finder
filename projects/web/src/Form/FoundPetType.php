@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\FoundAnimals;
+use App\Entity\Tags;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -84,8 +85,19 @@ class FoundPetType extends AbstractType
             'mapped' => false,
             'required' => false,
          ])
+         ->add('mostUsedTags', ChoiceType::class, [
+            'label' => 'Etiquetas más usadas',
+            'mapped' => false,
+            'required' => false,
+            'multiple' => true,
+            'expanded' => true,
+            'choices' => $this->getMostUsedTagsChoices($options['most_used_tags'] ?? []),
+            'attr' => [
+               'class' => 'most-used-tags-checkboxes'
+            ],
+         ])
          ->add('animalTags', TextType::class, [
-            'label' => 'Etiquetas (separadas por comas)',
+            'label' => 'Otras etiquetas (separadas por comas)',
             'mapped' => false,
             'required' => false,
             'attr' => [
@@ -152,10 +164,20 @@ class FoundPetType extends AbstractType
       ;
    }
 
+   private function getMostUsedTagsChoices(array $mostUsedTags): array
+   {
+      $choices = [];
+      foreach ($mostUsedTags as $tag) {
+         $choices[$tag->getName()] = $tag->getId();
+      }
+      return $choices;
+   }
+
    public function configureOptions(OptionsResolver $resolver): void
    {
       $resolver->setDefaults([
          'data_class' => FoundAnimals::class,
+         'most_used_tags' => [],
       ]);
    }
 }
