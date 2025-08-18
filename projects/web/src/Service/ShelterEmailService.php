@@ -176,7 +176,7 @@ class ShelterEmailService
                     </ul>
 
                     <div style='text-align: center;'>
-                        <a href='mailto:soporte@mypetfinder.site' class='button'>Contactar Soporte</a>
+                        <a href='mailto:mypetfinder.website@gmail.com' class='button'>Contactar Soporte</a>
                     </div>
 
                     <p><strong>Información de tu solicitud:</strong></p>

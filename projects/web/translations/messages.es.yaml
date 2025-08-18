@@ -27,6 +27,8 @@ common:
 
 footer:
     tagline: "Conectando familias con sus mascotas perdidas desde 2025"
+    contact: "Contacto"
+    email_label: "Email"
 
 lost_pets:
     title: "Mascotas Perdidas"

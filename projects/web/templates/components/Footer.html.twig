@@ -3,11 +3,17 @@
 		<div class="text-center">
 			<h3 class="text-2xl font-bold text-white">
 				{% include 'components/Icon.html.twig' with {name: 'paw', size: 24, class: 'inline mr-2 text-blue-400'} %}
-               PetFinder
-            </h3>
-            <p class="mt-2 text-gray-400">
-               {{ 'footer.tagline'|trans }}
-            </p>
-         </div>
-      </div>
-   </footer>
+				PetFinder
+			</h3>
+			<p class="mt-2 text-gray-400">
+				{{ 'footer.tagline'|trans }}
+			</p>
+			<div class="mt-4 text-gray-400">
+				<span class="font-semibold">{{ 'footer.contact'|trans }}:</span>
+				<span class="">
+					<a href="mailto:mypetfinder.website@gmail.com" class="ml-1 text-blue-400 hover:underline">mypetfinder.website@gmail.com</a>
+				</span>
+			</div>
+		</div>
+	</div>
+</footer>
