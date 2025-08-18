@@ -1,4 +1,4 @@
-// Flash Messages - Manual close only (auto-hide handled by CSS)
+// Flash Messages - Enhanced with better animation handling
 document.addEventListener("DOMContentLoaded", function () {
     const flashMessages = document.querySelectorAll(".flash-message");
 
@@ -8,41 +8,43 @@ document.addEventListener("DOMContentLoaded", function () {
         if (closeBtn) {
             closeBtn.addEventListener("click", function (e) {
                 e.preventDefault();
-                message.classList.add("removing");
-                setTimeout(function () {
-                    if (message.parentNode) {
-                        message.parentNode.removeChild(message);
-                    }
-                }, 300);
+                removeFlashMessage(message);
             });
         }
     });
 });
 
-// Function to remove all existing flash messages
+// Enhanced function to remove a single flash message
+function removeFlashMessage(message) {
+    if (!message || !message.parentNode) return;
+
+    message.classList.add("removing");
+    message.style.pointerEvents = "none"; // Prevent interaction during removal
+
+    setTimeout(function () {
+        if (message.parentNode) {
+            message.parentNode.removeChild(message);
+        }
+    }, 300);
+}
+
+// Enhanced function to remove all existing flash messages
 function removeAllFlashMessages() {
     const container = document.getElementById("flash-container");
     if (!container) return;
 
     const existingMessages = container.querySelectorAll(".flash-message");
     existingMessages.forEach(function (message) {
-        message.classList.add("removing");
-        setTimeout(function () {
-            if (message.parentNode) {
-                message.parentNode.removeChild(message);
-            }
-        }, 300);
+        removeFlashMessage(message);
     });
 }
 
-// Function to create new flash messages dynamically
+// Enhanced function to create new flash messages dynamically
 function createFlashMessage(type, text) {
-    // Remove any existing flash messages first
-    removeAllFlashMessages();
-
     const container = document.getElementById("flash-container");
     if (!container) return;
 
+    // Create the new message first
     const message = document.createElement("div");
     message.className = `flash-message flash-${type}`;
     message.setAttribute("data-type", type);
@@ -57,19 +59,32 @@ function createFlashMessage(type, text) {
         <button class="flash-close">×</button>
     `;
 
-    container.appendChild(message);
+    // Remove existing messages with a small delay to prevent animation conflicts
+    const existingMessages = container.querySelectorAll(".flash-message");
+    if (existingMessages.length > 0) {
+        existingMessages.forEach(function (existingMessage) {
+            removeFlashMessage(existingMessage);
+        });
 
-    // Add click event to close button
+        // Add new message after a brief delay to ensure smooth transition
+        setTimeout(() => {
+            container.appendChild(message);
+            setupMessageEvents(message);
+        }, 50);
+    } else {
+        // No existing messages, add immediately
+        container.appendChild(message);
+        setupMessageEvents(message);
+    }
+}
+
+// Function to setup event listeners for a message
+function setupMessageEvents(message) {
     const closeButton = message.querySelector(".flash-close");
     if (closeButton) {
         closeButton.addEventListener("click", function (e) {
             e.preventDefault();
-            message.classList.add("removing");
-            setTimeout(function () {
-                if (message.parentNode) {
-                    message.parentNode.removeChild(message);
-                }
-            }, 300);
+            removeFlashMessage(message);
         });
     }
 }
@@ -77,14 +92,14 @@ function createFlashMessage(type, text) {
 function getFlashIcon(type) {
     switch (type) {
         case "success":
-            return "✓";
+            return '<i class="fas fa-check-circle"></i>';
         case "error":
-            return "✕";
+            return '<i class="fas fa-times-circle"></i>';
         case "warning":
-            return "⚠";
+            return '<i class="fas fa-exclamation-triangle"></i>';
         case "info":
-            return "ℹ";
+            return '<i class="fas fa-info-circle"></i>';
         default:
-            return "ℹ";
+            return '<i class="fas fa-info-circle"></i>';
     }
 }

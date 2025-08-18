@@ -24,6 +24,8 @@
     animation: slideInRight 0.3s ease-out, autoHide 3.3s ease-in forwards;
     transition: all 0.3s ease;
     border-left: 4px solid;
+    position: relative;
+    z-index: 1;
 }
 
 .flash-message:hover {
@@ -39,9 +41,15 @@
 
 .flash-icon {
     font-size: 18px;
-    font-weight: bold;
     min-width: 20px;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flash-icon i {
+    font-size: 18px;
 }
 
 .flash-text {
@@ -155,7 +163,8 @@
 }
 
 .flash-message.removing {
-    animation: slideOutRight 0.3s ease-in forwards;
+    animation: slideOutRight 0.3s ease-in forwards !important;
+    pointer-events: none;
 }
 
 /* Responsive */
