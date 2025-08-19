@@ -318,10 +318,22 @@ class CustomAlertSystem {
     }
 
     handleFetchError(e) {
+        // Ignore fetch errors from external APIs that are not user-initiated
         if (e.reason && e.reason.message) {
+            const message = e.reason.message.toLowerCase();
+            // Ignore Nominatim API errors when they're not user-initiated
+            if (
+                message.includes("nominatim") ||
+                message.includes("openstreetmap")
+            ) {
+                console.warn("External API error (ignored):", e.reason.message);
+                return;
+            }
+            // Only show errors that are relevant to user actions
             this.show(e.reason.message, "error");
         } else {
-            this.show("Ha ocurrido un error inesperado", "error");
+            // Don't show generic "failed to fetch" errors unless they're critical
+            console.warn("Unhandled fetch error (ignored):", e.reason);
         }
     }
 }
