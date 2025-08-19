@@ -22,10 +22,10 @@
 						<i class="fas {{ iconClass }} text-4xl text-blue-600"></i>
 					</div>
 				{% endif %}
-				
+
 				{# Etiqueta de estado (esquina superior derecha) #}
 				<div class="absolute top-2 right-2 {% if animal.status == 'LOST' %}bg-red-500{% elseif animal.status == 'FOUND' %}bg-yellow-500{% elseif animal.status == 'CLAIMED' %}bg-green-500{% elseif animal.status == 'FILLED' %}bg-gray-500{% elseif animal.status == 'UNDER_PROTECTION' %}bg-red-500{% else %}bg-red-500{% endif %} text-white px-2 py-1 rounded-full text-xs font-medium">{{ animal_status_label(animal.status) }}</div>
-				
+
 				{# Etiqueta de protectora (esquina superior izquierda) - solo si está bajo custodia #}
 				{% if animal.status == 'UNDER_PROTECTION' and user.isShelter %}
 					<div class="absolute top-2 left-2 bg-purple-600 text-white px-2 py-1 rounded-full text-xs font-medium flex items-center">
@@ -37,32 +37,32 @@
 
 			{# Information #}
 			<div class="p-4">
-				<h3 class="text-lg font-semibold text-gray-900">{{ animal.name }}</h3>
+				<h3 class="text-lg font-semibold text-gray-900">{{ (animal.name ?? '')|highlight(filters.search|default('')) }}</h3>
 				<p class="text-sm text-gray-600 mb-2">
-					{{ animal.animalType|capitalize }}
+					{{ (animal.animalType ?? '')|capitalize|highlight(filters.search|default('')) }}
 					•
 					{% if animal.gender == 'male' %}{{ 'lost_pets.list.male'|trans }}{% elseif animal.gender == 'female' %}{{ 'lost_pets.list.female'|trans }}{% else %}{{ 'lost_pets.list.unspecified'|trans }}
 					{% endif %}
 
 					{% if animal.age %}
 						•
-						{{ animal.age }}
+						{{ (animal.age ?? '')|highlight(filters.search|default('')) }}
 					{% endif %}
 				</p>
-				<p class="text-sm text-gray-700 mb-3">{{ animal.description }}</p>
+				<p class="text-sm text-gray-700 mb-3">{{ (animal.description ?? '')|highlight(filters.search|default('')) }}</p>
 
 				{# Tags #}
 				{% if tags %}
 					<div class="flex flex-wrap gap-1 mb-3">
 						{% for tag in animal.animalTags %}
-							<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">{{ tag.tagId.name }}</span>
+							<span class="px-2 py-1 text-xs bg-blue-100 text-blue-800 rounded">{{ (tag.tagId.name ?? '')|highlight(filters.search|default('')) }}</span>
 						{% endfor %}
 					</div>
 				{% endif %}
 
 				<div class="flex items-center justify-between">
 					<span class="text-sm text-gray-500">
-						{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ lostPet.lostZone|capitalize }}
+						{% include 'components/Icon.html.twig' with {name: 'map-pin', size: 14, class: 'inline mr-1'} %}{{ (lostPet.lostZone ?? '')|capitalize|highlight(filters.search|default('')) }}
 					</span>
 					<span class="text-sm text-gray-500">
 						{% set daysAgo = (date()|date('U') - lostPet.createdAt|date('U')) / 86400 %}

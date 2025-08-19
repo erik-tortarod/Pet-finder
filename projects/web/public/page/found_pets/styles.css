@@ -17,3 +17,12 @@
 .cursor-pointer .btn:hover {
    transform: none;
 }
+
+/* Estilos para el resaltado de texto en búsquedas */
+mark {
+   color: red !important;
+   font-weight: 800 !important;
+   padding: 0.125rem 0.25rem !important;
+   border-radius: 0.25rem !important;
+   text-decoration: none !important;
+}

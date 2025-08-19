@@ -53,6 +53,7 @@ final class LostPetsController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             return $this->render('lost_pets/_lost_animals_list.html.twig', [
                 'lostPets' => $lostPets,
+                'filters' => $filters,
             ]);
         }
 

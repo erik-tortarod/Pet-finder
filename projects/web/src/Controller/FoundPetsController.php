@@ -52,6 +52,7 @@ final class FoundPetsController extends AbstractController
         if ($request->isXmlHttpRequest()) {
             return $this->render('found_pets/_found_animals_list.html.twig', [
                 'foundAnimals' => $foundAnimals,
+                'filters' => $filters,
             ]);
         }
 

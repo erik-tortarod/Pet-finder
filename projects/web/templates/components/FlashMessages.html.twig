@@ -8,23 +8,28 @@
 	{% for label, messages in app.flashes %}
 		{% if messages|length > 0 %}
 			{% set message = messages|first %}
-			<div class="flash-message flash-{{ label }}" data-type="{{ label }}">
-				<div class="flash-content">
-					<span class="flash-icon">
-						{% if label == 'success' %}
-							<i class="fas fa-check-circle"></i>
-						{% elseif label == 'error' %}
-							<i class="fas fa-times-circle"></i>
-						{% elseif label == 'warning' %}
-							<i class="fas fa-exclamation-triangle"></i>
-						{% elseif label == 'info' %}
-							<i class="fas fa-info-circle"></i>
-						{% endif %}
-					</span>
-					<span class="flash-text">{{ message }}</span>
+			{# Block error messages only on lost/found pets pages to prevent JS conflicts #}
+			{% set currentRoute = app.request.get('_route') %}
+			{% set isPetsPage = currentRoute == 'app_lost_pets_index' or currentRoute == 'app_found_pets_index' %}
+			{% if message is not empty and not (app.request.get('_route') starts with 'app_animal_show') and not (label == 'error' and isPetsPage) %}
+				<div class="flash-message flash-{{ label }}" data-type="{{ label }}">
+					<div class="flash-content">
+						<span class="flash-icon">
+							{% if label == 'success' %}
+								<i class="fas fa-check-circle"></i>
+							{% elseif label == 'error' %}
+								<i class="fas fa-times-circle"></i>
+							{% elseif label == 'warning' %}
+								<i class="fas fa-exclamation-triangle"></i>
+							{% elseif label == 'info' %}
+								<i class="fas fa-info-circle"></i>
+							{% endif %}
+						</span>
+						<span class="flash-text">{{ message }}</span>
+					</div>
+					<button class="flash-close" onclick="this.parentElement.remove()">×</button>
 				</div>
-				<button class="flash-close" onclick="this.parentElement.remove()">×</button>
-			</div>
+			{% endif %}
 		{% endif %}
 	{% endfor %}
 </div>
