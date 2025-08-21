@@ -58,5 +58,5 @@ make run
   
   **Developed as part of Aircury's Summer of Code**
   
-  Special thanks to Aircury for providing this amazing opportunity to contribute to the open-source community and work on meaningful projects that help reunite lost pets with their families.
+  Special thanks to Aircury SL for providing this amazing opportunity to contribute to the open-source community and work on meaningful projects that help reunite lost pets with their families.
 </div>

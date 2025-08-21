@@ -1,0 +1,58 @@
+User-agent: *
+Allow: /
+
+# Allow access to main public pages
+Allow: /lost/pets
+Allow: /found/pets
+Allow: /animal/
+Allow: /lost/pets/create
+Allow: /found/pets/create
+Allow: /auth/login
+Allow: /auth/register
+Allow: /auth/forgot-password
+Allow: /shelter/pending-verification
+Allow: /shelter/rejected
+Allow: /change-locale/
+
+# Disallow access to private areas and system files
+Disallow: /user/
+Disallow: /admin/
+Disallow: /auth/logout
+Disallow: /auth/reset-password/
+Disallow: /auth/debug-session
+Disallow: /connect/
+Disallow: /login
+Disallow: /logout
+Disallow: /animal/edit/
+Disallow: /animal/delete/
+Disallow: /animal/archive/
+Disallow: /animal/restore/
+Disallow: /animal/mark-as-found/
+Disallow: /animal/mark-under-protection/
+Disallow: /animal/remove-under-protection/
+Disallow: /uploads/
+Disallow: /var/
+Disallow: /vendor/
+Disallow: /config/
+Disallow: /src/
+Disallow: /templates/
+Disallow: /migrations/
+Disallow: /tests/
+
+# Disallow access to API endpoints and form submissions
+Disallow: /api/
+Disallow: /send_email
+Disallow: /reminder/response/
+Disallow: /images
+
+# Allow access to static assets
+Allow: /css/
+Allow: /js/
+Allow: /images/
+Allow: /build/
+
+# Sitemap location
+Sitemap: https://mypetfinder.site/sitemap.xml
+
+# Crawl delay (optional - be respectful to the server)
+Crawl-delay: 1
