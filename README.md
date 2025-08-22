@@ -51,6 +51,19 @@ make run
     TELEGRAM_CHAT_ID=your_chat_id
     ```
 
+## 📧 Automatic Email Reminders
+
+To set up automatic email reminders for checking if publications are still active:
+
+```bash
+# Test manually
+cd projects/web && php bin/console app:send-reminders
+
+# Set up crontab (daily at 9 AM)
+crontab -e
+0 9 * * * cd /path/to/project/projects/web && php bin/console app:send-reminders >> var/log/reminders.log 2>&1
+```
+
 ## 🙏 Acknowledgments
 
 <div align="center">
