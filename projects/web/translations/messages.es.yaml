@@ -641,7 +641,7 @@ home:
         share: "Compartir"
         zone_not_specified: "Zona no especificada"
         today: "Hoy"
-        days_ago: "Hace {days} días"
+        days_ago: "Hace %days% días"
         one_day_ago: "Hace 1 día"
         unnamed_pet: "Sin nombre"
         found_animal: "encontrado"
@@ -702,8 +702,8 @@ user:
         published: "Publicado"
         today: "Hoy"
         yesterday: "Ayer"
-        days_ago: "Hace {days} días"
-        weeks_ago: "Hace {weeks} semanas"
+        days_ago: "Hace %days% días"
+        weeks_ago: "Hace %weeks% semanas"
 
     confirmations:
         delete_title: "Eliminar Publicación"
