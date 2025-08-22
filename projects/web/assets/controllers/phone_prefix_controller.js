@@ -16,26 +16,63 @@ export default class extends Controller {
         phoneNumber: String,
         isOpen: Boolean,
     };
+    static classes = ["active"];
+
+    initialize() {
+        this.controllerId = this.element.dataset.phonePrefixId || "default";
+        console.log(
+            `Phone prefix controller initialized with ID: ${this.controllerId}`
+        );
+    }
 
     connect() {
-        console.log("Phone prefix controller connected");
+        console.log(
+            `Phone prefix controller connected for ID: ${this.controllerId}`
+        );
+
+        // Ensure we have all required targets
+        if (
+            !this.hasButtonTarget ||
+            !this.hasDropdownTarget ||
+            !this.hasOptionsTarget
+        ) {
+            console.error(
+                `Phone prefix controller missing required targets for ID: ${this.controllerId}`
+            );
+            return;
+        }
+
         this.initializeSelect();
         this.setDefaultCountry();
         this.isOpenValue = false;
         this.bindGlobalEvents();
+
+        // Ensure dropdown is initially closed
+        this.closeDropdown();
     }
 
     disconnect() {
-        console.log("Phone prefix controller disconnected");
+        console.log(
+            `Phone prefix controller disconnected for ID: ${this.controllerId}`
+        );
         this.removeGlobalEvents();
     }
 
     // Method to reinitialize the controller if needed
     reinitialize() {
-        console.log("Reinitializing phone prefix controller");
+        console.log(
+            `Reinitializing phone prefix controller for ID: ${this.controllerId}`
+        );
         this.initializeSelect();
         this.setDefaultCountry();
         this.isOpenValue = false;
+        this.bindGlobalEvents();
+
+        // Ensure dropdown is closed
+        this.closeDropdown();
+
+        // Re-render dropdown options
+        this.renderDropdownOptions();
     }
 
     bindGlobalEvents() {
@@ -138,6 +175,7 @@ export default class extends Controller {
     }
 
     toggleDropdown() {
+        console.log("Toggle dropdown called, current state:", this.isOpenValue);
         if (this.isOpenValue) {
             this.closeDropdown();
         } else {
@@ -146,6 +184,7 @@ export default class extends Controller {
     }
 
     openDropdown() {
+        console.log("Opening dropdown");
         this.isOpenValue = true;
         if (this.hasDropdownTarget) {
             this.dropdownTarget.classList.remove("hidden");
@@ -159,6 +198,7 @@ export default class extends Controller {
     }
 
     closeDropdown() {
+        console.log("Closing dropdown");
         this.isOpenValue = false;
         if (this.hasDropdownTarget) {
             this.dropdownTarget.classList.add("hidden");
@@ -311,5 +351,14 @@ export default class extends Controller {
             return `${this.selectedPrefixValue} ${this.inputTarget.value}`;
         }
         return this.hasInputTarget ? this.inputTarget.value : "";
+    }
+
+    // Method to force reconnection of the controller
+    forceReconnect() {
+        console.log(
+            `Force reconnecting phone prefix controller for ID: ${this.controllerId}`
+        );
+        this.disconnect();
+        this.connect();
     }
 }

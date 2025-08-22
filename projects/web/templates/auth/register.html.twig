@@ -81,7 +81,7 @@
 				<input type="email" name="email" id="email" placeholder="{{ 'auth.register.form.email_placeholder'|trans }}" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 			</div>
 
-			<div class="mb-6" data-controller="phone-prefix">
+			<div class="mb-6" data-controller="phone-prefix" data-phone-prefix-id="user-phone">
 				<label for="phone" class="block text-sm font-medium text-gray-700 mb-3">
 					<i class="fas fa-phone mr-1"></i>
 					{{ 'auth.register.form.phone'|trans }}
@@ -188,8 +188,8 @@
 					<input type="text" name="shelterAddress" id="shelterAddress" placeholder="{{ 'auth.register.shelter.address_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
-				<div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-					<div data-controller="phone-prefix">
+				<div class="mb-6">
+					<div data-controller="phone-prefix" data-phone-prefix-id="shelter-phone">
 						<label for="shelterPhone" class="block text-sm font-medium text-gray-700 mb-3">
 							<i class="fas fa-phone mr-1"></i>
 							{{ 'auth.register.shelter.phone'|trans }}
@@ -227,13 +227,14 @@
 							</div>
 						</div>
 					</div>
-					<div>
-						<label for="shelterWebsite" class="block text-sm font-medium text-gray-700 mb-3">
-							<i class="fas fa-globe mr-1"></i>
-							{{ 'auth.register.shelter.website'|trans }}
-						</label>
-						<input type="url" name="shelterWebsite" id="shelterWebsite" placeholder="{{ 'auth.register.shelter.website_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
-					</div>
+				</div>
+
+				<div class="mb-6">
+					<label for="shelterWebsite" class="block text-sm font-medium text-gray-700 mb-3">
+						<i class="fas fa-globe mr-1"></i>
+						{{ 'auth.register.shelter.website'|trans }}
+					</label>
+					<input type="url" name="shelterWebsite" id="shelterWebsite" placeholder="{{ 'auth.register.shelter.website_placeholder'|trans }}" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
 				</div>
 
 				<div class="mb-6">
@@ -271,37 +272,51 @@ const shelterFields = document.getElementById('shelter-fields');
 const requiredFields = ['shelterName', 'shelterAddress'];
 
 function setActiveToggle(isShelter) {
-if (isShelter) { // Activate shelter toggle
-shelterToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200';
-userToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700';
-isShelterInput.value = '1';
+    if (isShelter) { // Activate shelter toggle
+        shelterToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200';
+        userToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700';
+        isShelterInput.value = '1';
 
-// Show shelter fields
-shelterFields.style.display = 'block';
-requiredFields.forEach(fieldId => {
-const field = document.getElementById(fieldId);
-if (field)
-field.required = true;
+        // Show shelter fields
+        shelterFields.style.display = 'block';
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field)
+                field.required = true;
+        });
 
+        // Reinitialize phone prefix controllers after showing shelter fields
+        setTimeout(() => {
+            console.log('Reinitializing controllers after showing shelter fields');
+            const phoneControllers = document.querySelectorAll('[data-controller="phone-prefix"]');
+            phoneControllers.forEach(controller => {
+                const controllerInstance = window.Stimulus.getControllerForElementAndIdentifier(controller, 'phone-prefix');
+                if (controllerInstance && typeof controllerInstance.reinitialize === 'function') {
+                    console.log('Reinitializing phone prefix controller for shelter:', controllerInstance.controllerId);
+                    controllerInstance.reinitialize();
+                } else {
+                    console.log('Controller instance not found, trying to force reconnection');
+                    // Try to force reconnection if controller exists but reinitialize doesn't work
+                    if (controllerInstance && typeof controllerInstance.forceReconnect === 'function') {
+                        controllerInstance.forceReconnect();
+                    }
+                }
+            });
+        }, 300);
 
+    } else { // Activate user toggle
+        userToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200';
+        shelterToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700';
+        isShelterInput.value = '0';
 
-});
-} else { // Activate user toggle
-userToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 bg-white text-gray-700 shadow-sm border border-gray-200';
-shelterToggle.className = 'flex-1 py-3 px-4 rounded-md font-medium transition-all duration-300 text-gray-500 hover:text-gray-700';
-isShelterInput.value = '0';
-
-// Hide shelter fields
-shelterFields.style.display = 'none';
-requiredFields.forEach(fieldId => {
-const field = document.getElementById(fieldId);
-if (field)
-field.required = false;
-
-
-
-});
-}
+        // Hide shelter fields
+        shelterFields.style.display = 'none';
+        requiredFields.forEach(fieldId => {
+            const field = document.getElementById(fieldId);
+            if (field)
+                field.required = false;
+        });
+    }
 }
 
 // Event listeners
@@ -310,6 +325,69 @@ shelterToggle.addEventListener('click', () => setActiveToggle(true));
 
 // Initialize with user toggle active
 setActiveToggle(false);
+
+// Function to reinitialize all phone prefix controllers
+function reinitializePhoneControllers() {
+    console.log('Reinitializing all phone prefix controllers');
+    const phoneControllers = document.querySelectorAll('[data-controller="phone-prefix"]');
+    phoneControllers.forEach(controller => {
+        const controllerInstance = window.Stimulus.getControllerForElementAndIdentifier(controller, 'phone-prefix');
+        if (controllerInstance && typeof controllerInstance.reinitialize === 'function') {
+            console.log('Reinitializing phone prefix controller:', controllerInstance.controllerId);
+            controllerInstance.reinitialize();
+        } else {
+            console.log('Phone prefix controller not found or reinitialize method not available');
+            // Try to force reconnection
+            if (controllerInstance && typeof controllerInstance.forceReconnect === 'function') {
+                console.log('Attempting force reconnection for controller');
+                controllerInstance.forceReconnect();
+            }
+        }
+    });
+}
+
+// Function to test if controllers are working
+function testPhoneControllers() {
+    console.log('Testing phone controllers functionality');
+    const phoneControllers = document.querySelectorAll('[data-controller="phone-prefix"]');
+    phoneControllers.forEach(controller => {
+        const button = controller.querySelector('[data-phone-prefix-target="button"]');
+        if (button) {
+            console.log('Phone controller button found:', button);
+            // Test if the button is clickable
+            button.addEventListener('click', function(e) {
+                console.log('Button clicked:', e.target);
+            });
+        }
+    });
+}
+
+// Reinitialize controllers on page load
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM Content Loaded - initializing phone controllers');
+    setTimeout(() => {
+        reinitializePhoneControllers();
+        testPhoneControllers();
+    }, 300);
+});
+
+// Reinitialize controllers on Turbo navigation
+document.addEventListener('turbo:load', function() {
+    console.log('Turbo Load - initializing phone controllers');
+    setTimeout(() => {
+        reinitializePhoneControllers();
+        testPhoneControllers();
+    }, 300);
+});
+
+// Also try to reinitialize on turbo:render
+document.addEventListener('turbo:render', function() {
+    console.log('Turbo Render - initializing phone controllers');
+    setTimeout(() => {
+        reinitializePhoneControllers();
+        testPhoneControllers();
+    }, 300);
+});
 
 // Phone prefix handling
 document.addEventListener('DOMContentLoaded', function () {
