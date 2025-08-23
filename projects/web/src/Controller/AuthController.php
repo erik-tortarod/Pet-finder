@@ -114,21 +114,21 @@ final class AuthController extends AbstractController
             $welcomeEmailSent = $this->shelterEmailService->sendWelcomeEmail($user);
 
             // Enviar notificación a Telegram si es una shelter
-            // if ($isShelter) {
-            //     $shelterData = [
-            //         'id' => $user->getId(),
-            //         'name' => $shelterName,
-            //         'email' => $email,
-            //         'phone' => $shelterPhone,
-            //         'address' => $shelterAddress,
-            //         'description' => $shelterDescription,
-            //         'website' => $shelterWebsite,
-            //         'facebook' => $shelterFacebook,
-            //         'created_at' => $user->getCreatedAt()
-            //     ];
+            if ($isShelter) {
+                $shelterData = [
+                    'id' => $user->getId(),
+                    'name' => $shelterName,
+                    'email' => $email,
+                    'phone' => $shelterPhone,
+                    'address' => $shelterAddress,
+                    'description' => $shelterDescription,
+                    'website' => $shelterWebsite,
+                    'facebook' => $shelterFacebook,
+                    'created_at' => $user->getCreatedAt()
+                ];
 
-            //     $this->telegramService->sendShelterRegistrationNotification($shelterData);
-            // }
+                $this->telegramService->sendShelterRegistrationNotification($shelterData);
+            }
 
             $successMessage = $isShelter ? 'Protectora registrada exitosamente. Tu cuenta está pendiente de verificación.' : 'Usuario registrado exitosamente';
             if ($welcomeEmailSent) {
