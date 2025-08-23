@@ -67,11 +67,17 @@ class ReminderService
 
     private function sendReminderEmail(User $user, Animals $animal, string $type): void
     {
+        // Forzar siempre la URL de producción
+        $baseUrl = 'https://mypetfinder.site';
+
         $reminderUrl = $this->urlGenerator->generate(
             'app_reminder_response',
             ['animalId' => $animal->getId(), 'type' => $type],
             UrlGeneratorInterface::ABSOLUTE_URL
         );
+
+        // Reemplazar cualquier host con la URL de producción
+        $reminderUrl = preg_replace('/https?:\/\/[^\/]+/', $baseUrl, $reminderUrl);
 
         $subject = $type === 'lost' ? '¿Sigue perdido tu ' . $animal->getAnimalType() . '?' : '¿Sigue activa tu publicación de ' . $animal->getAnimalType() . ' encontrado?';
 
